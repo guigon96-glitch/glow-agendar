@@ -20,7 +20,7 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .rv.in{opacity:1;transform:none}
 
 /* HERO */
-.hero{max-width:none;min-height:100svh;background:linear-gradient(160deg,#d89a92,#a8625f 60%,#7d4543);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px 60px}
+.hero{max-width:none;min-height:auto;background:linear-gradient(160deg,#d89a92,#a8625f 60%,#7d4543);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 20px 76px}
 .blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.45;animation:float 12s ease-in-out infinite}
 .b1{width:260px;height:260px;background:#ffd9cf;top:-60px;left:-60px}.b2{width:300px;height:300px;background:#7d4543;bottom:-90px;right:-80px;animation-delay:-4s}.b3{width:180px;height:180px;background:#ffc9b8;top:45%;right:-50px;animation-delay:-7s}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(24px,-30px) scale(1.12)}}
@@ -28,7 +28,7 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .hero .tag{letter-spacing:.3em;font-size:11px;position:relative;margin-bottom:22px;animation:up 1s both;opacity:.9}
 .hero p{font-size:17px;line-height:1.45;max-width:380px;margin:0 auto 26px;position:relative;animation:up 1s .25s both}
 @keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-.hphone{position:relative;width:min(62vw,250px);aspect-ratio:430/932;border-radius:34px;border:7px solid #2b2020;overflow:hidden;box-shadow:0 30px 60px rgba(40,10,10,.45);animation:up 1.1s .4s both,bob 5s 1.5s ease-in-out infinite;background:#fff}
+.hphone{position:relative;width:min(52vw,210px);aspect-ratio:430/932;border-radius:34px;border:7px solid #2b2020;overflow:hidden;box-shadow:0 30px 60px rgba(40,10,10,.45);animation:up 1.1s .4s both,bob 5s 1.5s ease-in-out infinite;background:#fff}
 .hphone img{width:100%;height:100%;display:block;object-fit:cover}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-12px) rotate(1.2deg)}}
 .btn{display:inline-block;background:#fff;color:var(--rose);border:0;border-radius:99px;padding:14px 26px;font:600 15px system-ui;text-decoration:none;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.18);position:relative}
@@ -84,9 +84,24 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .step p{text-align:center;font-size:14px;line-height:1.4;margin:12px 4px 0}.step p b{display:block;font:italic 400 19px Georgia,serif;color:var(--rose);margin-bottom:2px}
 
 /* CTA */
-.cta{max-width:none;background:linear-gradient(160deg,#d89a92,#a8625f 70%);color:#fff;text-align:center;padding:70px 24px 80px}
+.cta{max-width:none;background:linear-gradient(160deg,#d89a92,#a8625f 70%);color:#fff;text-align:center;padding:80px 24px calc(90px + env(safe-area-inset-bottom))}
 .cta h2{color:#fff;font-size:38px}.cta p{max-width:420px;margin:0 auto 26px;line-height:1.5;font-size:16px}
 .cta small{display:block;margin-top:26px;opacity:.75;font-size:12px}
+.nav2{display:flex;gap:10px;margin-top:14px;justify-content:center}
+.nav2 .btn{padding:11px 20px;font-size:13.5px;box-shadow:none}
+.tl{height:4px;background:#ecd9d3;border-radius:4px;overflow:hidden;width:100%;max-width:360px;margin-top:14px}.tl i{display:block;height:100%;width:0;background:var(--rose)}
+.seg{display:inline-flex;background:#fff;border:2px solid #ecd6d0;border-radius:99px;padding:4px;margin-bottom:20px}
+.seg button{border:0;background:transparent;border-radius:99px;padding:10px 20px;font:600 14px system-ui;color:var(--ink);cursor:pointer}.seg button.on{background:var(--rose);color:#fff}
+.plans{display:grid;gap:16px}
+.pl{background:#fff;border:2px solid #efdcd6;border-radius:26px;padding:24px 22px;box-shadow:0 10px 26px rgba(120,60,50,.07)}
+.pl.hl{border-color:var(--rose2);background:#FBEFEC}
+.pl h3{font:italic 400 28px Georgia,serif;color:var(--rose);margin:0 0 2px}.pl .for{font-size:13.5px;color:#7a6262;line-height:1.4;margin-bottom:14px}
+.pl .pr{font:500 38px/1 Georgia,serif;color:var(--ink)}.pl .pr small{font:500 14px system-ui;color:#7a6262}
+.pl .sub{font-size:13px;color:#7a6262;margin:6px 0 16px;min-height:18px}
+.pl ul{list-style:none;margin:0;padding:0;border-top:1px solid #efdcd6}.pl li{display:flex;gap:10px;font-size:14px;line-height:1.35;padding:9px 0;border-bottom:1px solid #f5e9e5}.pl li.no{opacity:.4;text-decoration:line-through}.pl li i{font-style:normal;color:var(--rose);font-weight:700;flex:none}
+.pl .lim{font-size:13px;color:#7a6262;margin-top:12px}
+.badge{display:inline-block;background:var(--rose);color:#fff;font:600 11px system-ui;letter-spacing:.1em;padding:5px 11px;border-radius:99px;margin-bottom:10px}
+.note{font-size:13.5px;line-height:1.5;color:#7a6262;text-align:center;margin-top:18px}
 .prog{position:fixed;top:0;left:0;height:3px;background:var(--rose);z-index:50;width:0}
 @media (min-width:900px){section{max-width:600px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
@@ -106,16 +121,11 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   <div class="cue">ROLE ↓</div>
 </section>
 
-<section id="app">
-  <div class="eyebrow rv">Experimente agora</div>
-  <h2 class="rv">Toque e navegue como se estivesse dentro</h2>
-  <p class="lead rv">Use o menu de baixo, abra uma cliente, deslize o antes e depois e tire uma foto. É o app de verdade, com clientes e valores de exemplo.</p>
-  <div class="stage rv">
-    <div class="phone" id="phone"><div class="flash" id="flash"></div></div>
-    <div class="dots" id="dots"></div>
-    <div class="cap" id="cap"><b></b><span></span></div>
-    <div class="tbar"><button class="btn dark" id="tour">▶ Tour automático</button><button class="btn ghost" id="reset">Recomeçar</button></div>
-  </div>
+<section id="funcoes">
+  <div class="eyebrow rv">Tudo o que dá para fazer</div>
+  <h2 class="rv">O que o aplicativo faz pelo seu salão</h2>
+  <p class="lead rv">Pensado para cortes, coloração, mechas e tratamentos. Cada função já vem pronta para o dia a dia do salão.</p>
+  <div class="cards" id="cards"></div>
 </section>
 
 <section id="antes">
@@ -125,13 +135,6 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   <div class="chips rv" id="chips"></div>
   <div class="ba rv" id="ba"><img id="baA" alt="Antes"><img class="top" id="baD" alt="Depois"><span class="lab l1">ANTES</span><span class="lab l2">DEPOIS</span><i class="bar"></i><i class="knob">‹ ›</i></div>
   <div class="bahint" id="bahint"></div>
-</section>
-
-<section>
-  <div class="eyebrow rv">Para o seu salão</div>
-  <h2 class="rv">Tudo o que o salão precisa</h2>
-  <p class="lead rv">Pensado para cortes, coloração, mechas e tratamentos.</p>
-  <div class="cards" id="cards"></div>
 </section>
 
 <section>
@@ -145,9 +148,32 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   </div>
 </section>
 
+<section id="app">
+  <div class="eyebrow rv">Por dentro do app</div>
+  <h2 class="rv">Veja as telas, no seu ritmo</h2>
+  <p class="lead rv">É o app de verdade, com clientes e valores de exemplo. Toque no menu de baixo para navegar, use as setas ou deixe o tour passar sozinho.</p>
+  <div class="stage rv">
+    <div class="phone" id="phone"><div class="flash" id="flash"></div></div>
+    <div class="tl"><i id="tlf"></i></div>
+    <div class="dots" id="dots"></div>
+    <div class="cap" id="cap"><b></b><span></span></div>
+    <div class="nav2"><button class="btn ghost" id="prev">← Anterior</button><button class="btn dark" id="next">Próxima →</button></div>
+    <div class="tbar"><button class="btn ghost" id="tour">▶ Tour automático</button><button class="btn ghost" id="reset">Recomeçar</button></div>
+  </div>
+</section>
+
+<section id="planos">
+  <div class="eyebrow rv">Planos e valores</div>
+  <h2 class="rv">Escolha o plano do seu salão</h2>
+  <p class="lead rv">Comece com 30 dias de teste, com tudo do plano Pro liberado. Quem não assina continua no plano Grátis e não perde os dados.</p>
+  <div class="seg rv" id="seg"><button class="on" data-v="m">Mensal</button><button data-v="y">Anual · 2 meses grátis</button></div>
+  <div class="plans" id="plans"></div>
+  <div class="note rv">No plano anual você paga 10 meses e usa 12. Valores em reais, por salão.</div>
+</section>
+
 <section class="cta">
   <h2 class="rv">Pronta para testar?</h2>
-  <p class="rv">Clientes, fotos e valores desta apresentação são de exemplo. Abra o app, use os dados de demonstração e conheça cada tela.</p>
+  <p class="rv">Clientes, fotos e valores das telas são de exemplo. Abra o app, use os dados de demonstração e conheça cada tela, por 30 dias com tudo liberado.</p>
   <a class="btn rv" href="/app/">Abrir o aplicativo</a>
   <small>Glow Studio · versão para salão de cabeleireira</small>
 </section>
@@ -202,9 +228,13 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
     var i = ORDER.indexOf(k); [].forEach.call(dotsEl.children, function (d, j) { d.className = j === i ? 'on' : ''; });
   }
   /* tour automático */
-  var TOUR = [['inicio', 3000], ['agenda', 3200], ['clientes', 2800], ['ficha', 3200], ['fotos', 2800], ['compara', 4200], ['camera', 3200], ['fin', 3000], ['mais', 2600], ['estoque', 3200], ['proc', 3200], ['relac', 3200], ['equipe', 2800], ['relat', 3000]];
-  function stopTour() { clearTimeout(tourT); tourT = null; document.getElementById('tour').textContent = '▶ Tour automático'; }
-  function runTour(i) { if (i >= TOUR.length) { stopTour(); return; } show(TOUR[i][0], TOUR[i][0] === 'compara' && i > 0 && TOUR[i - 1][0] === 'camera'); tourT = setTimeout(function () { runTour(i + 1); }, TOUR[i][1]); }
+  var TOUR = [['inicio', 6500], ['agenda', 6500], ['clientes', 6000], ['ficha', 7000], ['fotos', 6000], ['compara', 8500], ['camera', 7000], ['fin', 6500], ['mais', 5500], ['estoque', 7000], ['proc', 7000], ['relac', 7000], ['equipe', 6000], ['relat', 6500]];
+  var tlf = document.getElementById('tlf'), idx = 0;
+  function bar(ms) { tlf.style.transition = 'none'; tlf.style.width = '0'; void tlf.offsetWidth; if (ms) { tlf.style.transition = 'width ' + ms + 'ms linear'; tlf.style.width = '100%'; } }
+  function stopTour() { clearTimeout(tourT); tourT = null; bar(0); document.getElementById('tour').textContent = '▶ Tour automático'; }
+  function runTour(i) { if (i >= TOUR.length) { stopTour(); return; } idx = i; show(TOUR[i][0], TOUR[i][0] === 'compara' && i > 0 && TOUR[i - 1][0] === 'camera'); bar(TOUR[i][1]); tourT = setTimeout(function () { runTour(i + 1); }, TOUR[i][1]); }
+  function step(d) { stopTour(); var k = TOUR.map(function (t) { return t[0]; }), c = Math.max(0, k.indexOf(cur)), n = (c + d + k.length) % k.length; idx = n; show(k[n]); }
+  document.getElementById('prev').onclick = function () { step(-1); }; document.getElementById('next').onclick = function () { step(1); };
   document.getElementById('tour').onclick = function () { if (tourT) { stopTour(); return; } this.textContent = '⏸ Pausar tour'; phone.scrollIntoView({ block: 'center' }); runTour(0); };
   document.getElementById('reset').onclick = function () { stopTour(); show('inicio'); };
   show('inicio');
@@ -219,8 +249,26 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   ba.addEventListener('pointerdown', function (e) { cancelAnimationFrame(baAnim); ba.setPointerCapture(e.pointerId); baMove(e); ba.onpointermove = baMove; }); ba.addEventListener('pointerup', function () { ba.onpointermove = null; });
   pick(0);
   /* ---------- funções ---------- */
-  var F = [['Agenda do salão', 'Várias profissionais, agendas separadas, bloqueio de horários e pedidos online.'], ['Fotos de antes e depois', 'Câmera com guia para o cabelo inteiro e comparação lado a lado de cada transformação.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp, em que a cliente reserva sozinha nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado, com desconto opcional, para reduzir faltas em serviços longos.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com alerta de estoque mínimo e baixa automática.'], ['Comissões', 'Comissão por profissional e relatório de produção da equipe.'], ['Fidelidade e pacotes', 'Prêmios próprios do cabelo e pacotes de hidratação e tratamento com saldo por cliente.'], ['Financeiro', 'Receita, despesas, formas de pagamento e valores a receber.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, entrando com a conta Google.']];
+  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Fotos de antes e depois', 'Câmera com guia de enquadramento para o cabelo inteiro, galeria por cliente e comparação deslizando.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
   var cards = document.getElementById('cards'); F.forEach(function (f, i) { var d = document.createElement('div'); d.className = 'fc rv'; d.style.transitionDelay = (i % 3) * 90 + 'ms'; d.innerHTML = '<div class="n">' + (i + 1) + '</div><div><b>' + f[0] + '</b><span>' + f[1] + '</span></div>'; cards.appendChild(d); });
+
+  /* ---------- planos ---------- */
+  var ROWS = [['Agenda, fichas, termo assinado, fotos e PDF', 0], ['Financeiro e Pix na cobrança do atendimento', 0], ['Serviços e preços editáveis', 0], ['Nuvem automática e login Google', 1], ['Link de agendamento e sinal por Pix', 1], ['Lembretes e relacionamento com clientes', 1], ['Estoque, receita de produtos e itens compartilhados', 2], ['Pacotes e fidelidade', 2], ['Sincronização entre aparelhos', 2]];
+  var PL = [{ n: 'Grátis', r: 0, m: 0, y: 0, f: 'Para conhecer o app', lim: 'Até 30 clientes · 1 profissional · 1 aparelho' }, { n: 'Essencial', r: 1, m: 24.9, y: 249, f: 'Atende sozinha e quer organização e agendamento', lim: 'Clientes ilimitados · 1 profissional · 1 aparelho' }, { n: 'Pro', r: 2, m: 39.9, y: 399, f: 'Quer controlar estoque, pacotes e usar em 2 aparelhos', lim: 'Clientes ilimitados · até 3 profissionais · 2 aparelhos', hl: 1 }, { n: 'Studio', r: 2, m: 69.9, y: 699, f: 'Salão com equipe', lim: 'Clientes ilimitados · até 5 profissionais · 5 aparelhos' }];
+  function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+  var mode = 'm', plansEl = document.getElementById('plans');
+  function drawPlans() {
+    plansEl.innerHTML = PL.map(function (p, i) {
+      var price = p.m === 0 ? 'R$ 0' : mode === 'm' ? brl(p.m) + ' <small>/mês</small>' : brl(p.y) + ' <small>/ano</small>';
+      var sub = p.m === 0 ? 'Depois dos 30 dias de teste' : mode === 'm' ? 'ou ' + brl(p.y) + ' por ano (2 meses grátis)' : 'equivale a ' + brl(p.y / 12) + ' por mês';
+      var prev = i === 0 ? null : PL[i - 1], inc = ROWS.filter(function (r) { return r[1] <= p.r && (!prev || r[1] > prev.r); });
+      var head = i === 0 ? '' : '<li><i>+</i><span><b>Tudo do ' + prev.n + '</b>' + (inc.length ? ', mais:' : ', com mais equipe e aparelhos') + '</span></li>';
+      var lis = head + inc.map(function (r) { return '<li><i>✓</i><span>' + r[0] + '</span></li>'; }).join('');
+      return '<div class="pl rv in' + (p.hl ? ' hl' : '') + '">' + (p.hl ? '<span class="badge">TUDO LIBERADO NO TESTE</span>' : '') + '<h3>' + p.n + '</h3><div class="for">' + p.f + '</div><div class="pr">' + price + '</div><div class="sub">' + sub + '</div><ul>' + lis + '</ul><div class="lim">' + p.lim + '</div></div>';
+    }).join('');
+  }
+  document.getElementById('seg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; mode = b.dataset.v; [].forEach.call(this.children, function (c) { c.classList.toggle('on', c === b); }); drawPlans(); };
+  drawPlans();
   /* ---------- revelar ao rolar + progresso ---------- */
   var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); if (e.target.id === 'ba') baSweep(); } }); }, { threshold: .15 });
   [].forEach.call(document.querySelectorAll('.rv'), function (el) { io.observe(el); });
