@@ -34,7 +34,7 @@ async function route(opt) {
   if (focusId) { const f = document.getElementById(focusId); if (f) { f.focus(); if (caret != null && f.setSelectionRange) try { f.setSelectionRange(caret, caret); } catch (e) { /* tipo sem seleção */ } } }
   initSig(); initSlider();
   if (r.after) { try { await r.after(); } catch (e) { console.error(e); } }
-  if (r.cam) camStart();
+  if (r.cam) { camStart(); camGhostApply(); }
 }
 window.addEventListener('hashchange', () => route());
 
@@ -74,7 +74,7 @@ function camReview(dataUrl) {
   UI.cam.shot = dataUrl; const p = $('#cam_p'); p.src = dataUrl; p.hidden = false; const v = $('#cam_v'); if (v) v.hidden = true;
   $('#ctl_live').hidden = true; $('#ctl_rev').hidden = false; camMsg('');
 }
-function camLive() { UI.cam.shot = null; $('#cam_p').hidden = true; $('#ctl_live').hidden = false; $('#ctl_rev').hidden = true; camMsg(CAM_HINT[UI.cam.angle] || CAM_HINT.reg); camStart(); }
+function camLive() { UI.cam.shot = null; $('#cam_p').hidden = true; $('#ctl_live').hidden = false; $('#ctl_rev').hidden = true; camMsg(CAM_HINT[UI.cam.angle] || CAM_HINT.reg); camStart(); camGhostApply(); }
 
 /* ---------- assinatura e comparador ---------- */
 function initSig() {
@@ -192,6 +192,7 @@ const ACT = {
   },
   'cam-flip'() { UI.cam.facing = UI.cam.facing === 'environment' ? 'user' : 'environment'; camStart(); },
   'cam-redo'() { camLive(); },
+  'cam-ghost'() { UI.camGhost = !UI.camGhost; camGhostApply(); },
   async 'cam-use'() { const c = UI.cam; const s = sess(c.sid); await setPhoto(s, c.stage, c.angle, c.shot); toast('Foto do ' + c.stage + ' salva'); if (history.length > 1) history.back(); else go('#/atendimento/' + c.sid); },
   angle(el) { UI.angle = el.dataset.v; route({ keep: true }); },
   'cmp-mode'(el) { UI.cmpMode = el.dataset.v; route({ keep: true }); },

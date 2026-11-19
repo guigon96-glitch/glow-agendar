@@ -25,3 +25,11 @@ function camGuideSvg(angle) {
     '<svg class="guide" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="#fff" stroke-opacity=".12" stroke-width=".25" vector-effect="non-scaling-stroke"><path d="M33.3 0V100M66.6 0V100M0 33.3H100M0 66.6H100" vector-effect="non-scaling-stroke"/></g></svg>' +
     '<svg class="guide" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9V3H9M91 3H97V9M97 91V97H91M9 97H3V91" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>';
 }
+
+/* ===== Câmera: foto do antes transparente para ajudar no enquadramento do depois ===== */
+function camGhostApply() {
+  const g = document.getElementById('cam_g'), b = document.getElementById('cam_gb'), r = document.getElementById('cam_gr'); if (!g || !b || !r) return;
+  const on = !!UI.camGhost; g.hidden = !on; r.hidden = !on; b.classList.toggle('on', on);
+  b.textContent = on ? 'Foto do antes: ligada' : 'Mostrar foto do antes'; g.style.opacity = String((+r.value || 40) / 100);
+}
+document.addEventListener('input', (e) => { if (e.target && e.target.id === 'cam_gr') camGhostApply(); });
