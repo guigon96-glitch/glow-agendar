@@ -115,6 +115,12 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .tip div{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #efdcd6;border-radius:18px;padding:14px 16px;font-size:14.5px;line-height:1.4;color:#5b4545}
 .tip i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;background:var(--blush);color:var(--rose);display:grid;place-items:center;font:700 14px system-ui}
 .tip b{color:var(--ink)}
+.cph{display:flex;gap:14px;justify-content:center;align-items:flex-start;width:100%}
+.cph figure{margin:0;text-align:center;flex:1;max-width:210px}.cph figcaption{font-size:12.5px;line-height:1.35;color:#5b4545;margin-top:10px}.cph figcaption b{display:block;color:var(--rose);font:italic 400 17px Georgia,serif}
+.cph .cphone{width:100%}
+.par{width:100%;max-width:340px;border-radius:20px;box-shadow:0 20px 44px rgba(60,20,20,.25);display:block;margin:0 auto}
+.two{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+.two .cphone{width:min(44vw,190px)}
 .prog{position:fixed;top:0;left:0;height:3px;background:var(--rose);z-index:50;width:0}
 @media (min-width:900px){section{max-width:600px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
@@ -144,15 +150,31 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   <h2 class="rv">Câmera com guia de enquadramento</h2>
   <p class="lead rv">Na hora da foto, o app desenha na tela as linhas para você posicionar o cabelo da cliente. O antes e o depois saem iguais, e a comparação fica profissional.</p>
   <div class="cam rv">
-    <div class="cphone"><img src="img/camera.webp" alt="Câmera do app com o guia de enquadramento do cabelo"><i class="scan"></i><div class="fl"></div></div>
+    <div class="cph">
+      <figure><div class="cphone"><img src="img/camera.webp" alt="Câmera com guia de enquadramento do cabelo"><i class="scan"></i><div class="fl"></div></div><figcaption><b>Guia na tela</b>Contorno do cabelo inteiro</figcaption></figure>
+      <figure><div class="cphone"><img src="img/ghost.webp" alt="Câmera com a foto do antes transparente"></div><figcaption><b>Foto do antes</b>Transparente, para repetir a posição</figcaption></figure>
+    </div>
     <div class="tip">
       <div><i>1</i><span><b>Guia na tela.</b> Contorno do cabelo inteiro, com linhas de centro e de altura para alinhar a cliente.</span></div>
       <div><i>2</i><span><b>Dica em cada foto.</b> O app avisa o que enquadrar e pede a mesma distância e o mesmo ângulo nas duas fotos.</span></div>
       <div><i>3</i><span><b>Muda conforme o serviço.</b> Cabelo inteiro para corte, coloração e mechas. Há guias próprias para rosto, olhos, sobrancelhas, mãos e região tratada.</span></div>
       <div><i>4</i><span><b>Foto do antes transparente.</b> Um botão liga a foto do antes por cima da câmera, bem clarinha, para a cliente ficar na mesma posição. Dá para ajustar a transparência.</span></div>
-      <div><i>5</i><span><b>Tudo na mesma tela.</b> Alterne entre antes e depois, use a galeria ou vire a câmera.</span></div>
+      <div><i>5</i><span><b>Tudo na mesma tela.</b> Alterne entre antes e depois, escolha uma foto da galeria ou vire a câmera.</span></div>
     </div>
   </div>
+</section>
+
+<section id="reels">
+  <div class="eyebrow rv">Padronização que rende conteúdo</div>
+  <h2 class="rv">Reels e Stories mais fluidos</h2>
+  <p class="lead rv">Quando todas as fotos seguem o mesmo enquadramento, o antes e o depois se encaixam. A transição entre as duas fica suave, sem a imagem "pulando", e o seu perfil ganha um padrão que passa confiança.</p>
+  <div class="two rv"><img class="par" src="img/par.jpg" alt="Antes e depois lado a lado, gerado pelo app"></div>
+  <div class="tip rv">
+    <div><i>1</i><span><b>Imagem pronta de antes e depois.</b> Um toque gera uma imagem 4:5 com as duas fotos lado a lado, com o nome do seu salão, ideal para Reels, Stories e status.</span></div>
+    <div><i>2</i><span><b>Baixar a foto.</b> Salve no celular a foto do antes ou do depois, em boa qualidade, para editar no seu aplicativo de vídeo preferido.</span></div>
+    <div><i>3</i><span><b>Enviar da galeria.</b> Já tem a foto no celular? Escolha da galeria e ela entra no lugar do antes ou do depois da cliente.</span></div>
+  </div>
+  <div class="two rv" style="margin-top:26px"><div class="cphone"><img src="img/baixar.webp" alt="Botões de baixar e de enviar da galeria"></div></div>
 </section>
 
 <section id="antes">
@@ -275,7 +297,7 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   ba.addEventListener('pointerdown', function (e) { cancelAnimationFrame(baAnim); ba.setPointerCapture(e.pointerId); baMove(e); ba.onpointermove = baMove; }); ba.addEventListener('pointerup', function () { ba.onpointermove = null; });
   pick(0);
   /* ---------- funções ---------- */
-  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Câmera com guia de enquadramento', 'Linhas na tela para enquadrar o cabelo inteiro e um botão que mostra a foto do antes transparente, para repetir o mesmo ângulo e distância no depois.'], ['Antes e depois', 'Galeria por cliente e comparação deslizando, para mostrar a transformação.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
+  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Câmera com guia de enquadramento', 'Linhas na tela para enquadrar o cabelo inteiro e um botão que mostra a foto do antes transparente, para repetir o mesmo ângulo e distância no depois.'], ['Antes e depois', 'Galeria por cliente e comparação deslizando, para mostrar a transformação.'], ['Fotos prontas para Reels e Stories', 'Baixe a foto, gere uma imagem única de antes e depois, ou envie fotos da galeria do celular.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
   var cards = document.getElementById('cards'); F.forEach(function (f, i) { var d = document.createElement('div'); d.className = 'fc rv'; d.style.transitionDelay = (i % 3) * 90 + 'ms'; d.innerHTML = '<div class="n">' + (i + 1) + '</div><div><b>' + f[0] + '</b><span>' + f[1] + '</span></div>'; cards.appendChild(d); });
 
   /* ---------- planos ---------- */

@@ -157,3 +157,7 @@ body{overflow:auto}
 .camv .gbtn{background:rgba(30,20,18,.62);color:#FFFDFB;border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:8px 14px;font:500 13px var(--sans,inherit);cursor:pointer;backdrop-filter:blur(4px)}
 .camv .gbtn.on{background:#FFFDFB;color:var(--ink);border-color:#FFFDFB}
 .camv .gctl input[type=range]{width:min(220px,70%);accent-color:#FFFDFB}
+
+.fact{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fcol{display:flex;flex-direction:column;gap:6px}.fbt{display:flex;gap:6px;flex-wrap:wrap}
+.fpar{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.fbt .btn{flex:1 1 auto;min-width:0;white-space:nowrap}.fcol{min-width:0}

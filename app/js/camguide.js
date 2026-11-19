@@ -33,3 +33,35 @@ function camGhostApply() {
   b.textContent = on ? 'Foto do antes: ligada' : 'Mostrar foto do antes'; g.style.opacity = String((+r.value || 40) / 100);
 }
 document.addEventListener('input', (e) => { if (e.target && e.target.id === 'cam_gr') camGhostApply(); });
+
+/* ===== Fotos: baixar a foto, baixar antes e depois numa imagem só e enviar da galeria ===== */
+function fotoActs(s, an, pa, pd) {
+  const col = (st, p) => '<div class="fcol"><div class="muted sm">Foto do ' + st + '</div><div class="fbt">' + (p ? '<button class="btn ghost sm" data-act="foto-dl" data-st="' + st + '">Baixar</button>' : '') + '<button class="btn ghost sm" data-act="foto-up" data-st="' + st + '">' + ic('img') + 'Da galeria</button></div></div>';
+  return '<div class="fact">' + col('antes', pa) + col('depois', pd) + '</div><div class="muted sm">"Da galeria" coloca uma foto do celular no lugar da foto do antes ou do depois.</div>' + (pa && pd ? '<div class="fpar"><button class="btn sm" data-act="foto-dl-par">Baixar antes e depois em uma imagem</button><div class="muted sm">Imagem 4:5 com as duas fotos lado a lado, pronta para Reels, Stories e status.</div></div>' : '') + '<input style="display:none" type="file" accept="image/*" id="gal_file" aria-label="Escolher foto da galeria">';
+}
+const fotoName = (s, extra) => { const c = client(s.clientId) || { name: 'cliente' }; return slug(c.name) + '-' + extra + '-' + s.date + '.jpg'; };
+const dataParts = (d) => { const m = /^data:([^;]+);base64,(.*)$/.exec(d || ''); return m ? { mime: m[1], b64: m[2] } : null; };
+ACTX['foto-dl'] = function (el) {
+  const s = sess(UI.angleFor); if (!s) return; const p = photoOf(s, el.dataset.st, UI.angle), d = p && dataParts(PC.get(p.id)); if (!d) { toast('Foto não encontrada'); return; }
+  saveFileOut(fotoName(s, el.dataset.st + '-' + UI.angle), d.mime, d.b64);
+};
+ACTX['foto-up'] = function (el) { UI.upSt = el.dataset.st; const f = document.getElementById('gal_file'); if (f) f.click(); };
+document.addEventListener('change', async (e) => {
+  const t = e.target; if (!t || t.id !== 'gal_file') return; const file = t.files && t.files[0]; if (!file) return;
+  try {
+    const s = sess(UI.angleFor); if (!s) return; const im = await loadImg(URL.createObjectURL(file)); const d = await compressImage(im, 1600);
+    await setPhoto(s, UI.upSt || 'antes', UI.angle, d); toast('Foto do ' + (UI.upSt || 'antes') + ' salva'); route({ keep: true });
+  } catch (err) { toast('Não foi possível ler a foto'); }
+});
+function drawCover(ctx, img, x, y, w, h) { const r = Math.max(w / img.width, h / img.height), iw = w / r, ih = h / r; ctx.drawImage(img, (img.width - iw) / 2, (img.height - ih) / 2, iw, ih, x, y, w, h); }
+ACTX['foto-dl-par'] = async function () {
+  const s = sess(UI.angleFor); if (!s) return; const pa = photoOf(s, 'antes', UI.angle), pd = photoOf(s, 'depois', UI.angle); if (!pa || !pd) return;
+  toast('Gerando imagem…');
+  const A = await loadImg(PC.get(pa.id)), D = await loadImg(PC.get(pd.id)), cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350; const x = cv.getContext('2d');
+  x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, 1080, 1350); drawCover(x, A, 0, 0, 538, 1350); drawCover(x, D, 542, 0, 538, 1350);
+  const pill = (t, cx) => { x.font = '600 30px system-ui,Arial'; const w = x.measureText(t).width + 44; x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); (x.roundRect ? x.roundRect(cx - w / 2, 40, w, 60, 30) : x.rect(cx - w / 2, 40, w, 60)); x.fill(); x.fillStyle = '#3a2828'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, cx, 71); };
+  pill('ANTES', 269); pill('DEPOIS', 811);
+  const g = x.createLinearGradient(0, 1230, 0, 1350); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); x.fillStyle = g; x.fillRect(0, 1230, 1080, 120);
+  x.fillStyle = '#fff'; x.font = 'italic 400 36px Georgia,serif'; x.textAlign = 'center'; x.fillText(S.settings.studio || '', 540, 1305);
+  const d = dataParts(cv.toDataURL('image/jpeg', 0.92)); saveFileOut(fotoName(s, 'antes-e-depois-' + UI.angle), d.mime, d.b64);
+};
