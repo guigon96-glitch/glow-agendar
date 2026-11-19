@@ -121,6 +121,38 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .par{width:100%;max-width:340px;border-radius:20px;box-shadow:0 20px 44px rgba(60,20,20,.25);display:block;margin:0 auto}
 .two{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
 .two .cphone{width:min(44vw,190px)}
+h3.sub{font:italic 400 30px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
+.demo{display:flex;flex-direction:column;align-items:center;gap:14px;margin:6px 0 26px}
+.dm{position:relative;width:min(72vw,270px);aspect-ratio:430/932;border-radius:38px;border:8px solid #2b2020;overflow:hidden;background:#2E2523;color:#FFFDFB;container-type:inline-size;box-shadow:0 26px 54px rgba(60,20,20,.32)}
+.dm .tp{position:absolute;top:3.4%;left:0;right:0;text-align:center}
+.dm .tp small{display:block;font-size:3.1cqw;letter-spacing:.14em;color:#e6d3b8}.dm .tp b{display:block;font:400 6.6cqw Georgia,serif;margin-top:1cqw}
+.dm .sg{position:absolute;top:2.4%;right:5%;display:flex;background:rgba(255,255,255,.14);border-radius:99px;padding:.8cqw;font-size:3cqw}.dm .sg span{padding:1.1cqw 2.8cqw;border-radius:99px;color:#ebddd6}.dm .sg .on{background:#FFFDFB;color:#3a2828}
+.dm .vf{position:absolute;left:4.5%;right:4.5%;top:17%;bottom:20%;border-radius:5cqw;overflow:hidden;background:#3b2f2c;border:1px solid rgba(255,255,255,.16)}
+.dm .live,.dm .gh{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dm .live{transition:transform 2.6s cubic-bezier(.45,0,.2,1)}
+.dm .gh{opacity:0;transition:opacity .7s;pointer-events:none}
+.dm .gd{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.dm .gb{position:absolute;left:4cqw;top:4cqw;background:rgba(30,20,18,.66);border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:2cqw 3.6cqw;font-size:3.4cqw;font-weight:500;transition:.3s}
+.dm .gb.on{background:#FFFDFB;color:#3a2828}
+.dm .fg{position:absolute;left:12cqw;top:9.5cqw;width:30cqw;height:7cqw;opacity:0;transition:opacity .4s}.dm .fg i{position:absolute;left:0;right:0;top:50%;height:.8cqw;margin-top:-.4cqw;border-radius:2cqw;background:rgba(255,255,255,.45)}.dm .fg i::after{content:"";position:absolute;left:0;top:-1.3cqw;width:3.4cqw;height:3.4cqw;border-radius:50%;background:#fff}
+.dm .ok{position:absolute;right:4cqw;top:4cqw;background:#3fa56b;color:#fff;border-radius:99px;padding:2cqw 3.4cqw;font-size:3.3cqw;font-weight:600;opacity:0;transform:scale(.8);transition:.35s}
+.dm .ok.on{opacity:1;transform:none}
+.dm .hand{position:absolute;width:11cqw;height:11cqw;border-radius:50%;background:rgba(255,255,255,.55);border:.6cqw solid #fff;left:20cqw;top:14cqw;opacity:0;transform:scale(.6);pointer-events:none}
+.dm .hand.tap{animation:tap .9s ease}
+@keyframes tap{0%{opacity:0;transform:scale(1.4)}30%{opacity:1;transform:scale(.9)}60%{opacity:1;transform:scale(.75)}100%{opacity:0;transform:scale(1.1)}}
+.dm .ct{position:absolute;left:0;right:0;bottom:2.4%;display:flex;justify-content:center;align-items:center;gap:11cqw;font-size:2.9cqw;color:#ebddd6}
+.dm .ct .r{width:12.5cqw;height:12.5cqw;border:1px solid rgba(255,255,255,.4);border-radius:50%}
+.dm .ct .sh{width:19cqw;height:19cqw;border:.9cqw solid #FFFDFB;border-radius:50%;display:grid;place-items:center;transition:transform .15s}.dm .ct .sh::after{content:"";width:14cqw;height:14cqw;border-radius:50%;background:#f3e3de}
+.dm .ct .sh.pr{transform:scale(.88)}
+.dm .fl2{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.dm .fl2.go{animation:fl2 .55s}
+@keyframes fl2{0%{opacity:.95}100%{opacity:0}}
+.dm .res{position:absolute;inset:0;background:#2E2523;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4cqw;opacity:0;pointer-events:none;transition:opacity .5s}
+.dm .res.on{opacity:1}.dm .res .pr2{display:flex;gap:1.2cqw;width:84%;height:62%;border-radius:4cqw;overflow:hidden;position:relative}.dm .res .pr2 img{width:50%;height:100%;object-fit:cover;display:block}
+.dm .res .pr2 em{position:absolute;top:2.4cqw;font:600 3cqw system-ui;letter-spacing:.12em;font-style:normal;background:rgba(255,255,255,.92);color:#3a2828;padding:1.4cqw 3cqw;border-radius:99px}
+.dm .res p{margin:0;font-size:4.1cqw;text-align:center;line-height:1.35;padding:0 8cqw}.dm .res p b{display:block;font:italic 400 6.6cqw Georgia,serif;color:#f3cfc7;margin-bottom:1.2cqw}
+.dstep{min-height:70px;text-align:center;max-width:320px}.dstep b{display:block;font:italic 400 22px Georgia,serif;color:var(--rose);margin-bottom:4px}.dstep span{font-size:14.5px;line-height:1.45;color:#5b4545}
+.dprog{display:flex;gap:7px}.dprog i{width:26px;height:4px;border-radius:3px;background:#e4d1cb;transition:.3s}.dprog i.on{background:var(--rose)}
+
 .prog{position:fixed;top:0;left:0;height:3px;background:var(--rose);z-index:50;width:0}
 @media (min-width:900px){section{max-width:600px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
@@ -154,6 +186,28 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
       <figure><div class="cphone"><img src="img/camera.webp" alt="Câmera com guia de enquadramento do cabelo"><i class="scan"></i><div class="fl"></div></div><figcaption><b>Guia na tela</b>Contorno do cabelo inteiro</figcaption></figure>
       <figure><div class="cphone"><img src="img/ghost.webp" alt="Câmera com a foto do antes transparente"></div><figcaption><b>Foto do antes</b>Transparente, para repetir a posição</figcaption></figure>
     </div>
+  <div class="demo rv" id="demo">
+    <div class="eyebrow" style="margin:0">Veja acontecendo</div>
+    <div class="dm">
+      <div class="sg"><span>Antes</span><span class="on">Depois</span></div>
+      <div class="tp"><small>TATIANE · COLORAÇÃO · CABELO</small><b>Foto do depois</b></div>
+      <div class="vf">
+        <img class="live" id="dLive" src="img/d0.jpg" alt="">
+        <img class="gh" id="dGh" src="img/a0.jpg" alt="">
+        <svg class="gd" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M3 9V3H9M91 3H97M97 91V97H91M9 97H3V91" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+        <div class="gb" id="dGb">Mostrar foto do antes</div>
+        <div class="fg" id="dFg"><i></i></div>
+        <div class="ok" id="dOk">Alinhado ✓</div>
+        <div class="hand" id="dHand"></div>
+      </div>
+      <div class="ct"><div class="r"></div><div class="sh" id="dSh"></div><div class="r"></div></div>
+      <div class="fl2" id="dFl"></div>
+      <div class="res" id="dRes"><div class="pr2"><img src="img/a0.jpg" alt=""><img src="img/d0.jpg" alt=""><em style="left:2.4cqw">ANTES</em><em style="right:2.4cqw">DEPOIS</em></div><p><b>Mesmo enquadramento</b>Antes e depois combinam perfeitamente.</p></div>
+    </div>
+    <div class="dprog" id="dProg"><i></i><i></i><i></i><i></i></div>
+    <div class="dstep" id="dStep"><b></b><span></span></div>
+    <button class="btn ghost" id="dRe" style="padding:10px 20px;font-size:13.5px">↻ Ver de novo</button>
+  </div>
     <div class="tip">
       <div><i>1</i><span><b>Guia na tela.</b> Contorno do cabelo inteiro, com linhas de centro e de altura para alinhar a cliente.</span></div>
       <div><i>2</i><span><b>Dica em cada foto.</b> O app avisa o que enquadrar e pede a mesma distância e o mesmo ângulo nas duas fotos.</span></div>
@@ -164,19 +218,6 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   </div>
 </section>
 
-<section id="reels">
-  <div class="eyebrow rv">Padronização que rende conteúdo</div>
-  <h2 class="rv">Reels e Stories mais fluidos</h2>
-  <p class="lead rv">Quando todas as fotos seguem o mesmo enquadramento, o antes e o depois se encaixam. A transição entre as duas fica suave, sem a imagem "pulando", e o seu perfil ganha um padrão que passa confiança.</p>
-  <div class="two rv"><img class="par" src="img/par.jpg" alt="Antes e depois lado a lado, gerado pelo app"></div>
-  <div class="tip rv">
-    <div><i>1</i><span><b>Imagem pronta de antes e depois.</b> Um toque gera uma imagem 4:5 com as duas fotos lado a lado, com o nome do seu salão, ideal para Reels, Stories e status.</span></div>
-    <div><i>2</i><span><b>Baixar a foto.</b> Salve no celular a foto do antes ou do depois, em boa qualidade, para editar no seu aplicativo de vídeo preferido.</span></div>
-    <div><i>3</i><span><b>Enviar da galeria.</b> Já tem a foto no celular? Escolha da galeria e ela entra no lugar do antes ou do depois da cliente.</span></div>
-  </div>
-  <div class="two rv" style="margin-top:26px"><div class="cphone"><img src="img/baixar.webp" alt="Botões de baixar e de enviar da galeria"></div></div>
-</section>
-
 <section id="antes">
   <div class="eyebrow rv">Transformações</div>
   <h2 class="rv">Antes e depois que fecha venda</h2>
@@ -184,6 +225,18 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   <div class="chips rv" id="chips"></div>
   <div class="ba rv" id="ba"><img id="baA" alt="Antes"><img class="top" id="baD" alt="Depois"><span class="lab l1">ANTES</span><span class="lab l2">DEPOIS</span><i class="bar"></i><i class="knob">‹ ›</i></div>
   <div class="bahint" id="bahint"></div>
+  <div style="height:44px"></div>
+  <div class="eyebrow rv">Para o seu Instagram</div>
+  <h3 class="sub rv">Reels e Stories mais fluidos</h3>
+  <p class="lead rv" style="margin-top:8px">Quando todas as fotos seguem o mesmo enquadramento, o antes e o depois se encaixam. A transição entre as duas fica suave, sem a imagem "pulando", e o seu perfil ganha um padrão que passa confiança.</p>
+  <div class="two rv"><img class="par" src="img/par.jpg" alt="Antes e depois lado a lado, gerado pelo app"></div>
+  <div class="tip rv">
+    <div><i>1</i><span><b>Imagem pronta de antes e depois.</b> Um toque gera uma imagem 4:5 com as duas fotos lado a lado, com o nome do seu salão, ideal para Reels, Stories e status.</span></div>
+    <div><i>2</i><span><b>Baixar a foto.</b> Salve no celular a foto do antes ou do depois, em boa qualidade, para editar no seu aplicativo de vídeo preferido.</span></div>
+    <div><i>3</i><span><b>Enviar da galeria.</b> Já tem a foto no celular? Escolha da galeria e ela entra no lugar do antes ou do depois da cliente.</span></div>
+  </div>
+  <div class="two rv" style="margin-top:26px"><div class="cphone"><img src="img/baixar.webp" alt="Botões de baixar e de enviar da galeria"></div></div>
+
 </section>
 
 <section>
@@ -296,6 +349,30 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   function baMove(e) { var r = ba.getBoundingClientRect(); setBa((e.clientX - r.left) / r.width); }
   ba.addEventListener('pointerdown', function (e) { cancelAnimationFrame(baAnim); ba.setPointerCapture(e.pointerId); baMove(e); ba.onpointermove = baMove; }); ba.addEventListener('pointerup', function () { ba.onpointermove = null; });
   pick(0);
+
+  /* ---------- demo: tirando a foto do depois com a foto do antes transparente ---------- */
+  (function () {
+    var $ = function (id) { return document.getElementById(id); }, live = $('dLive'), gh = $('dGh'), gb = $('dGb'), fg = $('dFg'), ok = $('dOk'), hand = $('dHand'), sh = $('dSh'), fl = $('dFl'), res = $('dRes'), stp = $('dStep'), dots = $('dProg').children, T = [], run = 0;
+    var MIS = 'translate(15%,9%) scale(1.14)';
+    var STEPS = [['1 · Abra a câmera do depois', 'A cliente já está na cadeira e a imagem não combina com o antes.'], ['2 · Toque em "Mostrar foto do antes"', 'A foto do antes aparece transparente por cima da câmera.'], ['3 · Mexa o celular até coincidir', 'Quando o contorno do cabelo e o fundo se sobrepõem, o enquadramento está igual.'], ['4 · Tire a foto', 'Antes e depois ficam no mesmo ângulo e distância, prontos para o Reels.']];
+    function say(i) { stp.innerHTML = '<b>' + STEPS[i][0] + '</b><span>' + STEPS[i][1] + '</span>'; [].forEach.call(dots, function (d, j) { d.className = j === i ? 'on' : ''; }); }
+    function reset() { live.style.transition = 'none'; live.style.transform = MIS; void live.offsetWidth; live.style.transition = ''; gh.style.opacity = 0; gb.className = 'gb'; gb.textContent = 'Mostrar foto do antes'; fg.style.opacity = 0; ok.className = 'ok'; res.className = 'res'; sh.className = 'sh'; }
+    function at(ms, f, id) { T.push(setTimeout(function () { if (id === run) f(); }, ms)); }
+    function play() {
+      T.forEach(clearTimeout); T = []; var id = ++run; reset(); say(0);
+      at(2200, function () { say(1); hand.className = 'hand'; void hand.offsetWidth; hand.className = 'hand tap'; }, id);
+      at(2900, function () { gb.className = 'gb on'; gb.textContent = 'Foto do antes: ligada'; gh.style.opacity = .42; fg.style.opacity = 1; }, id);
+      at(4600, function () { say(2); live.style.transform = 'translate(4%,3%) scale(1.04)'; }, id);
+      at(6200, function () { live.style.transform = 'none'; }, id);
+      at(8000, function () { ok.className = 'ok on'; }, id);
+      at(9000, function () { say(3); sh.className = 'sh pr'; }, id);
+      at(9300, function () { sh.className = 'sh'; fl.className = 'fl2 go'; }, id);
+      at(9800, function () { res.className = 'res on'; fl.className = 'fl2'; }, id);
+      at(14500, play, id);
+    }
+    $('dRe').onclick = play; reset(); say(0);
+    new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { play(); } else { run++; T.forEach(clearTimeout); } }, { threshold: .45 }).observe($('demo'));
+  })();
   /* ---------- funções ---------- */
   var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Câmera com guia de enquadramento', 'Linhas na tela para enquadrar o cabelo inteiro e um botão que mostra a foto do antes transparente, para repetir o mesmo ângulo e distância no depois.'], ['Antes e depois', 'Galeria por cliente e comparação deslizando, para mostrar a transformação.'], ['Fotos prontas para Reels e Stories', 'Baixe a foto, gere uma imagem única de antes e depois, ou envie fotos da galeria do celular.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
   var cards = document.getElementById('cards'); F.forEach(function (f, i) { var d = document.createElement('div'); d.className = 'fc rv'; d.style.transitionDelay = (i % 3) * 90 + 'ms'; d.innerHTML = '<div class="n">' + (i + 1) + '</div><div><b>' + f[0] + '</b><span>' + f[1] + '</span></div>'; cards.appendChild(d); });
