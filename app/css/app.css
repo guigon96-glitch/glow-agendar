@@ -48,6 +48,7 @@ textarea.in{height:auto;min-height:84px;padding:12px 16px;resize:vertical}
 .lb{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:6px}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.grid3.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .stack{display:flex;flex-direction:column;gap:16px}
 .cols{display:flex;gap:18px;align-items:flex-start}
 .cols>.grow{flex:1;min-width:0}
@@ -142,6 +143,10 @@ body{overflow:auto}
 .stat b{font-size:36px}
 .grid3.keep{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .grid3.keep .stat{padding:14px}
+.grid3.keep.wide{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3.keep.wide .stat{padding:16px 18px}.grid3.keep.wide .stat b{font-size:32px;white-space:nowrap}
+.grid3.keep.wide:not(.k4)>.stat:last-child:nth-child(odd){grid-column:1/-1}
+.cols>*{flex:none!important;width:100%!important}
 .week .day{height:58px}.week .day b{font-size:21px}
 }
 @media (max-width:600px){.row .av{display:none}.time{width:54px;font-size:22px}.head .acts{width:100%}.head .acts .btn:not(.sm){flex:1}.head .acts .in{width:100% !important}}
