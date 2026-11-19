@@ -104,6 +104,17 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
 .pl .lim{font-size:13px;color:#7a6262;margin-top:12px}
 .badge{display:inline-block;background:var(--rose);color:#fff;font:600 11px system-ui;letter-spacing:.1em;padding:5px 11px;border-radius:99px;margin-bottom:10px}
 .note{font-size:13.5px;line-height:1.5;color:#7a6262;text-align:center;margin-top:18px}
+.cam{display:flex;flex-direction:column;align-items:center;gap:22px}
+.cphone{position:relative;width:min(64vw,250px);aspect-ratio:430/932;border-radius:36px;border:8px solid #2b2020;overflow:hidden;box-shadow:0 24px 50px rgba(60,20,20,.3);background:#2b2020}
+.cphone img{width:100%;height:100%;display:block;object-fit:cover}
+.cphone .fl{position:absolute;inset:0;background:#fff;opacity:0;animation:shutter 5s infinite}
+@keyframes shutter{0%,86%{opacity:0}88%{opacity:.9}100%{opacity:0}}
+.cphone .scan{position:absolute;left:8%;right:8%;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:.8;animation:scan 3.6s ease-in-out infinite}
+@keyframes scan{0%,100%{top:22%}50%{top:76%}}
+.tip{display:grid;gap:12px;width:100%}
+.tip div{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #efdcd6;border-radius:18px;padding:14px 16px;font-size:14.5px;line-height:1.4;color:#5b4545}
+.tip i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;background:var(--blush);color:var(--rose);display:grid;place-items:center;font:700 14px system-ui}
+.tip b{color:var(--ink)}
 .prog{position:fixed;top:0;left:0;height:3px;background:var(--rose);z-index:50;width:0}
 @media (min-width:900px){section{max-width:600px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
@@ -128,10 +139,25 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   <div class="cards" id="cards"></div>
 </section>
 
+<section id="camera">
+  <div class="eyebrow rv">Fotos sempre no padrão</div>
+  <h2 class="rv">Câmera com guia de enquadramento</h2>
+  <p class="lead rv">Na hora da foto, o app desenha na tela as linhas para você posicionar o cabelo da cliente. O antes e o depois saem iguais, e a comparação fica profissional.</p>
+  <div class="cam rv">
+    <div class="cphone"><img src="img/camera.webp" alt="Câmera do app com o guia de enquadramento do cabelo"><i class="scan"></i><div class="fl"></div></div>
+    <div class="tip">
+      <div><i>1</i><span><b>Guia na tela.</b> Contorno do cabelo inteiro, com linhas de centro e de altura para alinhar a cliente.</span></div>
+      <div><i>2</i><span><b>Dica em cada foto.</b> O app avisa o que enquadrar e pede a mesma distância e o mesmo ângulo nas duas fotos.</span></div>
+      <div><i>3</i><span><b>Muda conforme o serviço.</b> Cabelo inteiro para corte, coloração e mechas. Há guias próprias para rosto, olhos, sobrancelhas, mãos e região tratada.</span></div>
+      <div><i>4</i><span><b>Antes e depois no mesmo lugar.</b> Alterne entre as duas fotos, use a galeria ou vire a câmera, tudo na mesma tela.</span></div>
+    </div>
+  </div>
+</section>
+
 <section id="antes">
   <div class="eyebrow rv">Transformações</div>
   <h2 class="rv">Antes e depois que fecha venda</h2>
-  <p class="lead rv">Arraste para comparar. A câmera tem guia de enquadramento para o cabelo inteiro, então as duas fotos saem no mesmo ângulo e distância.</p>
+  <p class="lead rv">Arraste para comparar. Como as duas fotos saem no mesmo ângulo e distância graças ao guia da câmera, a diferença aparece de verdade.</p>
   <div class="chips rv" id="chips"></div>
   <div class="ba rv" id="ba"><img id="baA" alt="Antes"><img class="top" id="baD" alt="Depois"><span class="lab l1">ANTES</span><span class="lab l2">DEPOIS</span><i class="bar"></i><i class="knob">‹ ›</i></div>
   <div class="bahint" id="bahint"></div>
@@ -248,7 +274,7 @@ h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
   ba.addEventListener('pointerdown', function (e) { cancelAnimationFrame(baAnim); ba.setPointerCapture(e.pointerId); baMove(e); ba.onpointermove = baMove; }); ba.addEventListener('pointerup', function () { ba.onpointermove = null; });
   pick(0);
   /* ---------- funções ---------- */
-  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Fotos de antes e depois', 'Câmera com guia de enquadramento para o cabelo inteiro, galeria por cliente e comparação deslizando.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
+  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Câmera com guia de enquadramento', 'Linhas na tela para enquadrar o cabelo inteiro e manter o mesmo ângulo e distância no antes e no depois.'], ['Antes e depois', 'Galeria por cliente e comparação deslizando, para mostrar a transformação.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
   var cards = document.getElementById('cards'); F.forEach(function (f, i) { var d = document.createElement('div'); d.className = 'fc rv'; d.style.transitionDelay = (i % 3) * 90 + 'ms'; d.innerHTML = '<div class="n">' + (i + 1) + '</div><div><b>' + f[0] + '</b><span>' + f[1] + '</span></div>'; cards.appendChild(d); });
 
   /* ---------- planos ---------- */
