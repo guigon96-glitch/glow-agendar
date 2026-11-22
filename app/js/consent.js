@@ -40,7 +40,7 @@ function consentPanel(c) {
   const areas = activeAreas().concat(Object.keys(c.consents || {}).filter((a) => !activeAreas().includes(a) && AREAS[a]));
   return '<div class="card stack"><h2 class="h2">Anamnese e termos por área</h2><div class="muted sm">Cada área tem a sua ficha de saúde e o seu termo, com assinatura da cliente na tela. Eles valem por 1 ano.</div>' + areas.map((a) => {
     const k = consentOf(c, a), ok = consentValid(c, a), yes = k && k.answers ? anamQs(a).filter((q) => k.answers[q[0]]).map((q) => q[1]) : [];
-    return '<div style="border-top:1px solid #EFE4DD;padding-top:14px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">' + AREAS[a].name + '</b>' + (ok ? '<span class="tag done">' + (k.legacy ? 'Termo aceito (cadastro)' : 'Assinado em ' + fmtDate(k.at)) + '</span>' : k ? '<span class="tag off">Vencido</span>' : '<span class="tag next">Pendente</span>') + '<span class="sp"></span>' + (k && !k.legacy ? '<button class="btn ghost sm" data-act="termo-pdf" data-c="' + c.id + '" data-a="' + a + '">' + ic('dl') + 'PDF</button>' : '') + '<a class="btn ' + (ok ? 'ghost ' : '') + 'sm" href="#/termo/' + c.id + '/' + a + '">' + (k && !k.legacy ? 'Refazer' : 'Colher agora') + '</a></div>' + (k && !k.legacy ? (yes.length ? '<div class="chips">' + yes.map((x) => '<span class="tag sand" style="height:auto;padding:5px 12px;white-space:normal">' + esc(x) + '</span>').join('') + '</div>' : '<div class="muted sm">Nenhuma condição de atenção informada.</div>') + (k.obs ? '<div class="muted sm">Obs.: ' + esc(k.obs) + '</div>' : '') + (k.fotos === false ? '<div class="sm" style="color:#B42318">Não autorizou fotos de antes e depois.</div>' : '') : '') + '</div>';
+    return '<div style="border-top:1px solid #EFE4DD;padding-top:14px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">' + AREAS[a].name + '</b>' + (ok ? '<span class="tag done">' + (k.legacy ? 'Termo aceito (cadastro)' : 'Assinado em ' + fmtDate(k.at)) + '</span>' : k ? '<span class="tag off">Vencido</span>' : '<span class="tag next">Pendente</span>') + '<span class="sp"></span>' + (k && !k.legacy ? '<button class="btn ghost sm" data-act="termo-pdf" data-c="' + c.id + '" data-a="' + a + '">' + ic('dl') + 'PDF</button><button class="btn ghost sm" data-act="termo-wa" data-c="' + c.id + '" data-a="' + a + '">' + ic('chat') + (k.sentAt ? 'Enviado ' + fmtDate(k.sentAt) : 'Enviar') + '</button>' : '') + '<a class="btn ' + (ok ? 'ghost ' : '') + 'sm" href="#/termo/' + c.id + '/' + a + '">' + (k && !k.legacy ? 'Refazer' : 'Colher agora') + '</a></div>' + (k && !k.legacy ? (yes.length ? '<div class="chips">' + yes.map((x) => '<span class="tag sand" style="height:auto;padding:5px 12px;white-space:normal">' + esc(x) + '</span>').join('') + '</div>' : '<div class="muted sm">Nenhuma condição de atenção informada.</div>') + (k.obs ? '<div class="muted sm">Obs.: ' + esc(k.obs) + '</div>' : '') + (k.fotos === false ? '<div class="sm" style="color:#B42318">Não autorizou fotos de antes e depois.</div>' : '') : '') + '</div>';
   }).join('') + '</div>';
 }
 
@@ -57,26 +57,50 @@ async function vTermo(cid, area) {
 ROUTEX.termo = async () => { const p = parts(); return vTermo(p[1], p[2]); };
 
 /* ---------- PDF do termo ---------- */
-async function renderTermo(c, area) {
+// multi: o termo passou de uma página; reserva o rodapé para a assinatura repetir em todas as páginas
+async function renderTermo(c, area, multi) {
   await ensureFonts(); const k = c.consents && c.consents[area]; if (!k) return [];
   const sign = k.signId ? (await Photo.preload([k.signId]), PC.get(k.signId)) : null;
-  const pages = []; let cv, ctx, y;
+  const pages = []; let cv, ctx, y, sigPage = -1; const LIM = multi ? RH - 250 : RH - 120;
   const newPage = () => { cv = document.createElement('canvas'); cv.width = RW; cv.height = RH; ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, RW, RH); pages.push(cv); ctx.fillStyle = '#3B2E2E'; ctx.font = "italic 500 52px 'Cormorant Garamond'"; ctx.textAlign = 'left'; ctx.fillText(S.settings.studio, RM, RM + 44); ctx.textAlign = 'right'; ctx.fillStyle = '#7F6538'; ctx.font = "500 19px 'Jost'"; ctx.fillText('ANAMNESE E TERMO · ' + AREAS[area].name.toUpperCase(), RW - RM, RM + 26); ctx.fillStyle = '#756560'; ctx.font = "400 22px 'Jost'"; ctx.fillText(fmtLong(k.at), RW - RM, RM + 58); ctx.textAlign = 'left'; ctx.fillStyle = '#C9AE86'; ctx.fillRect(RM, RM + 84, RW - RM * 2, 2); y = RM + 150; };
-  const need = (h) => { if (y + h > RH - 120) newPage(); };
+  const need = (h) => { if (y + h > LIM) newPage(); };
   newPage();
   ctx.fillStyle = '#756560'; ctx.font = "400 22px 'Jost'"; ctx.fillText('Cliente', RM, y - 18); ctx.fillStyle = '#3B2E2E'; ctx.font = "500 38px 'Jost'"; ctx.fillText(c.name, RM, y + 22); y += 84;
   ctx.fillStyle = '#3B2E2E'; ctx.font = "600 40px 'Cormorant Garamond'"; ctx.fillText('Ficha de saúde', RM, y); y += 40;
   ctx.font = "400 26px 'Jost'";
-  anamQs(area).forEach(([key, l]) => { const yes = !!(k.answers && k.answers[key]); const lines = wrap(ctx, l, RW - RM * 2 - 120); need(lines.length * 34 + 16); ctx.fillStyle = yes ? '#8F504D' : '#3B2E2E'; ctx.font = (yes ? '500' : '400') + " 26px 'Jost'"; lines.forEach((ln, i) => ctx.fillText(ln, RM, y + i * 34)); ctx.textAlign = 'right'; ctx.fillText(yes ? 'SIM' : 'Não', RW - RM, y); ctx.textAlign = 'left'; y += lines.length * 34 + 16; });
+  anamQs(area).forEach(([key, l]) => { const yes = !!(k.answers && k.answers[key]); const lines = wrap(ctx, l, RW - RM * 2 - 120); need(lines.length * 32 + 10); ctx.fillStyle = yes ? '#8F504D' : '#3B2E2E'; ctx.font = (yes ? '500' : '400') + " 26px 'Jost'"; lines.forEach((ln, i) => ctx.fillText(ln, RM, y + i * 32)); ctx.textAlign = 'right'; ctx.fillText(yes ? 'SIM' : 'Não', RW - RM, y); ctx.textAlign = 'left'; y += lines.length * 32 + 10; });
   if (k.obs) { y += 10; ctx.fillStyle = '#756560'; ctx.font = "400 22px 'Jost'"; ctx.fillText('Outras informações', RM, y); y += 34; ctx.fillStyle = '#3B2E2E'; ctx.font = "400 26px 'Jost'"; wrap(ctx, k.obs, RW - RM * 2).forEach((ln) => { need(34); ctx.fillText(ln, RM, y); y += 34; }); }
   y += 40; need(120); ctx.fillStyle = '#3B2E2E'; ctx.font = "600 40px 'Cormorant Garamond'"; ctx.fillText('Termo de consentimento', RM, y); y += 44; ctx.font = "400 25px 'Jost'";
   (k.text || termoParas(area)).forEach((p) => { const lines = wrap(ctx, p, RW - RM * 2); need(lines.length * 34 + 18); ctx.fillStyle = '#3B2E2E'; ctx.font = "400 25px 'Jost'"; lines.forEach((ln, i) => ctx.fillText(ln, RM, y + i * 34)); y += lines.length * 34 + 18; });
-  y += 10; need(300); ctx.font = "400 25px 'Jost'"; ctx.fillStyle = '#3B2E2E';
+  y += 6; need(3 * 36 + 16 + 200); /* aceite e assinatura ficam juntos */ ctx.font = "400 25px 'Jost'"; ctx.fillStyle = '#3B2E2E';
   [['Li e aceito o termo', true], ['Autorizo fotos de antes e depois para acompanhamento', k.fotos !== false], ['Autorizo o uso das fotos em divulgação', !!k.divulgacao]].forEach(([l, v]) => { ctx.fillText((v ? '☑  ' : '☐  ') + l, RM, y); y += 38; });
-  y += 20; need(220); if (sign) { const im = await loadImg(sign); const h = 130, w = Math.min(520, im.width / im.height * h); ctx.drawImage(im, RM, y, w, h); }
-  ctx.fillStyle = '#E5D6CE'; ctx.fillRect(RM, y + 140, 520, 2); ctx.fillStyle = '#756560'; ctx.font = "400 22px 'Jost'"; ctx.fillText(c.name + ' · assinado em ' + fmtDate(k.at), RM, y + 174);
+  y += 16; sigPage = pages.length - 1; if (sign) { const im = await loadImg(sign); const h = 110, w = Math.min(520, im.width / im.height * h); ctx.drawImage(im, RM, y, w, h); }
+  ctx.fillStyle = '#E5D6CE'; ctx.fillRect(RM, y + 120, 520, 2); ctx.fillStyle = '#756560'; ctx.font = "400 22px 'Jost'"; ctx.fillText(c.name + ' · assinado em ' + fmtDate(k.at), RM, y + 152);
   pages.forEach((p, i) => { const g = p.getContext('2d'); g.fillStyle = '#756560'; g.font = "400 20px 'Jost'"; g.textAlign = 'center'; g.fillText(S.settings.studio + (pages.length > 1 ? '  ·  ' + (i + 1) + '/' + pages.length : ''), RW / 2, RH - 60); g.textAlign = 'left'; });
+  if (!multi && pages.length > 1) return renderTermo(c, area, true);
+  if (multi) {
+    const im = sign ? await loadImg(sign) : null;
+    pages.forEach((p, i) => {
+      if (i === sigPage) return; const g = p.getContext('2d'), x1 = RW - RM - 420;
+      if (im) { const h = 72, w = Math.min(420, im.width / im.height * h); g.drawImage(im, RW - RM - w, RH - 210, w, h); }
+      g.fillStyle = '#E5D6CE'; g.fillRect(x1, RH - 132, 420, 2);
+      g.fillStyle = '#756560'; g.font = "400 20px 'Jost'"; g.textAlign = 'right'; g.fillText('Assinatura de ' + c.name + ' · ' + fmtDate(k.at), RW - RM, RH - 104); g.textAlign = 'left';
+    });
+  }
   return pages;
+}
+/* envia o PDF assinado para a cliente: no Android vai anexado na conversa; na web baixa o PDF e abre o WhatsApp com o texto */
+async function sendTermo(c, area) {
+  const phone = waNumber(c.phone); if (!phone) { toast('Cadastre o WhatsApp da cliente'); return; }
+  toast('Gerando PDF…'); const pages = await renderTermo(c, area); if (!pages.length) return;
+  const name = 'Termo-' + slug(AREAS[area].name) + '-' + slug(c.name) + '.pdf', b64s = bytesToB64(buildPdf(pages));
+  const text = 'Oi, ' + c.name.split(' ')[0] + '! Segue a sua ficha de anamnese e o termo de consentimento de ' + AREAS[area].name + ', assinados em ' + fmtDate(c.consents[area].at) + '. Qualquer dúvida, é só falar. ' + S.settings.studio;
+  if (hasNative() && window.Native.shareWhatsApp) {
+    const r = String(window.Native.shareWhatsApp(phone, text, JSON.stringify([{ name, mime: 'application/pdf', b64: b64s }])));
+    if (r.indexOf('error') === 0) { toast('Não foi possível abrir o WhatsApp'); return; }
+    toast('Confira o PDF anexado e toque em enviar no WhatsApp');
+  } else { downloadB64(name, 'application/pdf', b64s); openExternal('https://wa.me/' + phone + '?text=' + encodeURIComponent(text)); toast('PDF baixado: anexe-o na conversa do WhatsApp'); }
+  c.consents[area].sentAt = todayISO(); save(); route({ keep: true });
 }
 Object.assign(ACTX, {
   async 'consent-save'(el) {
@@ -90,7 +114,9 @@ Object.assign(ACTX, {
     c.termo = Object.assign({ aceite: true, fotos: true, divulgacao: false }, c.termo || {}, { aceite: true, fotos: $('#t_fotos').checked, divulgacao: $('#t_div').checked });
     c.anam = c.anam || {}; Object.keys(ANAM_SHORT).forEach((k) => { if (k in answers) c.anam[k] = answers[k]; });
     save(); toast('Anamnese e termo salvos'); const b = UI.consBack; UI.consBack = null; go(b || '#/clientes/' + c.id);
+    if (waNumber(c.phone) && await confirmBox('Enviar o termo assinado?', 'O PDF com a anamnese e o termo assinados vai para o WhatsApp de ' + c.name.split(' ')[0] + '.', 'Enviar')) await sendTermo(c, area);
   },
+  async 'termo-wa'(el) { await sendTermo(client(el.dataset.c), el.dataset.a); },
   async 'termo-pdf'(el) { const c = client(el.dataset.c); toast('Gerando PDF…'); const pages = await renderTermo(c, el.dataset.a); if (!pages.length) return; saveFileOut('Termo-' + slug(AREAS[el.dataset.a].name) + '-' + slug(c.name) + '.pdf', 'application/pdf', bytesToB64(buildPdf(pages))); }
 });
 /* termo editável nos Ajustes */
