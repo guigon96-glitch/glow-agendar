@@ -26,6 +26,16 @@ function pill(ctx, text, x, y, h, fill, color) {
   ctx.fillStyle = fill; rr(ctx, x, y, w, h, h / 2); ctx.fill(); ctx.fillStyle = color; ctx.textBaseline = 'middle'; ctx.fillText(text, x + 18, y + h / 2 + 1); ctx.textBaseline = 'alphabetic'; return w;
 }
 async function renderReport(s, opt) {
+  // fotos encolhem um pouco antes de deixar o final sozinho numa página quase vazia
+  let best;
+  for (const k of [0.62, 0.54, 0.46]) {
+    const r = await layoutReport(s, opt, k);
+    if (!best || r.pages.length < best.pages.length) best = r;
+    if (r.pages.length === 1 || r.lastUsed > 420) break;
+  }
+  return best.pages;
+}
+async function layoutReport(s, opt, k) {
   opt = Object.assign({ resumo: true, tecnica: true, fotos: true, cuidados: true, manutencao: true }, opt || {});
   await ensureFonts();
   const c = client(s.clientId) || { name: '' };
@@ -71,7 +81,7 @@ async function renderReport(s, opt) {
     if (!list.length) Object.keys(ANGLES).forEach((a) => ['antes', 'depois'].forEach((st) => { if (photoOf(s, st, a)) single.push([a, st]); }));
     if (list.length || single.length) {
       section('Antes e depois'); y += 34;
-      const pw = (RW - RM * 2 - 24) / 2, ph = Math.round(pw * 0.62);
+      const pw = (RW - RM * 2 - 24) / 2, ph = Math.round(pw * k);
       const drawPhoto = async (stage, angle, x) => {
         const p = photoOf(s, stage, angle); const im = await loadImg(PC.get(p.id));
         cover(ctx, im, x, y, pw, ph, 20);
@@ -107,7 +117,7 @@ async function renderReport(s, opt) {
     y += 150;
   }
   pages.forEach((p, i) => { const g = p.getContext('2d'); g.fillStyle = '#756560'; g.font = "400 20px 'Jost'"; g.textAlign = 'center'; g.fillText(S.settings.studio + (S.settings.insta ? ' · ' + S.settings.insta : '') + (pages.length > 1 ? '  ·  ' + (i + 1) + '/' + pages.length : ''), RW / 2, RH - 60); g.textAlign = 'left'; });
-  return pages;
+  return { pages, lastUsed: y - (RM + 150) };
 }
 async function renderCollage(s, angle) {
   await ensureFonts();
