@@ -22,9 +22,10 @@ async function vWhatsApp(id) {
     } };
 }
 /* ---------- Ajustes ---------- */
+// seções de Ajustes: aparecem no menu lateral (grupo Ajustes) como #/ajustes/<seção>
+const ajTabs = () => [['perfil', 'Perfil do estúdio'], ['areas', 'Áreas de atuação'], ['msg', 'Mensagem do WhatsApp'], ['cuid', 'Modelos de cuidados']].concat(AJ_EXTRA, typeof AJ_CLOUD !== 'undefined' ? AJ_CLOUD : [], [['backup', 'Backup e dados']]);
 async function vAjustes() {
   const st = S.settings, tab = UI.ajTab;
-  const sub = [['perfil', 'Perfil do estúdio'], ['areas', 'Áreas de atuação'], ['msg', 'Mensagem do WhatsApp'], ['cuid', 'Modelos de cuidados']].concat(AJ_EXTRA, typeof AJ_CLOUD !== 'undefined' ? AJ_CLOUD : [], [['backup', 'Backup e dados']]).map(([k, l]) => '<button class="chip" style="justify-content:flex-start;height:52px;border-radius:14px;border:0;' + (tab === k ? 'background:var(--blush);font-weight:500' : 'background:transparent') + '" data-act="aj-tab" data-v="' + k + '">' + l + '</button>').join('');
   const inp = (f, l, ph) => '<div><label class="lb" for="s_' + f + '">' + l + '</label><input class="in" id="s_' + f + '" data-o="st" data-f="' + f + '" placeholder="' + (ph || '') + '" value="' + esc(st[f]) + '"></div>';
   const ck = (f, l) => '<label class="ck"><input type="checkbox" data-o="st" data-f="' + f + '"' + (st[f] ? ' checked' : '') + '>' + l + '</label>';
   let body = '';
@@ -44,5 +45,5 @@ async function vAjustes() {
   } else {
     body = '<div class="card stack"><h2 class="h2">Backup e dados</h2><div class="muted">' + S.clients.length + ' clientes · ' + S.sessions.length + ' atendimentos · ' + S.sessions.reduce((n, s) => n + (s.photos || []).length, 0) + ' fotos. Os dados ficam guardados somente neste aparelho' + (S.persisted ? '.' : ' e <b>não estão sendo salvos</b> (armazenamento indisponível).') + '</div><div class="acts"><button class="btn" data-act="export">' + ic('dl') + 'Exportar backup</button><label class="btn ghost" style="position:relative;cursor:pointer">Importar backup<input class="hidefile" type="file" accept=".json,application/json" id="imp_file" aria-label="Escolher arquivo de backup"></label></div></div><div class="card stack"><h2 class="h2">Outras opções</h2><div class="acts"><button class="btn ghost" data-act="sample">Carregar dados de exemplo</button><button class="btn danger" data-act="wipe">' + ic('trash') + 'Apagar todos os dados</button></div></div>';
   }
-  return { nav: 'ajustes', html: head('Configurações', 'Ajustes', '') + '<section class="cols"><div class="card stack" style="width:250px;flex:none;padding:14px;gap:2px">' + sub + '</div><div class="stack grow">' + body + '</div></section>' };
+  return { nav: 'ajustes', html: head('Ajustes', esc((ajTabs().find((x) => x[0] === tab) || [, 'Ajustes'])[1]), '') + '<div class="stack">' + body + '</div>' };
 }

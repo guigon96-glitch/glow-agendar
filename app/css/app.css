@@ -22,6 +22,10 @@ a{color:inherit}
 .logo u{display:none}
 .nav{display:flex;align-items:center;gap:12px;height:48px;padding:0 14px;border-radius:14px;color:#756560;text-decoration:none;border:0;background:none;width:100%;text-align:left;cursor:pointer}
 .nav:hover{background:var(--blush2)}
+.navgrp>summary{list-style:none}.navgrp>summary::-webkit-details-marker{display:none}
+.navgrp>summary::after{content:"";margin-left:auto;width:7px;height:7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .2s}
+.navgrp[open]>summary::after{transform:rotate(-135deg)}
+.nav.sub{height:44px;padding-left:46px;font-size:14px}
 .nav.on{background:var(--blush);color:var(--ink);font-weight:500}
 .ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .me{margin-top:auto;padding:14px;border-radius:16px;background:var(--bg);display:flex;gap:12px;align-items:center}

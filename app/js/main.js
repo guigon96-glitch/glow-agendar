@@ -24,7 +24,7 @@ async function route(opt) {
       case 'relatorios': r = await vRelatorios(); break;
       case 'relatorio': r = await vRelatorio(p[1]); break;
       case 'whatsapp': r = await vWhatsApp(p[1]); break;
-      case 'ajustes': r = await vAjustes(); break;
+      case 'ajustes': if (p[1]) UI.ajTab = p[1]; r = await vAjustes(); break;
       default: r = ROUTEX[p[0]] ? await ROUTEX[p[0]]() : await vInicio();
     }
   } catch (e) { console.error(e); r = { nav: null, html: '<div class="card"><h2 class="h2">Algo deu errado</h2><p class="muted">' + esc(e.message) + '</p><a class="btn" href="#/inicio">Voltar ao início</a></div>' }; }
@@ -201,7 +201,6 @@ const ACT = {
   'msg-reset'(el) { const s = sess(el.dataset.id); delete s.msg; save(); route({ keep: true }); },
   'area-toggle'(el) { const k = el.dataset.v, a = (UI.areasDraft || activeAreas()).slice(); const i = a.indexOf(k); if (i >= 0) a.splice(i, 1); else a.push(k); UI.areasDraft = a; if (el.dataset.mode === 'modal') openAreasSetup(true); else { saveAreas(a); route({ keep: true }); } },
   'areas-ok'() { const a = UI.areasDraft || activeAreas(); if (!a.length) { toast('Escolha ao menos uma área'); return; } saveAreas(a); if (UI.demoTrim) { UI.demoTrim = false; trimSampleToAreas(activeAreas()); } UI.areasDraft = null; closeModal(); route(); },
-  'aj-tab'(el) { UI.ajTab = el.dataset.v; route(); },
   'aj-svc'(el) { UI.ajSvc = el.dataset.v; route({ keep: true }); },
   'aj-msg-reset'() { S.settings.msg = MSG_DEFAULT; save(); route({ keep: true }); },
   'logo-del'() { S.settings.logo = null; save(); route({ keep: true }); },

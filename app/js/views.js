@@ -16,7 +16,9 @@ const UI = { q: '', filter: 'todas', fichaTab: 'hist', agendaDate: todayISO(), c
 const NAV = [['inicio', 'home', 'Início'], ['agenda', 'cal', 'Agenda'], ['clientes', 'users', 'Clientes'], ['fotos', 'img', 'Fotos'], ['financeiro', 'money', 'Financeiro'], ['pacotes', 'gift', 'Pacotes'], ['estoque', 'box', 'Estoque'], ['procedimentos', 'edit', 'Procedimentos'], ['relacionamento', 'chat', 'Relacionamento'], ['equipe', 'team', 'Equipe'], ['relatorios', 'file', 'Relatórios'], ['ajustes', 'set', 'Ajustes']];
 const TABKEYS = ['inicio', 'agenda', 'clientes', 'fotos', 'financeiro'];
 function shellHtml(active) {
-  const items = NAV.map(([k, i, l]) => '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '"' + (active === k ? ' aria-current="page"' : '') + '>' + ic(i) + l + '</a>').join('');
+  const items = NAV.map(([k, i, l]) => k === 'ajustes'
+    ? '<details class="navgrp"' + (active === k ? ' open' : '') + '><summary class="nav">' + ic(i) + l + '</summary>' + ajTabs().map(([t, tl]) => '<a class="nav sub ' + (active === k && UI.ajTab === t ? 'on' : '') + '" href="#/ajustes/' + t + '" data-aj="' + t + '"' + (active === k && UI.ajTab === t ? ' aria-current="page"' : '') + '>' + tl + '</a>').join('') + '</details>'
+    : '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '"' + (active === k ? ' aria-current="page"' : '') + '>' + ic(i) + l + '</a>').join('');
   const first = (S.settings.owner || 'LS');
   return {
     side: '<div class="logo"><b>' + esc(S.settings.studio.replace(/\s+Studios?$/i, '')) + '</b><i>STUDIO</i><u></u></div>' + items + '<div class="me">' + av(first, 40) + '<div><div style="font-weight:500;font-size:14px">' + esc(first) + '</div><div class="muted" style="font-size:12px">Beleza e bem-estar</div></div></div>',
