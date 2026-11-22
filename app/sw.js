@@ -1,5 +1,5 @@
 /* Glow Studio: cache do aplicativo para abrir rápido e funcionar sem internet. Os dados ficam no aparelho e na nuvem, nunca aqui. */
-const V = 'glow-v22';
+const V = 'glow-v23';
 self.addEventListener('install', (e) => { self.skipWaiting(); e.waitUntil(caches.open(V).then((c) => c.addAll(['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png']).catch(() => {}))); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== V).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {
