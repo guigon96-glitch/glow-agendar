@@ -35,6 +35,12 @@ textarea{height:84px;padding:12px 14px}
 .ok{text-align:center;padding:12px 0}
 .hp{position:absolute;left:-9999px}
 .pix{text-align:center}.pix svg{max-width:240px;width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}.code{font:12px/1.35 ui-monospace,Menlo,monospace;background:var(--blush);border-radius:12px;padding:10px;word-break:break-all;text-align:left;max-height:90px;overflow:auto}
+.tabs{display:flex;gap:8px;margin-top:16px}.tabs button{flex:1;height:42px;border-radius:21px;border:1px solid var(--line);background:#fff;font:inherit;color:inherit;cursor:pointer}.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.item{border-top:1px solid var(--line);padding:14px 0}.item:first-of-type{border-top:0;padding-top:4px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--blush);color:#7A4543;white-space:nowrap}.pill.off{background:#EFE9E6;color:var(--muted)}.pill.ok{background:var(--sage);color:#2F6B45}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1;min-width:120px;height:44px;margin-top:10px;font-size:15px}
+.star{color:var(--gold);letter-spacing:1px}.stars{display:flex;gap:4px}.stars button{font-size:30px;line-height:1;background:none;border:0;padding:4px;cursor:pointer;color:#DCCDC6}.stars button.on{color:var(--gold)}
+.rev{border-top:1px solid var(--line);padding:12px 0}.rev:first-of-type{border-top:0}
 .steps{display:flex;gap:6px;margin:18px 0 0}.steps i{flex:1;height:4px;border-radius:2px;background:#E9DDD6}.steps i.on{background:var(--rose)}
 </style>
 </head>
@@ -75,7 +81,11 @@ var PixCore = (function () {
 var API = 'https://jygogsopwktsrcklfzta.supabase.co/functions/v1/glow';
 var DIAS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'], MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 var Q = new URLSearchParams(location.search), SLUG = Q.get('e') || '';
-var cat = null, st = { svc: '', pro: 'any', date: '', time: '' }, app = document.getElementById('app');
+var cat = null, st = { svc: '', pro: 'any', date: '', time: '', resched: null }, app = document.getElementById('app'), view = 'book', mine = [];
+/* memória no navegador da cliente: nome, WhatsApp e os pedidos feitos aqui (id + código secreto) */
+var LS = 'glow:' + SLUG;
+function mem(){ try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch(e) { return {}; } }
+function memSave(m){ try { localStorage.setItem(LS, JSON.stringify(m)); } catch(e) {} }
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function mins(t){ var p = t.split(':'); return +p[0] * 60 + +p[1]; }
 function hhmm(m){ return ('0'+Math.floor(m/60)).slice(-2) + ':' + ('0'+(m%60)).slice(-2); }
@@ -83,7 +93,11 @@ function pad(n){ return ('0'+n).slice(-2); }
 function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function brl(v){ return 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:2}); }
 function call(body){ return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();}); }
-function svc(){ return cat.services.filter(function(s){return s.k===st.svc;})[0]; }
+function svcBy(k){ return cat.services.filter(function(s){return s.k===k;})[0]; }
+function svc(){ return svcBy(st.svc); }
+function waNum(){ var wa = (cat.studio.whats || '').replace(/\D/g, ''); return wa && wa.length <= 11 ? '55' + wa : wa; }
+function whenTxt(date, time){ var d = new Date(date + 'T12:00:00'); return DIAS[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1) + ' às ' + time; }
+function starsTxt(n){ return '★★★★★'.slice(0, n) + '<span style="color:#DCCDC6">' + '★★★★★'.slice(n) + '</span>'; }
 function overlap(a,b){ return a[0] < b[1] && b[0] < a[1]; }
 function dayList(){
   var out = [], d = new Date(); d.setHours(12,0,0,0);
@@ -101,9 +115,11 @@ function slotsFor(date){
   }
   return out;
 }
-function head(){ return '<div class="eyebrow">Agendamento online</div><h1>' + esc(cat.studio.name) + '</h1>' + (cat.studio.owner ? '<div class="muted">com ' + esc(cat.studio.owner) + '</div>' : '') + (cat.pix && cat.pix.disc > 0 && cat.pix.key ? '<div class="muted sm" style="margin-top:6px;color:var(--gold)">🎁 ' + cat.pix.disc + '% de desconto para quem pagar ' + (cat.pix.mode === 'total' ? 'o valor' : 'o sinal') + ' adiantado por Pix</div>' : ''); }
+function tabs(){ return (mem().list || []).length ? '<div class="tabs"><button class="' + (view==='book'?'on':'') + '" data-view="book">Agendar</button><button class="' + (view==='mine'?'on':'') + '" data-view="mine">Meus horários</button></div>' : ''; }
+function head(){ var rv = cat.reviews; return '<div class="eyebrow">Agendamento online</div><h1>' + esc(cat.studio.name) + '</h1>' + (cat.studio.owner ? '<div class="muted">com ' + esc(cat.studio.owner) + '</div>' : '') + (rv && rv.count ? '<div class="sm" style="margin-top:6px"><span class="star">★</span> <b>' + String(rv.avg).replace('.', ',') + '</b> <span class="muted">· ' + rv.count + (rv.count === 1 ? ' avaliação' : ' avaliações') + '</span></div>' : '') + (cat.pix && cat.pix.disc > 0 && cat.pix.key ? '<div class="muted sm" style="margin-top:6px;color:var(--gold)">🎁 ' + cat.pix.disc + '% de desconto para quem pagar ' + (cat.pix.mode === 'total' ? 'o valor' : 'o sinal') + ' adiantado por Pix</div>' : ''); }
 function render(){
-  var s = svc(), h = head();
+  view = 'book'; var s = svc(), h = head() + tabs(), m = mem();
+  if (st.resched) h += '<div class="card" style="background:var(--blush)"><b>Remarcando</b><div class="muted sm">' + esc(st.resched.label) + '. Escolha o novo dia e horário; o anterior é cancelado quando você confirmar.</div><button class="btn ghost" data-unresched style="height:40px;margin-top:10px">Desistir de remarcar</button></div>';
   h += '<div class="steps"><i class="on"></i><i class="' + (st.svc ? 'on' : '') + '"></i><i class="' + (st.date && st.time ? 'on' : '') + '"></i></div>';
   h += '<div class="card"><h2>1. Escolha o procedimento</h2>' + cat.services.map(function(x){ return '<button class="opt ' + (x.k===st.svc?'on':'') + '" data-svc="' + x.k + '"><span><b>' + esc(x.name) + '</b><br><span class="muted sm">' + x.dur + ' min</span></span><b>' + (x.price ? brl(x.price) : '') + '</b></button>'; }).join('') + '</div>';
   if (st.svc) {
@@ -113,9 +129,11 @@ function render(){
     h += '</div>';
   }
   if (st.svc && st.date && st.time) {
-    h += '<div class="card"><h2>3. Seus dados</h2><label for="nm">Seu nome</label><input id="nm" autocomplete="name" maxlength="80"><label for="ph">WhatsApp com DDD</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 9 0000-0000"><label for="nt">Observação (opcional)</label><textarea id="nt" maxlength="300" placeholder="Ex.: primeira vez, alergia, referência de arte…"></textarea><input class="hp" id="site" tabindex="-1" autocomplete="off" aria-hidden="true"><div id="err"></div><button class="btn" id="go">Solicitar horário</button><div class="muted sm" style="margin-top:10px;text-align:center">Seu pedido fica pendente até o estúdio confirmar pelo WhatsApp.</div></div>';
+    h += '<div class="card"><h2>3. Seus dados</h2><label for="nm">Seu nome</label><input id="nm" autocomplete="name" maxlength="80" value="' + esc(m.name || '') + '"><label for="ph">WhatsApp com DDD</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="(11) 9 0000-0000" value="' + esc(m.phone || '') + '"><label for="nt">Observação (opcional)</label><textarea id="nt" maxlength="300" placeholder="Ex.: primeira vez, alergia, referência de arte…"></textarea><input class="hp" id="site" tabindex="-1" autocomplete="off" aria-hidden="true"><div id="err"></div><button class="btn" id="go">' + (st.resched ? 'Confirmar novo horário' : 'Solicitar horário') + '</button><div class="muted sm" style="margin-top:10px;text-align:center">Seu pedido fica pendente até o estúdio confirmar pelo WhatsApp.</div></div>';
   }
-  app.innerHTML = h;
+  if (cat.reviews && cat.reviews.list.length) h += '<div class="card"><h2>O que as clientes dizem</h2>' + cat.reviews.list.slice(0, 6).map(function(r){ return '<div class="rev"><span class="star">' + starsTxt(r.stars) + '</span>' + (r.text ? '<div style="margin-top:4px">' + esc(r.text) + '</div>' : '') + '<div class="muted sm" style="margin-top:4px">' + esc(r.name) + (r.service ? ' · ' + esc(r.service) : '') + '</div></div>'; }).join('') + '</div>';
+  app.innerHTML = h; bindTabs();
+  var u = app.querySelector('[data-unresched]'); if (u) u.onclick = function(){ st.resched = null; render(); };
   var q = function(sel, fn){ [].forEach.call(app.querySelectorAll(sel), function(el){ el.onclick = function(){ fn(el); }; }); };
   q('[data-svc]', function(el){ st.svc = el.dataset.svc; st.date = ''; st.time = ''; render(); });
   q('[data-pro]', function(el){ st.pro = el.dataset.pro; st.date = ''; st.time = ''; render(); });
@@ -128,11 +146,15 @@ function send(){
   call({ action:'book', slug:SLUG, service:st.svc, proId:st.pro, date:st.date, time:st.time, name:document.getElementById('nm').value, phone:document.getElementById('ph').value, note:document.getElementById('nt').value, site:document.getElementById('site').value })
   .then(function(r){
     if (!r.ok) { err.innerHTML = '<div class="err">' + esc(r.error || 'Não foi possível enviar.') + '</div>'; go.disabled = false; go.textContent = 'Solicitar horário'; if (/ocupado/.test(r.error||'')) reload(); return; }
-    var s = svc(), d = new Date(st.date + 'T12:00:00'), when = DIAS[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1) + ' às ' + st.time;
+    var s = svc(), when = whenTxt(st.date, st.time), m = mem();
+    m.name = document.getElementById('nm').value.trim(); m.phone = document.getElementById('ph').value.trim();
+    if (r.token) m.list = [{ id: r.id, token: r.token }].concat(m.list || []).slice(0, 20);
+    memSave(m);
+    if (st.resched) { var old = st.resched; st.resched = null; call({ action:'client_cancel', slug:SLUG, id:old.id, token:old.token }).then(function(c){ if (!c.ok) alert('O novo pedido foi enviado, mas o horário anterior não pôde ser cancelado: ' + (c.error || '')); }).catch(function(){ alert('O novo pedido foi enviado, mas não deu para cancelar o anterior (sem conexão). Cancele em Meus horários.'); }); }
     var msg = 'Oi! Acabei de pedir um horário pelo site: ' + s.name + ', ' + when + '. Meu nome é ' + document.getElementById('nm').value + '.';
-    var wa = (cat.studio.whats || '').replace(/\D/g, ''); if (wa && wa.length <= 11) wa = '55' + wa;
+    var wa = waNum();
     if (r.pixAmount && cat.pix && cat.pix.key) { showPix(r, s, when, wa, document.getElementById('nm').value, document.getElementById('ph').value); return; }
-    app.innerHTML = head() + '<div class="card ok"><div style="font-size:44px">💗</div><h2>Pedido enviado!</h2><p>' + esc(s.name) + '<br><b>' + when + '</b></p><p class="muted">Assim que o estúdio confirmar, você recebe uma mensagem no WhatsApp.</p>' + (wa ? '<a class="btn wa" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(msg) + '">Avisar pelo WhatsApp</a>' : '') + '<button class="btn ghost" onclick="location.reload()">Fazer outro pedido</button></div>';
+    app.innerHTML = head() + '<div class="card ok"><div style="font-size:44px">💗</div><h2>Pedido enviado!</h2><p>' + esc(s.name) + '<br><b>' + when + '</b></p><p class="muted">Assim que o estúdio confirmar, você recebe uma mensagem no WhatsApp.</p>' + (wa ? '<a class="btn wa" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(msg) + '">Avisar pelo WhatsApp</a>' : '') + '<button class="btn ghost" data-view="mine">Ver meus horários</button></div>'; bindTabs();
   }).catch(function(){ err.innerHTML = '<div class="err">Sem conexão. Tente novamente.</div>'; go.disabled = false; go.textContent = 'Solicitar horário'; });
 }
 function showPix(r, s, when, wa, nm, ph){
@@ -148,9 +170,50 @@ function showPix(r, s, when, wa, nm, ph){
     }).catch(function(){ b.disabled = false; b.textContent = 'Já paguei'; });
   };
 }
+function bindTabs(){ [].forEach.call(app.querySelectorAll('[data-view]'), function(el){ el.onclick = function(){ if (el.dataset.view === 'mine') loadMine(); else { st.resched = null; render(); } scrollTo(0, 0); }; }); }
+/* ---------- Meus horários: cancelar, remarcar, agendar de novo e avaliar ---------- */
+function loadMine(){
+  view = 'mine'; var m = mem(), list = m.list || [];
+  app.innerHTML = head() + tabs() + '<div class="card muted">Carregando seus horários…</div>'; bindTabs();
+  call({ action:'my_bookings', slug:SLUG, items:list }).then(function(r){
+    if (!r.ok) throw 0; mine = r.bookings;
+    var keep = {}; mine.forEach(function(x){ keep[x.id] = 1; }); m.list = list.filter(function(x){ return keep[x.id]; }); memSave(m); // some o que o servidor não conhece mais
+    drawMine();
+  }).catch(function(){ app.innerHTML = head() + tabs() + '<div class="card"><div class="err">Sem conexão. Tente de novo.</div></div>'; bindTabs(); });
+}
+function tokenOf(id){ var x = (mem().list || []).filter(function(y){ return y.id === id; })[0]; return x ? x.token : ''; }
+function drawMine(){
+  var now = new Date(), minH = Math.max(cat.minHours || 0, 2), wa = waNum();
+  var l = mine.slice().sort(function(a, b){ return (b.date + b.time).localeCompare(a.date + a.time); });
+  var h = head() + tabs() + '<div class="card"><h2>Meus horários</h2>' + (l.length ? '' : '<div class="muted">Nenhum horário por aqui ainda.</div>') + l.map(function(x){
+    var s = svcBy(x.service), at = new Date(x.date + 'T' + x.time + ':00'), fut = at > now, live = x.status === 'pendente' || x.status === 'confirmado';
+    var pill = x.status === 'cancelado' ? '<span class="pill off">Cancelado</span>' : x.status === 'recusado' ? '<span class="pill off">Não confirmado</span>' : !fut ? (x.status === 'confirmado' ? '<span class="pill off">Realizado</span>' : '<span class="pill off">Expirado</span>') : x.status === 'confirmado' ? '<span class="pill ok">Confirmado</span>' : '<span class="pill">Aguardando confirmação</span>';
+    var b = '';
+    if (fut && live) {
+      if ((at - now) / 60000 >= minH * 60) b += x._ask ? '<div class="sm" style="margin-top:10px">Cancelar este horário?</div><div class="row"><button class="btn ghost" data-keep="' + x.id + '">Não</button><button class="btn" data-cancel="' + x.id + '">Sim, cancelar</button></div>' : '<div class="row"><button class="btn ghost" data-resched="' + x.id + '">Remarcar</button><button class="btn ghost" data-ask="' + x.id + '">Cancelar</button></div>';
+      else b += '<div class="muted sm" style="margin-top:8px">Falta pouco para o horário. Para mudar, fale com o estúdio.</div>' + (wa ? '<a class="btn wa" style="height:44px" href="https://wa.me/' + wa + '">Chamar no WhatsApp</a>' : '');
+    }
+    if (!fut && x.status === 'confirmado' && !x.reviewed) b += x._rev ? '<div style="margin-top:10px"><div class="stars">' + [1,2,3,4,5].map(function(n){ return '<button aria-label="' + n + ' estrela' + (n > 1 ? 's' : '') + '" class="' + (n <= (x._stars || 0) ? 'on' : '') + '" data-star="' + x.id + ':' + n + '">★</button>'; }).join('') + '</div><textarea id="rt_' + x.id + '" maxlength="400" placeholder="Conte como foi (opcional)">' + esc(x._text || '') + '</textarea><div class="row"><button class="btn" data-sendrev="' + x.id + '"' + (x._stars ? '' : ' disabled') + '>Enviar avaliação</button></div></div>' : '<div class="row"><button class="btn ghost" data-rev="' + x.id + '">Avaliar atendimento</button></div>';
+    if (!fut && x.reviewed) b += '<div class="muted sm" style="margin-top:6px">Obrigada pela avaliação 💗</div>';
+    if ((!fut || !live) && s) b += '<div class="row"><button class="btn" data-again="' + x.id + '">Agendar de novo</button></div>';
+    return '<div class="item"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>' + esc(s ? s.name : 'Procedimento') + '</b>' + pill + '</div><div class="muted sm">' + whenTxt(x.date, x.time) + '</div>' + (x._err ? '<div class="err">' + esc(x._err) + '</div>' : '') + b + '</div>';
+  }).join('') + '</div>';
+  app.innerHTML = h; bindTabs();
+  var one = function(id){ return mine.filter(function(y){ return y.id === id; })[0]; };
+  var q = function(sel, fn){ [].forEach.call(app.querySelectorAll(sel), function(el){ el.onclick = function(){ fn(el); }; }); };
+  var pick = function(x, re){ st = { svc: x.service, pro: cat.pros.some(function(p){ return p.id === x.proId; }) ? x.proId : 'any', date: '', time: '', resched: re ? { id: x.id, token: tokenOf(x.id), label: svcBy(x.service).name + ', ' + whenTxt(x.date, x.time) } : null }; render(); var c = app.querySelector('.days'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  q('[data-ask]', function(el){ one(el.dataset.ask)._ask = true; drawMine(); });
+  q('[data-keep]', function(el){ one(el.dataset.keep)._ask = false; drawMine(); });
+  q('[data-cancel]', function(el){ var x = one(el.dataset.cancel); el.disabled = true; call({ action:'client_cancel', slug:SLUG, id:x.id, token:tokenOf(x.id) }).then(function(r){ x._ask = false; if (r.ok) { x.status = 'cancelado'; x._err = ''; } else x._err = r.error || 'Não foi possível cancelar.'; drawMine(); }).catch(function(){ x._err = 'Sem conexão.'; drawMine(); }); });
+  q('[data-resched]', function(el){ pick(one(el.dataset.resched), true); });
+  q('[data-again]', function(el){ pick(one(el.dataset.again), false); });
+  q('[data-rev]', function(el){ one(el.dataset.rev)._rev = true; drawMine(); });
+  q('[data-star]', function(el){ var p = el.dataset.star.split(':'), x = one(p[0]), t = document.getElementById('rt_' + x.id); if (t) x._text = t.value; x._stars = +p[1]; drawMine(); });
+  q('[data-sendrev]', function(el){ var x = one(el.dataset.sendrev), t = document.getElementById('rt_' + x.id); x._text = t ? t.value : ''; el.disabled = true; call({ action:'review', slug:SLUG, id:x.id, token:tokenOf(x.id), stars:x._stars, text:x._text }).then(function(r){ if (r.ok || /já avaliou/.test(r.error || '')) { x.reviewed = true; x._rev = false; x._err = ''; } else x._err = r.error || 'Não foi possível enviar.'; drawMine(); }).catch(function(){ x._err = 'Sem conexão.'; drawMine(); }); });
+}
 function reload(){ call({ action:'public_catalog', slug:SLUG }).then(function(r){ if (r.ok) { cat = r.catalog; st.time = ''; render(); } }); }
 if (!SLUG) app.innerHTML = '<div class="card"><h2>Link incompleto</h2><p class="muted">Peça o link de agendamento ao estúdio.</p></div>';
-else call({ action:'public_catalog', slug:SLUG }).then(function(r){ if (!r.ok) throw 0; cat = r.catalog; document.title = 'Agende · ' + cat.studio.name; render(); }).catch(function(){ app.innerHTML = '<div class="card"><h2>Agendamento indisponível</h2><p class="muted">Este link não está ativo no momento. Fale com o estúdio pelo WhatsApp.</p></div>'; });
+else call({ action:'public_catalog', slug:SLUG }).then(function(r){ if (!r.ok) throw 0; cat = r.catalog; document.title = 'Agende · ' + cat.studio.name; if (Q.get('v') === 'meus' && (mem().list || []).length) loadMine(); else render(); }).catch(function(){ app.innerHTML = '<div class="card"><h2>Agendamento indisponível</h2><p class="muted">Este link não está ativo no momento. Fale com o estúdio pelo WhatsApp.</p></div>'; });
 </script>
 </body>
 </html>

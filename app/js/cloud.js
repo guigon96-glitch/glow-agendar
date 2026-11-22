@@ -136,7 +136,8 @@ async function cloudPull(manual) {
     if (upd) { save(); toast('Uma cliente avisou que pagou o sinal'); if (['agenda', 'inicio', ''].includes(parts()[0])) route({ keep: true }); }
     for (const b of r.bookings) { if (S.ext.bookings.some((x) => x.id === b.id)) continue; S.ext.bookings.push({ id: b.id, status: 'pendente', name: b.name, phone: b.phone, service: b.service, proId: b.pro_id, date: b.date, time: b.time, dur: b.dur, note: b.note, created: String(b.created_at).slice(0, 10), pix: b.pix_amount ? { amount: Number(b.pix_amount), claimed: !!b.pix_claimed, disc: Number(b.pix_disc) || 0 } : null }); added++; }
     if (added) { save(); toast(added + (added === 1 ? ' novo pedido de agendamento' : ' novos pedidos de agendamento')); if (S.settings.booking.auto) for (const b of S.ext.bookings.filter((x) => x.status === 'pendente' && !x.demo)) await acceptBooking(b.id, true); if (['agenda', 'inicio', ''].includes(parts()[0])) route({ keep: true }); }
-    else if (manual) toast('Nenhum pedido novo');
+    else if (manual && !(r.cancels || []).length) toast('Nenhum pedido novo');
+    pullExtras(r);
   } catch (e) { if (manual) toast('Sem conexão'); }
 }
 async function acceptBooking(id, auto) {
@@ -146,7 +147,7 @@ async function acceptBooking(id, auto) {
   const dur = b.dur || SERVICES[b.service].dur;
   if (!auto && b.pix && b.pix.amount && !b.depositOk && !(await confirmBox('Sinal ainda não confirmado', 'Você ainda não marcou o recebimento do sinal de ' + fmtBRL(b.pix.amount) + '. Aceitar mesmo assim?', 'Aceitar'))) return;
   if (!auto && hasConflict(b.date, b.time, dur, b.proId || defaultProId()) && !(await confirmBox('Conflito de horário', 'Este horário já está ocupado na agenda. Aceitar mesmo assim?', 'Aceitar'))) return;
-  const s = newSession(c.id, { id: 'bs' + String(b.id).replace(/[^A-Za-z0-9]/g, '').slice(0, 20), service: b.service, date: b.date, time: b.time, dur, proId: b.proId || defaultProId(), confirmed: true, notes: b.note || '' }); if (b.pix && b.pix.amount) s.deposit = { value: b.pix.amount, ok: !!b.depositOk, method: 'Pix' }; if (b.pix && b.pix.disc && b.depositOk) s.discount = round2((Number(s.discount) || 0) + b.pix.disc);
+  const s = newSession(c.id, { id: 'bs' + String(b.id).replace(/[^A-Za-z0-9]/g, '').slice(0, 20), service: b.service, date: b.date, time: b.time, dur, proId: b.proId || defaultProId(), confirmed: true, notes: b.note || '', bookingId: b.demo ? '' : b.id }); if (b.pix && b.pix.amount) s.deposit = { value: b.pix.amount, ok: !!b.depositOk, method: 'Pix' }; if (b.pix && b.pix.disc && b.depositOk) s.discount = round2((Number(s.discount) || 0) + b.pix.disc);
   if (S.sessions.some((x) => x.id === s.id)) { S.ext.bookings = S.ext.bookings.filter((x) => x.id !== id); save(); route({ keep: true }); return; } S.sessions.push(s);
   S.ext.bookings = S.ext.bookings.filter((x) => x.id !== id); save();
   if (cloudOn() && !b.demo) cloudApi('resolve_booking', { auth: CL().auth, id, status: 'confirmado' }).catch(() => {}); catDirty = true;
@@ -154,11 +155,36 @@ async function acceptBooking(id, auto) {
   if (!auto && c.phone && (await confirmBox('Avisar a cliente?', 'Enviar a confirmação pelo WhatsApp para ' + c.name.split(' ')[0] + '.', 'Enviar'))) sendTo(c.phone, fillTpl('confirmacao', sessVars(s)), 'conf:' + s.id);
   route({ keep: true });
 }
+/* cancelamentos feitos pela cliente na página e avaliações esperando aprovação */
+let pendingReviews = [];
+function pullExtras(r) {
+  pendingReviews = r.reviews || [];
+  const cx = r.cancels || []; if (!cx.length) return;
+  const names = [];
+  for (const b of cx) {
+    const s = S.sessions.find((x) => x.id === 'bs' + String(b.id).replace(/[^A-Za-z0-9]/g, '').slice(0, 20));
+    if (s && s.status === 'agendado') { releaseSession(s); names.push(b.name.split(' ')[0] + ' (' + fmtDate(b.date).slice(0, 5) + ' ' + b.time + ')'); }
+  }
+  cloudApi('ack_cancel', { auth: CL().auth, ids: cx.map((b) => b.id) }).catch(() => {});
+  if (names.length) { save(); catDirty = true; toast('Cancelado pela cliente: ' + names.join(', ')); if (['agenda', 'inicio', ''].includes(parts()[0])) route({ keep: true }); }
+}
+// atendimento vindo do link cancelado aqui no app: a cliente vê "Cancelado" em Meus horários
+function bookingCanceled(s) { if (s && s.bookingId && cloudOn()) cloudApi('resolve_booking', { auth: CL().auth, id: s.bookingId, status: 'cancelado' }).catch(() => {}); }
+{ const _rel = releaseSession; releaseSession = function (s) { _rel(s); bookingCanceled(s); }; } // eslint-disable-line no-func-assign
+function reviewCards() {
+  if (!pendingReviews.length) return '';
+  return '<div class="card stack" style="gap:6px"><h2 class="h3">Avaliações para aprovar</h2><div class="muted sm">Só aparecem na sua página de agendamento depois que você aprovar.</div>' + pendingReviews.map((v) => '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-top:1px solid #F1E7E1"><div style="flex:1;min-width:200px"><div><span style="color:#7F6538">' + '★'.repeat(v.stars) + '</span><span style="color:#DCCDC6">' + '★'.repeat(5 - v.stars) + '</span> <b>' + esc(v.name) + '</b>' + (v.service ? ' <span class="muted sm">· ' + esc(v.service) + '</span>' : '') + '</div>' + (v.text ? '<div class="sm">“' + esc(v.text) + '”</div>' : '') + '</div><button class="btn ghost sm" data-act="rv-hide" data-id="' + v.id + '">Não mostrar</button><button class="btn sm" data-act="rv-ok" data-id="' + v.id + '">Aprovar</button></div>').join('') + '</div>';
+}
+async function resolveReview(id, status) {
+  try { const r = await cloudApi('resolve_review', { auth: CL().auth, id, status }); if (!r.ok) throw 0; pendingReviews = pendingReviews.filter((v) => v.id !== id); toast(status === 'aprovada' ? 'Avaliação publicada na sua página' : 'Avaliação ocultada'); route({ keep: true }); } catch (e) { toast('Sem conexão'); }
+}
 function bookingCards() {
-  const l = S.ext.bookings.filter((b) => b.status === 'pendente' && SERVICES[b.service]); if (!l.length) return '';
-  return '<div class="card stack" style="gap:6px;border-color:#D9B9B2;background:#FFF8F5"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 class="h3">Pedidos de agendamento online</h2>' + (cloudOn() ? '<button class="btn ghost sm" data-act="bk-refresh">Atualizar</button>' : '') + '</div>' + l.map((b) => { const p = pro(b.proId); return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-top:1px solid #F1E7E1"><div style="flex:1;min-width:200px"><div style="font-weight:500">' + esc(b.name) + '</div><div class="muted sm">' + esc(SERVICES[b.service].name) + ' · ' + DIAS[parseISO(b.date).getDay()].charAt(0) + DIAS[parseISO(b.date).getDay()].slice(1).toLowerCase() + ' ' + fmtDate(b.date).slice(0, 6) + ' às ' + b.time + (multiPro() && p ? ' · ' + esc(p.name.split(' ')[0]) : '') + '</div>' + (b.note ? '<div class="muted sm">“' + esc(b.note) + '”</div>' : '') + (b.pix && b.pix.amount ? '<div class="sm" style="margin-top:4px;color:' + (b.depositOk ? '#2F6B45' : '#8A4A47') + '">' + (b.depositOk ? '✓ Sinal de ' + fmtBRL(b.pix.amount) + ' recebido' : 'Pix de ' + fmtBRL(b.pix.amount) + (b.pix.claimed ? ' · a cliente avisou que pagou' : ' · aguardando pagamento')) + '</div>' : '') + '</div>' + (b.pix && b.pix.amount && !b.depositOk ? '<button class="btn ghost sm" data-act="bk-dep" data-id="' + b.id + '">Recebi o sinal</button>' : '') + '<button class="btn sm" data-act="bk-accept" data-id="' + b.id + '">Aceitar</button><button class="btn danger sm" data-act="bk-decline" data-id="' + b.id + '">Recusar</button></div>'; }).join('') + '</div>';
+  const l = S.ext.bookings.filter((b) => b.status === 'pendente' && SERVICES[b.service]); if (!l.length) return reviewCards();
+  return '<div class="card stack" style="gap:6px;border-color:#D9B9B2;background:#FFF8F5"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 class="h3">Pedidos de agendamento online</h2>' + (cloudOn() ? '<button class="btn ghost sm" data-act="bk-refresh">Atualizar</button>' : '') + '</div>' + l.map((b) => { const p = pro(b.proId); return '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-top:1px solid #F1E7E1"><div style="flex:1;min-width:200px"><div style="font-weight:500">' + esc(b.name) + '</div><div class="muted sm">' + esc(SERVICES[b.service].name) + ' · ' + DIAS[parseISO(b.date).getDay()].charAt(0) + DIAS[parseISO(b.date).getDay()].slice(1).toLowerCase() + ' ' + fmtDate(b.date).slice(0, 6) + ' às ' + b.time + (multiPro() && p ? ' · ' + esc(p.name.split(' ')[0]) : '') + '</div>' + (b.note ? '<div class="muted sm">“' + esc(b.note) + '”</div>' : '') + (b.pix && b.pix.amount ? '<div class="sm" style="margin-top:4px;color:' + (b.depositOk ? '#2F6B45' : '#8A4A47') + '">' + (b.depositOk ? '✓ Sinal de ' + fmtBRL(b.pix.amount) + ' recebido' : 'Pix de ' + fmtBRL(b.pix.amount) + (b.pix.claimed ? ' · a cliente avisou que pagou' : ' · aguardando pagamento')) + '</div>' : '') + '</div>' + (b.pix && b.pix.amount && !b.depositOk ? '<button class="btn ghost sm" data-act="bk-dep" data-id="' + b.id + '">Recebi o sinal</button>' : '') + '<button class="btn sm" data-act="bk-accept" data-id="' + b.id + '">Aceitar</button><button class="btn danger sm" data-act="bk-decline" data-id="' + b.id + '">Recusar</button></div>'; }).join('') + '</div>' + reviewCards();
 }
 Object.assign(ACTX, {
+  'rv-ok'(el) { resolveReview(el.dataset.id, 'aprovada'); },
+  'rv-hide'(el) { resolveReview(el.dataset.id, 'oculta'); },
   'bk-accept'(el) { acceptBooking(el.dataset.id); },
   async 'bk-decline'(el) {
     const b = S.ext.bookings.find((x) => x.id === el.dataset.id); if (!b || !(await confirmBox('Recusar pedido?', b.name + ' · ' + fmtDate(b.date) + ' ' + b.time + '. O horário volta a ficar livre no link.', 'Recusar'))) return;

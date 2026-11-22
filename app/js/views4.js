@@ -89,7 +89,7 @@ Object.assign(ACTX, {
   async 'ap-cancel'(el) {
     const s = sess(el.dataset.id), nome = el.dataset.v === 'faltou' ? 'Marcar falta' : 'Cancelar agendamento';
     if (!(await confirmBox(nome + '?', (client(s.clientId) || {}).name + ' · ' + fmtDate(s.date) + ' ' + s.time + '. O horário volta a ficar livre.', 'Confirmar'))) return;
-    s.status = el.dataset.v; save(); closeModal(); route({ keep: true }); toast(el.dataset.v === 'faltou' ? 'Falta registrada' : 'Agendamento cancelado');
+    s.status = el.dataset.v; if (el.dataset.v === 'cancelado' && typeof bookingCanceled === 'function') bookingCanceled(s); save(); closeModal(); route({ keep: true }); toast(el.dataset.v === 'faltou' ? 'Falta registrada' : 'Agendamento cancelado');
   },
   async 'ap-save'() {
     const v = apVals(); let list = []; const rep = Number(($('#ap_r') || {}).value) || 0, n = rep ? Math.min(12, Math.max(2, Number($('#ap_n').value) || 2)) : 1;

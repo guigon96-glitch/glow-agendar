@@ -155,6 +155,16 @@ function queueReminders() {
   const t = todayISO(), t2 = addDays(t, 1), nw = new Date(), nowM = nw.getHours() * 60 + nw.getMinutes();
   return S.sessions.filter((s) => s.status === 'agendado' && ((s.date === t && mins(s.time) > nowM + 30) || s.date === t2)).sort(sortSessions).map((s) => ({ s, c: client(s.clientId), key: 'lem:' + s.id + ':' + s.date + s.time, text: fillTpl('lembrete', sessVars(s)) })).filter((x) => x.c);
 }
+/* Android: notificação às 18h com as clientes de amanhã que ainda não receberam lembrete; refeita a cada gravação */
+// shortcut: horário fixo e só reagenda quando o app grava algo; vira ajuste em Relacionamento se pedirem outro horário
+function schedReminder() {
+  if (!window.Native || !Native.scheduleReminder) return;
+  const at = new Date(); at.setHours(18, 0, 0, 0); if (at <= new Date()) at.setDate(at.getDate() + 1);
+  const day = addDays(iso(at), 1);
+  const n = S.sessions.filter((s) => s.status === 'agendado' && s.date === day && !logged('lem:' + s.id + ':' + s.date + s.time)).length;
+  try { Native.scheduleReminder(n ? at.getTime() : 0, 'Lembretes de amanhã', n + (n === 1 ? ' cliente agendada' : ' clientes agendadas') + ' amanhã. Toque para enviar os lembretes pelo WhatsApp.'); } catch (e) { /* app antigo sem a função */ }
+}
+{ const _f = flush; flush = async function () { await _f(); schedReminder(); }; } // eslint-disable-line no-func-assign
 function queueReturns() {
   return returnsList().filter((r) => r.diff <= 7).map((r) => ({ c: r.c, key: 'man:' + r.c.id + ':' + r.last.id, info: SERVICES[r.last.service].name + ' · ' + diffTxt(r.diff), text: fillTpl('manutencao', Object.assign(sessVars(r.last), { nome: r.c.name.split(' ')[0] })) }));
 }
@@ -203,6 +213,7 @@ function freeSlots(date, dur, proId, ignoreId) {
 function homeAlerts() {
   const out = [], t = todayISO();
   const rem = queueReminders().filter((x) => !logged(x.key) && x.s.date !== t).length; if (rem) out.push(['#/relacionamento', rem + (rem === 1 ? ' lembrete de horário para enviar' : ' lembretes de horário para enviar'), 'Amanhã']);
+  const rv = typeof pendingReviews !== 'undefined' ? pendingReviews.length : 0; if (rv) out.push(['#/agenda', rv + (rv === 1 ? ' avaliação de cliente para aprovar' : ' avaliações de clientes para aprovar'), 'Avaliações']);
   const bk = S.ext.bookings.filter((b) => b.status === 'pendente').length; if (bk) out.push(['#/agenda', bk + (bk === 1 ? ' pedido de agendamento online' : ' pedidos de agendamento online'), 'Confirmar']);
   const low = lowStock().length; if (low) out.push(['#/estoque', low + (low === 1 ? ' produto com estoque baixo' : ' produtos com estoque baixo'), 'Estoque']);
   const rc = receivables().length; if (rc) out.push(['#/financeiro', rc + (rc === 1 ? ' atendimento sem pagamento registrado' : ' atendimentos sem pagamento registrado') + ' · ' + fmtBRL0(receivables().reduce((n, s) => n + sessNet(s), 0)), 'A receber']);
