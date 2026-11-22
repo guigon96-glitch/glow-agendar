@@ -14,12 +14,12 @@ window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); _ins
   vInicio = async function () { // eslint-disable-line no-func-assign
     const r = await _v(); if (!IS_WEB || !r || !r.html) return r;
     let cards = '';
-    if (typeof cloudOn === 'function' && !cloudOn()) cards += '<div class="card stack" style="gap:8px;border-color:#D9B9B2;background:#FFF8F5"><b>Seus dados estão só neste navegador</b><div class="muted sm">Se você limpar o navegador ou trocar de aparelho, eles se perdem. Entre com o Google para guardar tudo na nuvem com criptografia e abrir em qualquer lugar.</div><div class="acts"><button class="btn sm" data-act="cl-google">Entrar com Google</button></div></div>';
+    if (typeof cloudOn === 'function' && !cloudOn()) cards += '<div class="card stack" style="gap:8px;border-color:#E5D6CE;background:#F8EEE9"><b>Seus dados estão só neste navegador</b><div class="muted sm">Se você limpar o navegador ou trocar de aparelho, eles se perdem. Entre com o Google para guardar tudo na nuvem com criptografia e abrir em qualquer lugar.</div><div class="acts"><button class="btn sm" data-act="cl-google">Entrar com Google</button></div></div>';
     if (!isStandalone() && !(S.settings && S.settings.installHide)) {
       if (isIOS) cards += '<div class="card stack" style="gap:6px"><b>Instale no seu iPhone ou iPad</b><div class="muted sm">No Safari, toque em Compartilhar (quadrado com seta) e depois em <b>Adicionar à Tela de Início</b>. Assim o app abre em tela cheia e seus dados ficam mais protegidos.</div><div class="acts"><button class="btn ghost sm" data-act="install-hide">Entendi</button></div></div>';
       else if (_installEv) cards += '<div class="card stack" style="gap:6px"><b>Instalar no computador</b><div class="muted sm">Abra o Glow Studio como um aplicativo, com ícone próprio.</div><div class="acts"><button class="btn sm" data-act="install-go">Instalar</button><button class="btn ghost sm" data-act="install-hide">Agora não</button></div></div>';
     }
-    if (cards) { const i = r.html.indexOf('</header>') + 9; r.html = r.html.slice(0, i) + cards + r.html.slice(i); }
+    if (cards) { const i = topAt(r.html); r.html = r.html.slice(0, i) + cards + r.html.slice(i); }
     return r;
   };
   Object.assign(ACTX, {

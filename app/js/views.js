@@ -20,13 +20,15 @@ function shellHtml(active) {
   const first = (S.settings.owner || 'LS');
   return {
     side: '<div class="logo"><b>' + esc(S.settings.studio.replace(/\s+Studios?$/i, '')) + '</b><i>STUDIO</i><u></u></div>' + items + '<div class="me">' + av(first, 40) + '<div><div style="font-weight:500;font-size:14px">' + esc(first) + '</div><div class="muted" style="font-size:12px">Beleza e bem-estar</div></div></div>',
-    tab: NAV.filter((n) => TABKEYS.includes(n[0])).map(([k, i, l]) => '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '">' + ic(i) + l + '</a>').join('') + '<a class="nav ' + (active && !TABKEYS.includes(active) ? 'on' : '') + '" href="#/mais">' + ic('more') + 'Mais</a>'
+    tab: NAV.filter((n) => TABKEYS.includes(n[0])).map(([k, i, l]) => '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '">' + ic(i) + l + '</a>').join('')
   };
 }
-const head = (eyebrow, title, acts) => '<header class="head"><div><div class="eyebrow">' + eyebrow + '</div><h1 class="h1">' + title + '</h1></div><div class="acts">' + (acts || '') + '</div></header>';
+// Onde avisos extras entram no Início: depois do cartão do próximo horário, senão depois do cabeçalho.
+const topAt = (h) => { const m = h.indexOf('<!--top-->'); return m >= 0 ? m + 10 : h.indexOf('</header>') + 9; };
+const head = (eyebrow, title, acts) => '<header class="head"><div><h1 class="h1">' + title + '</h1><div class="eyebrow">' + eyebrow + '</div></div><div class="acts">' + (acts || '') + '</div></header>';
 const back = (href, label) => '<a class="btn ghost sm" href="' + href + '">' + ic('back') + (label || 'Voltar') + '</a>';
 const imgTag = (id, alt) => PC.get(id) ? '<img src="' + PC.get(id) + '" alt="' + esc(alt || '') + '">' : '';
-const emptyBox = (t, sub, btn) => '<div class="empty"><div style="font:600 24px var(--serif);color:var(--ink)">' + t + '</div><div>' + (sub || '') + '</div>' + (btn || '') + '</div>';
+const emptyBox = (t, sub, btn) => '<div class="empty"><div style="font:800 20px var(--sans);color:var(--ink)">' + t + '</div><div>' + (sub || '') + '</div>' + (btn || '') + '</div>';
 const statusTag = (s) => stTag(s);
 function sessPhotoIds(list) { const ids = []; list.forEach((s) => (s.photos || []).forEach((p) => ids.push(p.id))); return ids; }
 function thumbPair(s) {
@@ -49,26 +51,37 @@ const diffTxt = (d) => d < 0 ? 'atrasada há ' + (-d) + (d === -1 ? ' dia' : ' d
 /* ---------- Início ---------- */
 async function vInicio() {
   const t = todayISO(), d = new Date();
-  const today = S.sessions.filter((s) => s.date === t && !isOff(s)).sort(sortSessions);
-  const done = today.filter((s) => s.status === 'concluido').length, doing = today.filter((s) => s.status === 'andamento').length;
+  const all = S.sessions.filter((s) => s.date === t).sort(sortSessions), today = all.filter((s) => !isOff(s));
+  const done = today.filter((s) => s.status === 'concluido').length;
   const pend = S.sessions.filter((s) => s.status === 'concluido' && !s.sent && s.date >= addDays(t, -14)).sort(sortSessions).reverse();
   const rets = returnsList();
   const first = (S.settings.owner || '').split(' ')[0] || 'Bia';
+  const hr = d.getHours(), hi = hr < 12 ? 'Bom dia' : hr < 18 ? 'Boa tarde' : 'Boa noite';
+  const dateTxt = DIAL[d.getDay()].replace(/^./, (c) => c.toUpperCase()) + ', ' + d.getDate() + ' de ' + MESL[d.getMonth()];
+  const hero = '<header class="hero"><div class="hero-top"><span class="brand">' + esc(S.settings.studio || 'Glow Studio') + '</span><a class="btn sm" href="#/atendimento/novo">+ Novo atendimento</a></div><h1 class="h1">' + hi + ', ' + esc(first) + '</h1><div class="hero-sub">' + dateTxt + '</div></header>';
   let body;
   if (!S.clients.length) {
-    body = '<div class="card stack" style="align-items:flex-start"><h2 class="h2">Bem-vinda ao seu app</h2><div class="muted">Comece cadastrando sua primeira cliente. Depois é só registrar o atendimento, tirar as fotos de antes e depois e enviar o relatório pelo WhatsApp.</div><div class="acts"><a class="btn" href="#/clientes/novo">+ Cadastrar cliente</a><button class="btn ghost" data-act="sample">Carregar exemplo</button></div></div>';
+    body = '<div class="card stack tk-solo" style="align-items:flex-start"><h2 class="h2">Bem-vinda ao seu app</h2><div class="muted">Comece cadastrando sua primeira cliente. Depois é só registrar o atendimento, tirar as fotos de antes e depois e enviar o relatório pelo WhatsApp.</div><div class="acts"><a class="btn" href="#/clientes/novo">+ Cadastrar cliente</a><button class="btn ghost" data-act="sample">Carregar exemplo</button></div></div>';
   } else {
-    body = '<section class="grid3 keep"><div class="card stat"><b>' + today.length + '</b><div style="font-weight:500">atendimentos hoje</div><div class="muted sm">' + done + ' concluídos · ' + doing + ' em andamento</div></div>' +
-      '<div class="card stat"><b>' + rets.length + '</b><div style="font-weight:500">manutenções a agendar</div><div class="muted sm">nos próximos 7 dias</div></div>' +
-      '<div class="card stat"><b>' + pend.length + '</b><div style="font-weight:500">relatórios para enviar</div><div class="muted sm">aguardando WhatsApp</div></div></section>' +
-      (function () { const al = homeAlerts(); return al.length ? '<div class="card" style="padding:18px 22px 8px"><h2 class="h2" style="margin-bottom:6px">Atenção</h2>' + al.map((a) => '<a href="' + a[0] + '" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #F1E7E1;text-decoration:none"><span class="tag sand">' + a[2] + '</span><span style="flex:1">' + a[1] + '</span>' + ic('next') + '</a>').join('') + '</div>' : ''; })() +
-      '<section class="cols"><div class="card grow" style="padding:22px 20px 12px"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 8px 12px"><h2 class="h2">Agenda de hoje</h2><a href="#/agenda" style="color:#7A4543;font-size:14px">Ver agenda completa</a></div>' +
-      (today.length ? today.map((s) => { const c = client(s.clientId) || { name: '?' }; return '<button class="row" data-act="open-session" data-id="' + s.id + '"><span class="time">' + s.time + '</span>' + av(c.name, 44) + '<span style="flex:1;min-width:0"><span style="display:block;font-weight:500;font-size:17px">' + esc(c.name) + '</span><span class="muted sm">' + esc(procTitle(s)) + '</span></span>' + statusTag(s) + '</button>'; }).join('') : '<div style="padding:12px 8px 18px" class="muted">Nenhum atendimento hoje. <a href="#/agenda" style="color:#7A4543">Abrir agenda</a></div>') + '</div>' +
-      '<div class="stack" style="width:300px;flex:none"><div class="card"><h2 class="h2" style="margin-bottom:10px">Para enviar</h2>' +
-      (pend.length ? pend.slice(0, 4).map((s) => { const c = client(s.clientId) || { name: '?' }; return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #F1E7E1"><div style="flex:1;min-width:0"><div style="font-weight:500">' + esc(c.name.split(' ')[0]) + '</div><div class="muted sm">' + esc(SERVICES[s.service].name) + ' · ' + s.time + '</div></div><a class="btn sm" href="#/whatsapp/' + s.id + '">Enviar</a></div>'; }).join('') : '<div class="muted sm">Nenhum relatório pendente.</div>') + '</div>' +
-      '<div class="card"><h2 class="h2" style="margin-bottom:10px">Retornos próximos</h2>' + (rets.length ? rets.slice(0, 4).map((r) => '<a href="#/clientes/' + r.c.id + '" style="display:block;padding:10px 0;border-top:1px solid #F1E7E1;text-decoration:none"><div style="font-weight:500">' + esc(r.c.name) + '</div><div class="muted sm">Manutenção · ' + diffTxt(r.diff) + '</div></a>').join('') : '<div class="muted sm">Nenhum retorno nos próximos dias.</div>') + '</div></div></section>';
+    const now = pad(hr) + ':' + pad(d.getMinutes());
+    const nx = today.find((s) => s.status === 'andamento') || today.find((s) => s.status === 'agendado' && s.time >= now) || today.find((s) => s.status === 'agendado');
+    let tk;
+    if (nx) {
+      const c = client(nx.clientId) || { name: '?' }, k = activePkgs(nx.clientId, nx.service)[0], go = nx.status === 'andamento';
+      const holes = k ? '<div class="holes" aria-label="Pacote: ' + k.used + ' de ' + k.total + ' sessões usadas">' + Array.from({ length: Math.min(k.total, 10) }, (_, i) => '<i class="' + (i < k.used ? 'p' : '') + '"></i>').join('') + '<span>Pacote ' + k.used + ' de ' + k.total + '</span></div>' : '';
+      tk = '<section class="tk"><div class="tk-main"><h2 class="h2">' + esc(c.name) + '</h2><div class="muted">' + esc(procTitle(nx)) + '</div>' + holes + '</div><div class="tk-stub"><div class="stampx' + (go ? ' go' : nx.confirmed ? '' : ' pend') + '"><b>' + nx.time + '</b><small>' + (go ? 'Em atendimento' : nx.confirmed ? 'Confirmado' : 'A confirmar') + '</small></div></div></section>' +
+        '<div class="tk-acts"><button class="btn" data-act="open-session" data-id="' + nx.id + '">' + (go ? 'Continuar atendimento' : 'Iniciar atendimento') + '</button><a class="btn ghost" href="#/clientes/' + c.id + '">Ver ficha</a></div><!--top-->';
+    } else tk = '<section class="tk"><div class="tk-main"><h2 class="h2">Agenda livre</h2><div class="muted">' + (today.length ? 'Todos os horários de hoje já foram atendidos.' : 'Nenhum horário marcado para hoje.') + '</div></div><div class="tk-stub"><div class="stampx pend"><b>' + now + '</b><small>Livre</small></div></div></section><div class="tk-acts"><a class="btn" href="#/agenda">Abrir agenda</a></div><!--top-->';
+    const alerts = (function () { const al = homeAlerts(); return al.length ? '<div class="card" style="padding:16px 20px 6px"><h2 class="h2" style="margin-bottom:6px">Atenção</h2>' + al.map((a) => '<a href="' + a[0] + '" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #EFE4DD;text-decoration:none"><span class="tag sand">' + a[2] + '</span><span style="flex:1">' + a[1] + '</span>' + ic('next') + '</a>').join('') + '</div>' : ''; })();
+    body = tk +
+      '<section class="cols"><div class="card grow" style="padding:18px 12px 8px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:0 8px 10px"><h2 class="h2">Hoje</h2><span class="muted sm">' + today.length + (today.length === 1 ? ' horário' : ' horários') + ' · ' + done + (done === 1 ? ' concluído' : ' concluídos') + '</span></div>' +
+      (all.length ? all.map((s) => { const c = client(s.clientId) || { name: '?' }, p = proOf(s); return '<button class="row' + (isOff(s) ? ' off' : '') + '" data-act="open-session" data-id="' + s.id + '"><span class="time">' + s.time + '</span>' + av(c.name, 44) + '<span style="flex:1;min-width:0"><span style="display:block;font-weight:600;font-size:16px">' + esc(c.name) + '</span><span class="muted sm">' + (multiPro() && p ? '<i class="dot" style="background:' + p.color + '"></i>' + esc(p.name.split(' ')[0]) + ' · ' : '') + esc(procTitle(s)) + '</span></span>' + statusTag(s) + '</button>'; }).join('') : '<div style="padding:12px 8px 18px" class="muted">Nenhum atendimento hoje.</div>') +
+      '<a href="#/agenda" class="more">Ver agenda completa</a></div>' +
+      '<div class="stack side2">' + alerts + '<div class="card"><h2 class="h2" style="margin-bottom:10px">Para enviar' + (pend.length ? ' <span class="cnt">' + pend.length + '</span>' : '') + '</h2>' +
+      (pend.length ? pend.slice(0, 4).map((s) => { const c = client(s.clientId) || { name: '?' }; return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #EFE4DD"><div style="flex:1;min-width:0"><div style="font-weight:600">' + esc(c.name.split(' ')[0]) + '</div><div class="muted sm">' + esc(SERVICES[s.service].name) + ' · ' + s.time + '</div></div><a class="btn sm" href="#/whatsapp/' + s.id + '">Enviar</a></div>'; }).join('') : '<div class="muted sm">Nenhum relatório pendente.</div>') + '</div>' +
+      '<div class="card"><h2 class="h2" style="margin-bottom:10px">Retornos próximos' + (rets.length ? ' <span class="cnt">' + rets.length + '</span>' : '') + '</h2>' + (rets.length ? rets.slice(0, 4).map((r) => '<a href="#/clientes/' + r.c.id + '" style="display:block;padding:10px 0;border-top:1px solid #EFE4DD;text-decoration:none"><div style="font-weight:600">' + esc(r.c.name) + '</div><div class="muted sm">Manutenção · ' + diffTxt(r.diff) + '</div></a>').join('') : '<div class="muted sm">Nenhum retorno nos próximos dias.</div>') + '</div></div></section>';
   }
-  return { nav: 'inicio', html: head(DIAL[d.getDay()].replace(/^./, (c) => c.toUpperCase()) + ', ' + d.getDate() + ' de ' + MESL[d.getMonth()], 'Olá, ' + esc(first), '<a class="btn" href="#/atendimento/novo">+ Novo atendimento</a>') + body };
+  return { nav: 'inicio', html: hero + body };
 }
 
 /* ---------- Agenda ---------- */
@@ -83,7 +96,7 @@ async function vClientes() {
   if (AREAS[f]) list = list.filter((c) => clientSessions(c.id).some((s) => SERVICES[s.service].area === f));
   if (f === 'ret') list = list.filter((c) => rets.includes(c.id));
   list.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
-  const cards = list.map((c) => { const l = last(c); return '<button class="cc" data-act="open-client" data-id="' + c.id + '"><span style="display:flex;gap:14px;align-items:center">' + av(c.name, 52) + '<span style="min-width:0"><span style="display:block;font-weight:500;font-size:17px">' + esc(c.name) + '</span><span class="muted sm">' + esc(c.phone || 'Sem telefone') + '</span></span></span><span style="border-top:1px solid #F1E7E1;padding-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span><span class="muted sm" style="display:block">' + (l ? esc(SERVICES[l.service].name) : 'Sem atendimentos') + '</span><span style="font-size:14px">' + (l ? fmtDate(l.date) : '—') + '</span></span>' + (rets.includes(c.id) ? '<span class="tag next">Retorno próximo</span>' : l ? '<span class="tag ' + (SERVICES[l.service].area === 'cilios' ? 'next' : 'sand') + '">' + SERVICES[l.service].short + '</span>' : '') + '</span></button>'; }).join('');
+  const cards = list.map((c) => { const l = last(c); return '<button class="cc" data-act="open-client" data-id="' + c.id + '"><span style="display:flex;gap:14px;align-items:center">' + av(c.name, 52) + '<span style="min-width:0"><span style="display:block;font-weight:500;font-size:17px">' + esc(c.name) + '</span><span class="muted sm">' + esc(c.phone || 'Sem telefone') + '</span></span></span><span style="border-top:1px solid #EFE4DD;padding-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%"><span><span class="muted sm" style="display:block">' + (l ? esc(SERVICES[l.service].name) : 'Sem atendimentos') + '</span><span style="font-size:14px">' + (l ? fmtDate(l.date) : '—') + '</span></span>' + (rets.includes(c.id) ? '<span class="tag next">Retorno próximo</span>' : l ? '<span class="tag ' + (SERVICES[l.service].area === 'cilios' ? 'next' : 'sand') + '">' + SERVICES[l.service].short + '</span>' : '') + '</span></button>'; }).join('');
   const chip = (k, l) => '<button class="chip ' + (f === k ? 'on' : '') + '" data-act="filter" data-v="' + k + '" aria-pressed="' + (f === k) + '">' + l + '</button>';
   return { nav: 'clientes', html: head('Seu cadastro', 'Clientes', '<input class="in" id="q" aria-label="Buscar cliente" placeholder="Buscar por nome ou telefone" style="width:260px" value="' + esc(UI.q) + '"><a class="btn" href="#/clientes/novo">+ Nova cliente</a>') +
     '<div class="chips">' + chip('todas', 'Todas') + activeAreas().map((k) => chip(k, AREAS[k].name.replace(' e depilação', ''))).join('') + chip('ret', 'Retorno próximo') + '</div>' +

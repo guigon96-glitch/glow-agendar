@@ -59,7 +59,7 @@ ACTX['foto-dl-par'] = async function () {
   toast('Gerando imagem…');
   const A = await loadImg(PC.get(pa.id)), D = await loadImg(PC.get(pd.id)), cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350; const x = cv.getContext('2d');
   x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, 1080, 1350); drawCover(x, A, 0, 0, 538, 1350); drawCover(x, D, 542, 0, 538, 1350);
-  const pill = (t, cx) => { x.font = '600 30px system-ui,Arial'; const w = x.measureText(t).width + 44; x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); (x.roundRect ? x.roundRect(cx - w / 2, 40, w, 60, 30) : x.rect(cx - w / 2, 40, w, 60)); x.fill(); x.fillStyle = '#3a2828'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, cx, 71); };
+  const pill = (t, cx) => { x.font = '600 30px system-ui,Arial'; const w = x.measureText(t).width + 44; x.fillStyle = 'rgba(255,255,255,.92)'; x.beginPath(); (x.roundRect ? x.roundRect(cx - w / 2, 40, w, 60, 30) : x.rect(cx - w / 2, 40, w, 60)); x.fill(); x.fillStyle = '#3B2E2E'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, cx, 71); };
   pill('ANTES', 269); pill('DEPOIS', 811);
   const g = x.createLinearGradient(0, 1230, 0, 1350); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); x.fillStyle = g; x.fillRect(0, 1230, 1080, 120);
   x.fillStyle = '#fff'; x.font = 'italic 400 36px Georgia,serif'; x.textAlign = 'center'; x.fillText(S.settings.studio || '', 540, 1305);

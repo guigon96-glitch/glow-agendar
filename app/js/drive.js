@@ -80,7 +80,7 @@ function driveCard() {
   if (typeof IS_WEB !== 'undefined' && IS_WEB) gisLoad(); // carrega antes do toque para a janela do Google não ser bloqueada
   return '<div class="card stack"><h2 class="h2">Fotos no Google Drive</h2><div class="muted sm">Uma cópia de cada foto de antes e depois vai para a pasta <b>' + DRIVE_FOLDER + '</b> no seu Google Drive, com a data, o nome da cliente e o procedimento. Usa o seu espaço do Google e você abre de qualquer lugar.</div>' +
     (d.on ? '<div class="muted sm">Ativo, copia sozinho as fotos novas. ' + (d.last ? 'Última cópia: ' + new Date(d.last).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '. ' : '') + (pend ? pend + (pend === 1 ? ' foto na fila.' : ' fotos na fila.') : 'Tudo copiado.') + '</div>' +
-      (d.err ? '<div class="sm" style="color:#B4533F">' + esc(d.err) + '</div>' : '') +
+      (d.err ? '<div class="sm" style="color:#B42318">' + esc(d.err) + '</div>' : '') +
       '<div class="acts"><button class="btn" data-act="dv-now">' + ic('dl') + 'Copiar agora</button><button class="btn ghost sm" data-act="dv-off">Desativar</button></div>'
       : '<div class="acts"><button class="btn" data-act="dv-on">Conectar Google Drive</button></div>') + '</div>';
 }

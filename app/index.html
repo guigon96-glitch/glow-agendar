@@ -15,7 +15,9 @@
 </head>
 <body>
 <div id="app">
-<aside class="side" id="side"></aside>
+<aside class="side" id="side" aria-label="Menu"></aside>
+<button class="drawer-handle" id="drawerHandle" type="button" aria-label="Abrir menu" aria-controls="side" aria-expanded="false"><i></i></button>
+<div class="drawer-bg" id="drawerBg" hidden></div>
 <main class="main" id="view" tabindex="-1"></main>
 <nav class="tabbar" id="tabbar" aria-label="Navegação principal"></nav>
 </div>

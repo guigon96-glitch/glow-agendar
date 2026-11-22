@@ -40,7 +40,7 @@ window.addEventListener('hashchange', () => route());
 
 /* ---------- modal / confirmação ---------- */
 function saveAreas(a) { S.settings.areas = Object.keys(AREAS).filter((k) => a.includes(k)); S.settings.areasSet = true; if (S.settings.loyalty && !S.settings.loyalty.custom) S.settings.loyalty.rewards = rewardsFor(S.settings.areas); if (!activeServices().includes(UI.ajSvc)) UI.ajSvc = activeServices()[0]; if (UI.filter !== 'todas' && UI.filter !== 'ret' && !S.settings.areas.includes(UI.filter)) UI.filter = 'todas'; save(); }
-function areaCards(a, mode) { return Object.keys(AREAS).map((k) => '<button class="cc" style="padding:16px 18px;gap:4px;align-items:flex-start;text-align:left;' + (a.includes(k) ? 'border:2px solid #C98A83;background:#FBEFEC' : 'border:2px solid transparent') + '" data-act="area-toggle" data-v="' + k + '" data-mode="' + (mode || '') + '" aria-pressed="' + a.includes(k) + '"><span style="font-weight:500;font-size:17px">' + (a.includes(k) ? '✓ ' : '') + AREAS[k].name + '</span><span class="muted sm">' + AREAS[k].desc + '</span></button>').join(''); }
+function areaCards(a, mode) { return Object.keys(AREAS).map((k) => '<button class="cc" style="padding:16px 18px;gap:4px;align-items:flex-start;text-align:left;' + (a.includes(k) ? 'border:2px solid #A45F5C;background:#F3E1DC' : 'border:2px solid transparent') + '" data-act="area-toggle" data-v="' + k + '" data-mode="' + (mode || '') + '" aria-pressed="' + a.includes(k) + '"><span style="font-weight:500;font-size:17px">' + (a.includes(k) ? '✓ ' : '') + AREAS[k].name + '</span><span class="muted sm">' + AREAS[k].desc + '</span></button>').join(''); }
 function openAreasSetup(keep) { const a = UI.areasDraft || (keep ? activeAreas() : Object.keys(AREAS)); UI.areasDraft = a; openModal('<h2 class="h2">Bem-vinda ao ' + esc(S.settings.studio) + '</h2><div class="muted">Quais áreas de beleza você atende? Os procedimentos, as fotos e os relatórios vão seguir a sua escolha. Você pode mudar depois em Ajustes.</div><div class="grid2" style="gap:10px">' + areaCards(a, 'modal') + '</div><div class="acts" style="justify-content:flex-end"><button class="btn" data-act="areas-ok">Continuar</button></div>'); }
 function openModal(html) { const m = $('#modal'); m.innerHTML = '<div class="box" role="dialog" aria-modal="true">' + html + '</div>'; m.hidden = false; }
 function closeModal() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; }
@@ -255,4 +255,40 @@ window.__lss = { S, UI, route, go };
   await route();
   if (firstRun && !S.settings.areasSet) openWelcome(); else if (!S.settings.areasSet) openAreasSetup();
   planRefresh();
+})();
+
+/* ---------- celular: menu lateral em gaveta (alça na borda, arrastar para abrir/fechar) ---------- */
+(function () {
+  const side = $('#side'), bg = $('#drawerBg'), handle = $('#drawerHandle'), mq = matchMedia('(max-width:960px)');
+  if (!side || !handle) return;
+  const W = () => side.offsetWidth || 300;
+  function set(open, focus) {
+    side.classList.remove('drag'); side.style.transform = ''; bg.style.opacity = '';
+    side.classList.toggle('open', open); document.body.classList.toggle('drawer-open', open);
+    handle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) { bg.hidden = false; requestAnimationFrame(() => bg.classList.add('on')); if (focus) { const a = side.querySelector('a.nav'); if (a) a.focus(); } }
+    else { bg.classList.remove('on'); setTimeout(() => { if (!side.classList.contains('open')) bg.hidden = true; }, 300); if (focus) handle.focus(); }
+  }
+  const isOpen = () => side.classList.contains('open');
+  handle.addEventListener('click', () => set(!isOpen(), true));
+  bg.addEventListener('click', () => set(false));
+  window.addEventListener('hashchange', () => { if (isOpen()) set(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) set(false, true); });
+  mq.addEventListener('change', () => { if (!mq.matches && isOpen()) set(false); });
+  // arrastar: começa na borda esquerda (ou na alça) com a gaveta fechada, ou em qualquer ponto com ela aberta
+  let t = null;
+  document.addEventListener('touchstart', (e) => {
+    if (!mq.matches || $('#modal') && !$('#modal').hidden) return; const x = e.touches[0].clientX, y = e.touches[0].clientY;
+    if (isOpen() || x <= 24 || e.target === handle || handle.contains(e.target)) t = { x, y, open: isOpen(), dx: 0, go: false };
+  }, { passive: true });
+  document.addEventListener('touchmove', (e) => {
+    if (!t) return; const dx = e.touches[0].clientX - t.x, dy = e.touches[0].clientY - t.y;
+    if (!t.go) { if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) { t = null; return; } if (Math.abs(dx) < 8) return; t.go = true; side.classList.add('drag'); bg.hidden = false; }
+    t.dx = dx; const w = W(), pos = Math.max(-w, Math.min(0, (t.open ? 0 : -w) + dx));
+    side.style.transform = 'translateX(' + pos + 'px)'; bg.style.opacity = String(1 + pos / w); bg.classList.add('on');
+  }, { passive: true });
+  document.addEventListener('touchend', () => {
+    if (!t) return; const d = t; t = null; if (!d.go) return;
+    set(d.open ? d.dx > -W() / 3 : d.dx > W() / 3);
+  });
 })();

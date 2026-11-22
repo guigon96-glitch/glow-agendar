@@ -27,7 +27,7 @@ async function vProcedimentos() {
   const areas = activeAreas();
   const rowOf = (k) => {
     const sv = SERVICES[k], pr = priceOf(k), cost = recipeCost(k), nrec = recipeOf(k).length, margin = pr > 0 ? Math.round(((pr - cost) / pr) * 100) : 0;
-    return '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-top:1px solid #F1E7E1"><div style="flex:1;min-width:200px"><div style="font-weight:500">' + esc(sv.name) + (svcHidden(k) ? ' <span class="tag off">oculto</span>' : '') + '</div><div class="muted sm">' + sv.dur + ' min · retorno em ' + sv.next + ' dias · ' + (nrec ? nrec + ' produto(s) na receita' : 'sem produtos na receita') + '</div></div>' +
+    return '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-top:1px solid #EFE4DD"><div style="flex:1;min-width:200px"><div style="font-weight:500">' + esc(sv.name) + (svcHidden(k) ? ' <span class="tag off">oculto</span>' : '') + '</div><div class="muted sm">' + sv.dur + ' min · retorno em ' + sv.next + ' dias · ' + (nrec ? nrec + ' produto(s) na receita' : 'sem produtos na receita') + '</div></div>' +
       '<div style="text-align:right"><div style="font-weight:500">' + fmtBRL(pr) + '</div><div class="muted sm">' + (nrec ? 'gasto ' + fmtBRL(cost) + ' · margem ' + margin + '%' : 'defina o gasto') + '</div></div><button class="btn ghost sm" data-act="sv-edit" data-k="' + k + '">' + ic('edit') + 'Editar</button></div>';
   };
   const blocks = areas.map((a) => {
@@ -44,14 +44,14 @@ ROUTEX.procedimentos = vProcedimentos;
 /* ---------- editar / criar ---------- */
 function svcModal() {
   const d = UI.svcEdit, isNew = !d.k, builtin = !!SERVICES_BASE[d.k];
-  const pOpts = S.ext.products.filter((p) => p.active !== false && !d.recipe.some((r) => r.pid === p.id)).map((p) => '<option value="' + p.id + '">' + esc(p.name) + (p.shared ? ' (compartilhado)' : '') + '</option>').join('');
-  const rows = d.recipe.map((r, i) => { const p = prod(r.pid); if (!p) return ''; return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #F1E7E1"><span style="flex:1;font-size:14px">' + esc(p.name) + '</span>' + (p.shared ? '<span class="muted sm">compartilhado · rende ~' + (yieldOf(p) || 20) + ' usos</span>' : '<input class="in" style="width:90px;height:40px" type="number" step="any" min="0" data-rq="' + i + '" value="' + r.qty + '"><span class="muted sm" style="width:46px">' + esc(p.unit) + '</span>') + '<button class="btn ghost sm" style="height:34px;padding:0 10px" data-act="sv-del-prod" data-i="' + i + '" aria-label="Remover">' + ic('trash') + '</button></div>'; }).join('');
+  const pOpts = S.ext.products.filter((p) => p.active !== false && !d.recipe.some((r) => r.pid === p.id)).map((p) => '<option value="' + p.id + '">' + esc(p.name) + (p.shared ? ' (compartilhado)' : ' · em ' + (isMl(p) ? 'ml' : esc(p.unit))) + '</option>').join('');
+  const rows = d.recipe.map((r, i) => { const p = prod(r.pid); if (!p) return ''; return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #EFE4DD"><span style="flex:1;font-size:14px">' + esc(p.name) + '</span>' + (p.shared ? '<span class="muted sm">compartilhado · rende ~' + (yieldOf(p) || 20) + ' usos</span>' : '<input class="in" style="width:90px;height:40px" type="number" step="any" min="0" data-rq="' + i + '" value="' + r.qty + '"><span class="muted sm" style="width:46px">' + esc(p.unit) + '</span>') + '<button class="btn ghost sm" style="height:34px;padding:0 10px" data-act="sv-del-prod" data-i="' + i + '" aria-label="Remover">' + ic('trash') + '</button></div>'; }).join('');
   const cost = round2(d.recipe.reduce((n, r) => { const p = prod(r.pid); return n + (p ? unitCost(p, r.qty) : 0); }, 0));
   openModal('<h2 class="h2">' + (isNew ? 'Novo procedimento' : 'Editar procedimento') + '</h2>' +
     '<div><label class="lb" for="sv_n">Nome</label><input class="in" id="sv_n" value="' + esc(d.name) + '" placeholder="Ex.: ' + esc(exFor('svc', d.area || activeAreas()[0])) + '"></div>' +
     (isNew ? '<div><label class="lb" for="sv_a">Área</label><select class="in" id="sv_a">' + activeAreas().map((a) => '<option value="' + a + '"' + (d.area === a ? ' selected' : '') + '>' + AREAS[a].name + '</option>').join('') + '</select></div>' : '') +
     '<div class="grid2" style="gap:10px"><div><label class="lb" for="sv_p">Preço (R$)</label><input class="in" id="sv_p" type="number" step="0.01" min="0" value="' + esc(d.price) + '"></div><div><label class="lb" for="sv_d">Duração (min)</label><input class="in" id="sv_d" type="number" min="10" step="5" value="' + esc(d.dur) + '"></div><div><label class="lb" for="sv_x">Retorno em (dias)</label><input class="in" id="sv_x" type="number" min="1" value="' + esc(d.next) + '"></div></div>' +
-    '<div class="card stack" style="gap:6px;background:#FFFBF8"><h3 class="h3">Produtos gastos neste procedimento</h3><div class="muted sm">Quanto de cada produto é usado por atendimento. Itens compartilhados (cola, removedor) contam um uso e o app pergunta ao concluir se a unidade acabou.</div>' + (rows || '<div class="muted sm">Nenhum produto ainda.</div>') +
+    '<div class="card stack" style="gap:6px;background:#F8EEE9"><h3 class="h3">Produtos gastos neste procedimento</h3><div class="muted sm">Quanto de cada produto é usado por atendimento. Itens compartilhados (cola, removedor) contam um uso e o app pergunta ao concluir se a unidade acabou.</div>' + (rows || '<div class="muted sm">Nenhum produto ainda.</div>') +
     (pOpts ? '<div style="display:flex;gap:8px;margin-top:6px"><select class="in" id="sv_pp" aria-label="Produto">' + pOpts + '</select><input class="in" id="sv_pq" type="number" step="any" min="0" value="1" style="width:90px" aria-label="Quantidade"><button class="btn ghost" data-act="sv-add-prod">Adicionar</button></div>' : (S.ext.products.length ? '' : '<div class="muted sm">Cadastre os produtos em Estoque para usá-los aqui.</div>')) +
     (d.recipe.length ? '<div class="muted sm">Gasto estimado por atendimento: <b>' + fmtBRL(cost) + '</b></div>' : '') + '</div>' +
     '<div class="acts" style="justify-content:flex-end">' + (!isNew ? '<button class="btn danger" data-act="sv-hide" data-k="' + d.k + '">' + (svcHidden(d.k) ? 'Mostrar' : (builtin ? 'Ocultar' : 'Excluir')) + '</button>' : '') + '<button class="btn ghost" data-act="modal-close">Cancelar</button><button class="btn" data-act="sv-save">Salvar</button></div>');
@@ -94,7 +94,9 @@ ACTX['stk-edit'] = function (el) {
 };
 ACTX['stk-save'] = function () {
   const n = $('#pd_n').value.trim(); if (!n) { toast('Informe o nome'); return; }
-  const o = { name: n, unit: $('#pd_u').value.trim() || 'un', area: $('#pd_a').value, qty: round2($('#pd_q').value), min: round2($('#pd_m').value), cost: round2($('#pd_c').value), shared: !!($('#pd_sh') && $('#pd_sh').checked), yield: Number($('#pd_y') && $('#pd_y').value) || 0 }, id = $('#pd_id').value;
+  const med = $('#pd_med') ? $('#pd_med').value : 'un', size = round2($('#pd_sz') ? $('#pd_sz').value : 0);
+  if (med === 'ml' && !(size > 0)) { toast('Informe quantos ml tem a embalagem'); return; }
+  const o = { name: n, med, size: med === 'ml' ? size : 0, unit: med === 'ml' ? 'ml' : ($('#pd_u').value.trim() || 'un'), area: $('#pd_a').value, qty: round2($('#pd_q').value), min: round2($('#pd_m').value), cost: round2($('#pd_c').value), shared: !!($('#pd_sh') && $('#pd_sh').checked), yield: Number($('#pd_y') && $('#pd_y').value) || 0 }, id = $('#pd_id').value;
   if (id) Object.assign(prod(id), o); else S.ext.products.push(Object.assign({ id: uid(), uses: 0, hist: [], epoch: 0 }, o));
   save(); closeModal(); route({ keep: true }); toast('Produto salvo');
 };
@@ -102,7 +104,7 @@ ACTX['stk-save'] = function () {
 /* a unidade acabou: baixa 1 do estoque, aprende o rendimento e avisa se chegou ao mínimo */
 function emptyUnit(p) {
   p.hist = p.hist || []; if ((p.uses || 0) > 0) p.hist.push(p.uses);
-  p.uses = 0; p.epoch = (p.epoch || 0) + 1; p.qty = Math.max(0, round2(Number(p.qty) - 1)); save();
+  p.uses = 0; p.epoch = (p.epoch || 0) + 1; p.qty = Math.max(0, round2(Number(p.qty) - (isMl(p) ? Number(p.size) : 1))); save();
   if (Number(p.qty) <= Number(p.min)) toast('Estoque mínimo: ' + p.name + ' (restam ' + p.qty + ' ' + p.unit + ')');
 }
 function askShared(s) {
@@ -129,4 +131,10 @@ function prefillRecipe(s) {
 }
 if (typeof atendimentoExtra === 'function') { const _ae = atendimentoExtra; atendimentoExtra = function (s) { prefillRecipe(s); return _ae(s); }; } // eslint-disable-line no-func-assign
 
+// cadastro de produto: troca os campos entre unidade e ml
+document.addEventListener('change', (e) => {
+  const t = e.target; if (!t || t.id !== 'pd_med') return; const ml = t.value === 'ml';
+  document.querySelectorAll('.pd-ml').forEach((x) => { x.hidden = !ml; }); document.querySelectorAll('.pd-un').forEach((x) => { x.hidden = ml; });
+  document.querySelectorAll('.pd-mu').forEach((x) => { x.textContent = ml ? 'ml' : 'und'; }); document.querySelectorAll('.pd-cl').forEach((x) => { x.textContent = ml ? 'Custo da embalagem' : 'Custo por unidade'; });
+});
 document.addEventListener('change', (e) => { const t = e.target; if (t && t.id === 'sv_a') { const n = $('#sv_n'); if (n) n.placeholder = 'Ex.: ' + exFor('svc', t.value); } });

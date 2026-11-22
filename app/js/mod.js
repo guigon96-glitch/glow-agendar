@@ -3,7 +3,7 @@
 const ACTX = {}, ROUTEX = {}; // ações e rotas extras (usadas por main.js)
 const PAYM = ['Pix', 'Cartão de crédito', 'Cartão de débito', 'Dinheiro', 'Transferência'];
 const EXP_CATS = ['Produtos', 'Aluguel', 'Equipamentos', 'Marketing', 'Impostos e taxas', 'Outros'];
-const PRO_COLORS = ['#C98A83', '#8FA98F', '#C9AE86', '#9AA7C7', '#B79BC4', '#D6A27E'];
+const PRO_COLORS = ['#A45F5C', '#1F8A8A', '#5A3DB0', '#C2621B', '#3B6FB6', '#6E8A1F'];
 const DEFAULT_PRICE = { cilios: 180, lifting: 160, design: 55, henna: 75, gel: 220, esmalt: 70, blind: 110, corte: 120, color: 280, mechas: 650, tratam: 130, social: 150, noiva: 450, festa: 190, depil: 60, limpeza: 160, peeling: 190 };
 const HOURS_DEFAULT = () => ({ open: '09:00', close: '19:00', days: [1, 2, 3, 4, 5, 6], step: 30, lunchFrom: '', lunchTo: '' });
 const AREA_EX = { // exemplos de preenchimento conforme a primeira área escolhida
@@ -116,7 +116,10 @@ function applyShared(s) {
   s.sharedApplied = keep;
 }
 const yieldOf = (p) => { const h = (p.hist || []).slice(-5).filter((x) => x > 0); return h.length ? Math.round(h.reduce((a, b) => a + b, 0) / h.length) : Number(p.yield) || 0; };
-const unitCost = (p, qty) => (p.shared ? (Number(p.cost) || 0) / (yieldOf(p) || 20) : (Number(p.cost) || 0) * (Number(qty) || 0));
+// medida do produto: 'ml' guarda estoque em ml e o custo é da embalagem de `size` ml; 'un' (padrão) guarda unidades
+const isMl = (p) => !!(p && p.med === 'ml' && Number(p.size) > 0);
+const baseCost = (p) => (Number(p.cost) || 0) / (isMl(p) ? Number(p.size) : 1); // custo por ml ou por unidade
+const unitCost = (p, qty) => (p.shared ? (Number(p.cost) || 0) / (yieldOf(p) || 20) : baseCost(p) * (Number(qty) || 0));
 const costOf = (s) => round2((s.use || []).reduce((n, u) => { const p = prod(u.pid); return n + (p ? unitCost(p, u.qty) : 0); }, 0));
 
 /* ---------- pacotes ---------- */
@@ -239,10 +242,10 @@ function loadSampleExt() {
   const done = S.sessions.filter((s) => s.status === 'concluido').sort(sortSessions);
   done.forEach((s, i) => { if (i >= done.length - 3) return; markPaid(s, PAYM[(i * 3 + 1) % 4], s.date); });
   // produtos usados em alguns atendimentos
-  S.ext.products = [{ id: 'pd1', name: 'Gel construtor nude', unit: 'pote 30 g', qty: 6, min: 2, cost: 38, area: 'unhas' }, { id: 'pd2', name: 'Esmalte em gel (cores variadas)', unit: 'frasco', qty: 14, min: 4, cost: 22, area: 'unhas' }, { id: 'pd3', name: 'Cola para extensão de cílios', unit: 'frasco', qty: 3, min: 2, cost: 48, area: 'cilios', shared: true, yield: 40, uses: 12, hist: [38, 41, 40], epoch: 3 }, { id: 'pd4', name: 'Fios fio a fio C 0,10', unit: 'cartela', qty: 9, min: 3, cost: 24, area: 'cilios' }, { id: 'pd5', name: 'Coloração 8.3 louro dourado', unit: 'tubo', qty: 5, min: 2, cost: 28, area: 'cabelo' }, { id: 'pd6', name: 'Cera quente', unit: 'kg', qty: 3, min: 1, cost: 42, area: 'estetica' }, { id: 'pd7', name: 'Henna para sobrancelhas', unit: 'pote', qty: 4, min: 2, cost: 19, area: 'sobrancelhas' }, { id: 'pd8', name: 'Máscara calmante facial', unit: 'unidade', qty: 2, min: 2, cost: 35, area: 'estetica' }];
-  const gel = S.sessions.find((s) => s.service === 'gel' && s.status === 'concluido'); if (gel) { gel.use = [{ pid: 'pd1', qty: 1 }, { pid: 'pd2', qty: 1 }]; }
+  S.ext.products = [{ id: 'pd1', name: 'Gel construtor nude', med: 'ml', size: 30, unit: 'ml', qty: 180, min: 60, cost: 38, area: 'unhas' }, { id: 'pd2', name: 'Esmalte em gel (cores variadas)', med: 'ml', size: 15, unit: 'ml', qty: 210, min: 60, cost: 22, area: 'unhas' }, { id: 'pd3', name: 'Cola para extensão de cílios', med: 'un', unit: 'frasco', qty: 3, min: 2, cost: 48, area: 'cilios', shared: true, yield: 40, uses: 12, hist: [38, 41, 40], epoch: 3 }, { id: 'pd4', name: 'Fios fio a fio C 0,10', med: 'un', unit: 'cartela', qty: 9, min: 3, cost: 24, area: 'cilios' }, { id: 'pd5', name: 'Coloração 8.3 louro dourado', med: 'ml', size: 60, unit: 'ml', qty: 300, min: 120, cost: 28, area: 'cabelo' }, { id: 'pd6', name: 'Cera quente', med: 'ml', size: 1000, unit: 'ml', qty: 3000, min: 1000, cost: 42, area: 'estetica' }, { id: 'pd7', name: 'Henna para sobrancelhas', med: 'ml', size: 10, unit: 'ml', qty: 40, min: 20, cost: 19, area: 'sobrancelhas' }, { id: 'pd8', name: 'Máscara calmante facial', med: 'un', unit: 'un', qty: 2, min: 2, cost: 35, area: 'estetica' }, { id: 'pd9', name: 'Shampoo profissional', med: 'ml', size: 1000, unit: 'ml', qty: 2000, min: 500, cost: 65, area: 'cabelo' }];
+  const gel = S.sessions.find((s) => s.service === 'gel' && s.status === 'concluido'); if (gel) { gel.use = [{ pid: 'pd1', qty: 3 }, { pid: 'pd2', qty: 1 }]; }
   const cil = S.sessions.find((s) => s.service === 'cilios' && s.status === 'concluido'); if (cil) { cil.use = [{ pid: 'pd4', qty: 1 }, { pid: 'pd3', qty: 1 }]; cil.sharedApplied = [{ pid: 'pd3', e: 3 }]; }
-  S.ext.recipe = { cilios: [{ pid: 'pd4', qty: 1 }, { pid: 'pd3', qty: 1 }], lifting: [{ pid: 'pd3', qty: 1 }], gel: [{ pid: 'pd1', qty: 1 }, { pid: 'pd2', qty: 1 }], henna: [{ pid: 'pd7', qty: 1 }], depil: [{ pid: 'pd6', qty: 0.1 }], color: [{ pid: 'pd5', qty: 2 }] };
+  S.ext.recipe = { cilios: [{ pid: 'pd4', qty: 1 }, { pid: 'pd3', qty: 1 }], lifting: [{ pid: 'pd3', qty: 1 }], gel: [{ pid: 'pd1', qty: 3 }, { pid: 'pd2', qty: 1 }], henna: [{ pid: 'pd7', qty: 1 }], depil: [{ pid: 'pd6', qty: 100 }], color: [{ pid: 'pd5', qty: 60 }, { pid: 'pd9', qty: 20 }], corte: [{ pid: 'pd9', qty: 20 }], limpeza: [{ pid: 'pd8', qty: 1 }] };
   // despesas dos últimos 3 meses
   const ex = [];
   for (let i = 0; i <= 2; i++) { const m = shiftMonth(t.slice(0, 7), -i); ex.push([m + '-05', 'Aluguel da sala', 'Aluguel', 450], [m + '-10', 'Reposição de produtos', 'Produtos', 180 + i * 20], [m + '-15', 'Anúncios no Instagram', 'Marketing', 80]); }
