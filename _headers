@@ -8,3 +8,13 @@
   Cache-Control: no-cache
 /app/css/*
   Cache-Control: no-cache
+/beta/sw.js
+  Cache-Control: no-cache
+/beta/index.html
+  Cache-Control: no-cache
+/beta/manifest.webmanifest
+  Cache-Control: no-cache
+/beta/js/*
+  Cache-Control: no-cache
+/beta/css/*
+  Cache-Control: no-cache
