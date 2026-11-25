@@ -61,13 +61,20 @@ const SERVICES = {
 const ANGLES = { rosto: 'Rosto todo', od: 'Olho direito', oe: 'Olho esquerdo', sob: 'Sobrancelhas', maos: 'Mãos e unhas', cab: 'Cabelo', reg: 'Região tratada' };
 const activeAreas = () => { const a = (S.settings.areas || []).filter((k) => AREAS[k]); return a.length ? a : Object.keys(AREAS); };
 const activeServices = () => { const a = activeAreas(); return Object.keys(SERVICES).filter((k) => a.includes(SERVICES[k].area) && !(S.ext && S.ext.svc && S.ext.svc[k] && S.ext.svc[k].hidden)); };
-const OPTS = {
-  tecnica: ['Fio a fio', 'Brasileiro', 'Russo', 'Híbrido'],
-  curvatura: ['J', 'B', 'C', 'D', 'L'],
-  espessura: ['0,05', '0,07', '0,10', '0,15'],
-  comprimento: ['8–10', '9–12', '10–13', '12–14'],
-  mapeamento: ['Natural', 'Gatinho', 'Boneca', 'Esquilo']
+// Ficha técnica por área: [campo, rótulo, opções, sufixo]. Cílios mantém os campos antigos; as outras áreas usam prefixo para não misturar.
+const TECH = {
+  unhas: [['u_tec', 'Técnica', ['Gel', 'Fibra de vidro', 'Polygel', 'Acrílico', 'Banho de gel', 'Esmaltação em gel', 'Esmalte comum']], ['u_fmt', 'Formato', ['Quadrada', 'Squoval', 'Redonda', 'Oval', 'Amendoada', 'Bailarina', 'Stiletto']], ['u_comp', 'Comprimento', ['Natural', 'Curta', 'Média', 'Longa', 'Extra longa']], ['u_acab', 'Acabamento', ['Brilho', 'Fosco', 'Francesinha', 'Baby boomer', 'Nail art', 'Cromado']], ['u_cut', 'Cutícula', ['Cortada', 'Só empurrada', 'Russa (a seco)']], ['u_nat', 'Unha natural', ['Saudável', 'Fina', 'Quebradiça', 'Roída', 'Descolando']]],
+  cabelo: [['h_tipo', 'Tipo de fio', ['Liso', 'Ondulado', 'Cacheado', 'Crespo']], ['h_esp', 'Espessura do fio', ['Fino', 'Médio', 'Grosso']], ['h_comp', 'Comprimento', ['Curto', 'Médio', 'Longo', 'Extra longo']], ['h_cond', 'Condição', ['Virgem', 'Colorido', 'Descolorido', 'Com progressiva', 'Danificado']], ['h_couro', 'Couro cabeludo', ['Normal', 'Oleoso', 'Seco', 'Sensível', 'Com caspa']], ['h_bra', 'Fios brancos', ['Nenhum', 'Até 30%', '30 a 60%', 'Mais de 60%']]],
+  cilios: [['tecnica', 'Técnica', ['Fio a fio', 'Brasileiro', 'Russo', 'Híbrido']], ['curvatura', 'Curvatura', ['J', 'B', 'C', 'D', 'L']], ['espessura', 'Espessura (mm)', ['0,05', '0,07', '0,10', '0,15'], ' mm'], ['comprimento', 'Comprimento (mm)', ['8–10', '9–12', '10–13', '12–14'], ' mm'], ['mapeamento', 'Mapeamento', ['Natural', 'Gatinho', 'Boneca', 'Esquilo']]],
+  sobrancelhas: [['b_fmt', 'Formato', ['Natural', 'Arqueada', 'Reta', 'Angulada']], ['b_tec', 'Técnica', ['Pinça', 'Linha', 'Cera', 'Henna', 'Brow lamination']], ['b_cor', 'Tom', ['Louro', 'Castanho claro', 'Castanho médio', 'Castanho escuro', 'Preto']], ['b_fal', 'Falhas', ['Nenhuma', 'Poucas', 'Muitas']]],
+  maquiagem: [['m_pele', 'Tipo de pele', ['Seca', 'Normal', 'Mista', 'Oleosa', 'Madura']], ['m_sub', 'Subtom', ['Frio', 'Neutro', 'Quente', 'Oliva']], ['m_acab', 'Acabamento', ['Matte', 'Natural', 'Luminoso']], ['m_olho', 'Olhos', ['Natural', 'Esfumado', 'Delineado', 'Cut crease', 'Glitter']]],
+  estetica: [['e_pele', 'Tipo de pele', ['Seca', 'Normal', 'Mista', 'Oleosa', 'Sensível']], ['e_fot', 'Fototipo', ['I', 'II', 'III', 'IV', 'V', 'VI']], ['e_cond', 'O que tratar', ['Acne', 'Manchas', 'Poros', 'Desidratação', 'Flacidez', 'Pelos']]]
 };
+// Campo de texto livre da área: [campo, rótulo, exemplo]
+const TECH_TXT = { cilios: ['lote', 'Adesivo / lote', 'Ex.: lote 2411-B'], unhas: ['produto', 'Cores e produtos', 'Ex.: gel construtor nude · esmalte 112 · top fosco'], cabelo: ['produto', 'Fórmula da cor e produtos', 'Ex.: 7.1 + 6.0 (1:1) · OX 20 vol · 35 min'] };
+const areaOf = (s) => (SERVICES[s.service] || SERVICES.cilios).area;
+// [rótulo, valor] preenchidos da ficha técnica do atendimento
+const techItems = (s) => (TECH[areaOf(s)] || []).filter((t) => s[t[0]]).map((t) => [t[1].replace(/ \(mm\)$/, ''), s[t[0]] + (t[3] || '')]);
 const CARE_DEFAULT = {
   cilios: ['Não molhar nas primeiras 24 h', 'Evitar vapor, sauna e água quente', 'Sem produtos oleosos na região dos olhos', 'Escovar os cílios diariamente', 'Evitar dormir de bruços', 'Não puxar nem arrancar os fios'],
   lifting: ['Não molhar nas primeiras 24 h', 'Evitar vapor, sauna e maquiagem por 24 h', 'Não usar curvador de cílios', 'Hidratar os cílios com sérum'],
@@ -139,6 +146,7 @@ const sortSessions = (a, b) => (a.date + a.time).localeCompare(b.date + b.time);
 function procTitle(s) {
   const sv = SERVICES[s.service] || SERVICES.cilios;
   if (s.service === 'cilios' && s.tecnica) return sv.name + ' · ' + s.tecnica.toLowerCase();
+  if (sv.area === 'unhas' && s.u_fmt) return sv.name + ' · ' + s.u_fmt.toLowerCase();
   return sv.name;
 }
 function nextDate(s) { return addDays(s.date, (SERVICES[s.service] || SERVICES.cilios).next); }
