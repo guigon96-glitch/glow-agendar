@@ -1,454 +1,284 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-type="software" data-radius="soft" data-ground="sand" data-buttons="arrow" data-motion>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#A8625F">
-<meta name="robots" content="noindex">
-<link rel="icon" href="data:,">
-<title>Glow Studio · Apresentação para salão de cabeleireira</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glow Studio: app de agenda para salão de cabeleireira</title>
+<meta name="description" content="Agenda, ficha da cliente, fotos de antes e depois com guia na câmera, estoque e Pix no mesmo aplicativo de celular, a partir de R$ 24,90 por mês.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Glow Studio: app de agenda para salão de cabeleireira">
+<meta property="og:description" content="Agenda, ficha, antes e depois com guia na câmera, estoque e Pix no mesmo app.">
+<meta property="og:image" content="share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf6f2">
+<!-- <link rel="canonical" href="https://glow-agenda.pages.dev/apresentacao/"> -->
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<link rel="stylesheet" href="assets/moments/liquid-hover/moment.css">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script src="assets/backgrounds/backgrounds.js"></script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/liquid-hover/moment.js">
 <style>
-:root{--rose:#A8625F;--rose2:#C98A83;--ink:#3a2828;--cream:#FBF7F3;--blush:#F3E3DE}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:'Helvetica Neue',system-ui,Arial,sans-serif;color:var(--ink);background:var(--cream);overflow-x:hidden}
-.serif{font-family:Georgia,'Cormorant Garamond',serif;font-style:italic;font-weight:400}
-section{padding:64px 20px;max-width:560px;margin:0 auto;position:relative}
-h2{font:italic 400 34px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
-.lead{font-size:16px;line-height:1.5;margin:0 0 26px;color:#5b4545}
-.eyebrow{letter-spacing:.28em;font-size:11px;text-transform:uppercase;color:var(--rose2);margin-bottom:10px;font-weight:600}
-.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
-.rv.in{opacity:1;transform:none}
-
-/* HERO */
-.hero{max-width:none;min-height:auto;background:linear-gradient(160deg,#d89a92,#a8625f 60%,#7d4543);color:#fff;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 20px 76px}
-.blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.45;animation:float 12s ease-in-out infinite}
-.b1{width:260px;height:260px;background:#ffd9cf;top:-60px;left:-60px}.b2{width:300px;height:300px;background:#7d4543;bottom:-90px;right:-80px;animation-delay:-4s}.b3{width:180px;height:180px;background:#ffc9b8;top:45%;right:-50px;animation-delay:-7s}
-@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(24px,-30px) scale(1.12)}}
-.hero h1{font:italic 400 46px/1.02 Georgia,serif;margin:0 0 12px;position:relative;animation:up 1s .1s both}
-.hero .tag{letter-spacing:.3em;font-size:11px;position:relative;margin-bottom:22px;animation:up 1s both;opacity:.9}
-.hero p{font-size:17px;line-height:1.45;max-width:380px;margin:0 auto 26px;position:relative;animation:up 1s .25s both}
-@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-.hphone{position:relative;width:min(52vw,210px);aspect-ratio:430/932;border-radius:34px;border:7px solid #2b2020;overflow:hidden;box-shadow:0 30px 60px rgba(40,10,10,.45);animation:up 1.1s .4s both,bob 5s 1.5s ease-in-out infinite;background:#fff}
-.hphone img{width:100%;height:100%;display:block;object-fit:cover}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-12px) rotate(1.2deg)}}
-.btn{display:inline-block;background:#fff;color:var(--rose);border:0;border-radius:99px;padding:14px 26px;font:600 15px system-ui;text-decoration:none;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.18);position:relative}
-.btn.dark{background:var(--rose);color:#fff}.btn.ghost{background:transparent;border:2px solid var(--rose);color:var(--rose);box-shadow:none}
-.cue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.2em;opacity:.8;animation:cue 2s infinite}
-@keyframes cue{50%{transform:translate(-50%,8px)}}
-
-/* PHONE INTERATIVO */
-.stage{display:flex;flex-direction:column;align-items:center}
-.pw{display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
-.arr{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--rose);color:#fff;font:400 26px/1 system-ui;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 16px rgba(120,50,45,.3);padding:0 0 3px}.arr:active{transform:scale(.92)}
-.phone{position:relative;width:min(calc(100vw - 112px),340px,calc((100svh - 270px)*.461));min-width:170px;aspect-ratio:430/932;border-radius:44px;border:9px solid #2b2020;background:#fff;overflow:hidden;box-shadow:0 30px 60px rgba(60,20,20,.28);touch-action:pan-y}
-.phone .scr{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:translateX(40px);transition:opacity .35s,transform .35s;pointer-events:none}
-.phone .scr.on{opacity:1;transform:none}
-.phone .scr.out{transform:translateX(-40px)}
-.hot{position:absolute;background:transparent;border:0;padding:0;cursor:pointer;border-radius:14px}
-.hot:active{background:rgba(168,98,95,.16)}
-.pulse::after{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(168,98,95,.55);animation:pulse 1.6s infinite;pointer-events:none}
-@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.6);opacity:0}}
-.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
-.flash.go{animation:flash .5s}
-@keyframes flash{0%{opacity:.95}100%{opacity:0}}
-.cap{margin-top:16px;text-align:center;min-height:118px;max-width:360px}
-.cap b{display:block;font:italic 400 24px Georgia,serif;color:var(--rose);margin-bottom:4px}
-.cap span{font-size:14.5px;line-height:1.45;color:#5b4545}
-.tbar{display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap}
-.tbar .btn{padding:11px 18px;font-size:13.5px;box-shadow:none}
-.dots{display:flex;gap:6px;justify-content:center;margin-top:12px}.dots i{width:6px;height:6px;border-radius:50%;background:#e2cfc9;transition:.3s}.dots i.on{background:var(--rose);width:18px;border-radius:4px}
-
-/* SLIDER ANTES E DEPOIS */
-.ba{position:relative;width:100%;aspect-ratio:3/4;border-radius:26px;overflow:hidden;box-shadow:0 20px 44px rgba(60,20,20,.25);touch-action:pan-y;user-select:none;cursor:ew-resize;background:#ddd}
-.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.ba .top{clip-path:inset(0 0 0 50%)}
-.ba .lab{position:absolute;top:14px;background:rgba(255,255,255,.92);color:var(--ink);font:600 11px system-ui;letter-spacing:.14em;padding:6px 12px;border-radius:99px}
-.ba .l1{left:14px}.ba .l2{right:14px}
-.ba .bar{position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.4)}
-.ba .knob{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35);display:grid;place-items:center;color:var(--rose);font:700 16px system-ui}
-.chips{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.chip{border:2px solid #ecd6d0;background:#fff;border-radius:99px;padding:9px 15px;font:600 13px system-ui;color:var(--ink);cursor:pointer;transition:.2s}
-.chip.on{background:var(--rose);border-color:var(--rose);color:#fff}
-.bahint{text-align:center;font-size:13px;color:#8a7070;margin-top:12px}
-
-/* FUNÇÕES */
-.cards{display:grid;gap:14px}
-.fc{background:#fff;border:1px solid #efdcd6;border-radius:22px;padding:20px 20px 18px;box-shadow:0 8px 22px rgba(120,60,50,.06);display:flex;gap:16px;align-items:flex-start}
-.fc .n{flex:none;width:42px;height:42px;border-radius:14px;background:var(--blush);color:var(--rose);display:grid;place-items:center;font:italic 400 22px Georgia,serif}
-.fc b{display:block;font-size:17px;margin-bottom:4px}.fc span{font-size:14.5px;line-height:1.45;color:#5b4545}
-
-/* AGENDAMENTO */
-.flow{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 22px;margin:0 -20px;scrollbar-width:none}
-.flow::-webkit-scrollbar{display:none}
-.step{flex:none;width:min(72vw,270px);scroll-snap-align:center}
-.step .fr{border-radius:30px;border:7px solid #2b2020;overflow:hidden;box-shadow:0 18px 36px rgba(60,20,20,.25);background:#fff}
-.step img{display:block;width:100%;height:auto}
-.step p{text-align:center;font-size:14px;line-height:1.4;margin:12px 4px 0}.step p b{display:block;font:italic 400 19px Georgia,serif;color:var(--rose);margin-bottom:2px}
-
-/* CTA */
-.cta{max-width:none;background:linear-gradient(160deg,#d89a92,#a8625f 70%);color:#fff;text-align:center;padding:80px 24px calc(90px + env(safe-area-inset-bottom))}
-.cta h2{color:#fff;font-size:38px}.cta p{max-width:420px;margin:0 auto 26px;line-height:1.5;font-size:16px}
-.cta small{display:block;margin-top:26px;opacity:.75;font-size:12px}
-.nav2{display:flex;gap:10px;margin-top:14px;justify-content:center}
-.nav2 .btn{padding:11px 20px;font-size:13.5px;box-shadow:none}
-.tl{height:4px;background:#ecd9d3;border-radius:4px;overflow:hidden;width:100%;max-width:360px;margin-top:14px}.tl i{display:block;height:100%;width:0;background:var(--rose)}
-.seg{display:inline-flex;background:#fff;border:2px solid #ecd6d0;border-radius:99px;padding:4px;margin-bottom:20px}
-.seg button{border:0;background:transparent;border-radius:99px;padding:10px 20px;font:600 14px system-ui;color:var(--ink);cursor:pointer}.seg button.on{background:var(--rose);color:#fff}
-.plans{display:grid;gap:16px}
-.pl{background:#fff;border:2px solid #efdcd6;border-radius:26px;padding:24px 22px;box-shadow:0 10px 26px rgba(120,60,50,.07)}
-.pl.hl{border-color:var(--rose2);background:#FBEFEC}
-.pl h3{font:italic 400 28px Georgia,serif;color:var(--rose);margin:0 0 2px}.pl .for{font-size:13.5px;color:#7a6262;line-height:1.4;margin-bottom:14px}
-.pl .pr{font:500 38px/1 Georgia,serif;color:var(--ink)}.pl .pr small{font:500 14px system-ui;color:#7a6262}
-.pl .sub{font-size:13px;color:#7a6262;margin:6px 0 16px;min-height:18px}
-.pl ul{list-style:none;margin:0;padding:0;border-top:1px solid #efdcd6}.pl li{display:flex;gap:10px;font-size:14px;line-height:1.35;padding:9px 0;border-bottom:1px solid #f5e9e5}.pl li.no{opacity:.4;text-decoration:line-through}.pl li i{font-style:normal;color:var(--rose);font-weight:700;flex:none}
-.pl .lim{font-size:13px;color:#7a6262;margin-top:12px}
-.badge{display:inline-block;background:var(--rose);color:#fff;font:600 11px system-ui;letter-spacing:.1em;padding:5px 11px;border-radius:99px;margin-bottom:10px}
-.note{font-size:13.5px;line-height:1.5;color:#7a6262;text-align:center;margin-top:18px}
-.cam{display:flex;flex-direction:column;align-items:center;gap:22px}
-.cphone{position:relative;width:min(64vw,250px);aspect-ratio:430/932;border-radius:36px;border:8px solid #2b2020;overflow:hidden;box-shadow:0 24px 50px rgba(60,20,20,.3);background:#2b2020}
-.cphone img{width:100%;height:100%;display:block;object-fit:cover}
-.cphone .fl{position:absolute;inset:0;background:#fff;opacity:0;animation:shutter 5s infinite}
-@keyframes shutter{0%,86%{opacity:0}88%{opacity:.9}100%{opacity:0}}
-.cphone .scan{position:absolute;left:8%;right:8%;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:.8;animation:scan 3.6s ease-in-out infinite}
-@keyframes scan{0%,100%{top:22%}50%{top:76%}}
-.tip{display:grid;gap:12px;width:100%}
-.tip div{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #efdcd6;border-radius:18px;padding:14px 16px;font-size:14.5px;line-height:1.4;color:#5b4545}
-.tip i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;background:var(--blush);color:var(--rose);display:grid;place-items:center;font:700 14px system-ui}
-.tip b{color:var(--ink)}
-.tip b{display:block;margin-bottom:3px}
-.cph{display:flex;gap:14px;justify-content:center;align-items:flex-start;width:100%}
-.cph figure{margin:0;text-align:center;flex:1;max-width:210px}.cph figcaption{font-size:12.5px;line-height:1.35;color:#5b4545;margin-top:10px}.cph figcaption b{display:block;color:var(--rose);font:italic 400 17px Georgia,serif}
-.cph .cphone{width:100%}
-.par{width:100%;max-width:340px;border-radius:20px;box-shadow:0 20px 44px rgba(60,20,20,.25);display:block;margin:0 auto}
-.two{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
-.two .cphone{width:min(44vw,190px)}
-h3.sub{font:italic 400 30px/1.1 Georgia,serif;color:var(--rose);margin:0 0 10px}
-.demo{display:flex;flex-direction:column;align-items:center;gap:14px;margin:6px 0 26px}
-.dm{position:relative;width:min(72vw,270px);aspect-ratio:430/932;border-radius:38px;border:8px solid #2b2020;overflow:hidden;background:#2E2523;color:#FFFDFB;container-type:inline-size;box-shadow:0 26px 54px rgba(60,20,20,.32)}
-.dm .tp{position:absolute;top:3.4%;left:0;right:0;text-align:center}
-.dm .tp small{display:block;font-size:3.1cqw;letter-spacing:.14em;color:#e6d3b8}.dm .tp b{display:block;font:400 6.6cqw Georgia,serif;margin-top:1cqw}
-.dm .sg{position:absolute;top:2.4%;right:5%;display:flex;background:rgba(255,255,255,.14);border-radius:99px;padding:.8cqw;font-size:3cqw}.dm .sg span{padding:1.1cqw 2.8cqw;border-radius:99px;color:#ebddd6}.dm .sg .on{background:#FFFDFB;color:#3a2828}
-.dm .vf{position:absolute;left:4.5%;right:4.5%;top:17%;bottom:20%;border-radius:5cqw;overflow:hidden;background:#3b2f2c;border:1px solid rgba(255,255,255,.16)}
-.dm .live,.dm .gh{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.dm .live{transition:transform 2.6s cubic-bezier(.45,0,.2,1)}
-.dm .gh{opacity:0;transition:opacity .7s;pointer-events:none}
-.dm .gd{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.dm .gb{position:absolute;left:4cqw;top:4cqw;background:rgba(30,20,18,.66);border:1px solid rgba(255,255,255,.45);border-radius:99px;padding:2cqw 3.6cqw;font-size:3.4cqw;font-weight:500;transition:.3s}
-.dm .gb.on{background:#FFFDFB;color:#3a2828}
-.dm .fg{position:absolute;left:12cqw;top:9.5cqw;width:30cqw;height:7cqw;opacity:0;transition:opacity .4s}.dm .fg i{position:absolute;left:0;right:0;top:50%;height:.8cqw;margin-top:-.4cqw;border-radius:2cqw;background:rgba(255,255,255,.45)}.dm .fg i::after{content:"";position:absolute;left:0;top:-1.3cqw;width:3.4cqw;height:3.4cqw;border-radius:50%;background:#fff}
-.dm .ok{position:absolute;right:4cqw;top:4cqw;background:#3fa56b;color:#fff;border-radius:99px;padding:2cqw 3.4cqw;font-size:3.3cqw;font-weight:600;opacity:0;transform:scale(.8);transition:.35s}
-.dm .ok.on{opacity:1;transform:none}
-.dm .hand{position:absolute;width:11cqw;height:11cqw;border-radius:50%;background:rgba(255,255,255,.55);border:.6cqw solid #fff;left:20cqw;top:14cqw;opacity:0;transform:scale(.6);pointer-events:none}
-.dm .hand.tap{animation:tap .9s ease}
-@keyframes tap{0%{opacity:0;transform:scale(1.4)}30%{opacity:1;transform:scale(.9)}60%{opacity:1;transform:scale(.75)}100%{opacity:0;transform:scale(1.1)}}
-.dm .ct{position:absolute;left:0;right:0;bottom:2.4%;display:flex;justify-content:center;align-items:center;gap:11cqw;font-size:2.9cqw;color:#ebddd6}
-.dm .ct .r{width:12.5cqw;height:12.5cqw;border:1px solid rgba(255,255,255,.4);border-radius:50%}
-.dm .ct .sh{width:19cqw;height:19cqw;border:.9cqw solid #FFFDFB;border-radius:50%;display:grid;place-items:center;transition:transform .15s}.dm .ct .sh::after{content:"";width:14cqw;height:14cqw;border-radius:50%;background:#f3e3de}
-.dm .ct .sh.pr{transform:scale(.88)}
-.dm .fl2{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.dm .fl2.go{animation:fl2 .55s}
-@keyframes fl2{0%{opacity:.95}100%{opacity:0}}
-.dm .res{position:absolute;inset:0;background:#2E2523;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4cqw;opacity:0;pointer-events:none;transition:opacity .5s}
-.dm .res.on{opacity:1}.dm .res .pr2{display:flex;gap:1.2cqw;width:84%;height:62%;border-radius:4cqw;overflow:hidden;position:relative}.dm .res .pr2 img{width:50%;height:100%;object-fit:cover;display:block}
-.dm .res .pr2 em{position:absolute;top:2.4cqw;font:600 3cqw system-ui;letter-spacing:.12em;font-style:normal;background:rgba(255,255,255,.92);color:#3a2828;padding:1.4cqw 3cqw;border-radius:99px}
-.dm .res p{margin:0;font-size:4.1cqw;text-align:center;line-height:1.35;padding:0 8cqw}.dm .res p b{display:block;font:italic 400 6.6cqw Georgia,serif;color:#f3cfc7;margin-bottom:1.2cqw}
-.dstep{min-height:70px;text-align:center;max-width:320px}.dstep b{display:block;font:italic 400 22px Georgia,serif;color:var(--rose);margin-bottom:4px}.dstep span{font-size:14.5px;line-height:1.45;color:#5b4545}
-.dprog{display:flex;gap:7px}.dprog i{width:26px;height:4px;border-radius:3px;background:#e4d1cb;transition:.3s}.dprog i.on{background:var(--rose)}
-
-.prog{position:fixed;top:0;left:0;height:3px;background:var(--rose);z-index:50;width:0}
-@media (min-width:900px){section{max-width:600px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+:root {
+  --p-bg: #faf6f2; --p-surface: #eeeae6; --p-ink: #2b2220; --p-muted: #6d6462;
+  --p-accent: #a45f5c; --p-accent-ink: #ffffff; --p-action: #a45f5c; --p-action-ink: #ffffff;
+  --p-inv-bg: #2b2220; --p-inv-surface: #372e2c; --p-inv-ink: #faf6f2; --p-inv-muted: #a59e9b;
+  --p-inv-accent: #a45f5c; --p-inv-accent-ink: #ffffff; --p-inv-action: #a45f5c; --p-inv-action-ink: #ffffff;
+  --font-display: "Figtree", system-ui, sans-serif;
+  --font-text: "Figtree", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --display-weight: 500;
+  --display-tracking: -0.025em;
+  --display-tracking-xl: -0.035em;
+}
+/* page CSS: the phone screens inside their frames (.device), one recipe for every screen on the page */
+.device { position: relative; overflow: hidden; height: var(--p-h, 520px); border-radius: var(--r-lg); background: var(--surface); }
+.device > img { position: absolute; left: 50%; top: var(--s-7); width: min(76%, 300px); transform: translateX(-50%); border-radius: 22px; box-shadow: 0 0 0 1px rgb(43 34 32 / .12), 0 18px 40px -18px rgb(43 34 32 / .35); }
+.device::after { content: ""; position: absolute; inset: auto 0 0 0; height: 72px; background: linear-gradient(transparent, var(--surface)); pointer-events: none; }
+.ground-surface .device { background: var(--p-bg); }
+.ground-surface .device::after { background: linear-gradient(transparent, var(--p-bg)); }
+.screens { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5); margin-top: var(--s-7); }
+.screens > img { display: block; width: 100%; height: var(--p-h); object-fit: cover; object-position: top; border-radius: var(--r-lg); box-shadow: 0 0 0 1px rgb(43 34 32 / .12); }
+#telas { --p-h: 470px; }
+#camera .device, #antes .device, #antes .mo-lq { --p-h: 560px; height: var(--p-h); }
+#antes figure { overflow: hidden; border-radius: var(--r-lg); height: var(--p-h); }
+#antes figure img { display: block; width: 100%; height: 100%; object-fit: cover; }
+#agendar .device { --p-h: 400px; }
+#gestao .device { --p-h: 330px; }
+/* the hero: the real agenda screen cut by the lit frame, one small card over its lower left */
+.hero__art .ly-piece--main.phone { left: auto; right: var(--s-8); width: 300px; border-radius: 24px; overflow: hidden; box-shadow: 0 0 0 1px rgb(43 34 32 / .12), 0 24px 60px -24px rgb(43 34 32 / .45); }
+.hero__art .phone img { display: block; width: 100%; }
+.hero__art .ly-piece--note { left: var(--s-6); bottom: var(--s-8); width: 300px; padding: var(--s-5); border-radius: var(--r-md); background: var(--p-bg); box-shadow: 0 0 0 1px rgb(43 34 32 / .1), 0 18px 40px -20px rgb(43 34 32 / .4); font-size: 14px; line-height: 1.45; color: var(--p-ink); }
+.note__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--s-3); font-weight: 500; font-size: 15px; }
+.note__chip { padding: 2px 10px; border-radius: 999px; background: #e8f1e7; color: #2f5a32; font-size: 13px; }
+.note__line { display: flex; gap: var(--s-2); padding-block: 6px; border-top: 1px solid rgb(43 34 32 / .1); }
+.note__line i { font-style: normal; color: var(--p-accent); }
+@media (max-width: 1023px) {
+  .screens { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #camera .device, #antes figure { margin-top: var(--s-6); }
+  .screens > :nth-child(n+3) { display: none; }
+  .hero__art .ly-piece--main.phone { right: 50%; transform: translateX(50%); width: 240px; }
+}
+@media (max-width: 639px) {
+  #telas, #camera .device { --p-h: 360px; }
+  #antes .grid { grid-template-columns: 1fr 1fr; }
+  #antes .grid > .span-5 { grid-column: 1 / -1; }
+  #antes .grid > figure, #antes .grid > .device { grid-column: auto; --p-h: 300px; }
+  #agendar .device { --p-h: 280px; }
+  #gestao .device { --p-h: 180px; }
+  #planos .checks { display: none; }
+  .screens { gap: var(--s-3); }
+  .hero__art .ly-piece--main.phone { width: 200px; top: var(--s-4); }
+}
 </style>
 </head>
 <body>
-<div class="prog" id="prog"></div>
+<!-- type: software (a phone app sold to hair salons)
+     deal: hero collage, nav mega, close type, footer dark, rhythm surface-pairs, buttons arrow, mark wordmark, ground sand (hero frame)
+     palette: the client's own colours (start.mjs brand: bg #FAF6F2, ink #2B2220, rose #A45F5C from the app's "Cartão do Salão" look) in place of the dealt blue-black, which clashes with the app's screens
+     type: figtree (first dealt pairing)
+     moments: liquid-hover on the before/after photograph in #antes (the photo is what the camera guide produces) -->
 
-<section class="hero">
-  <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
-  <div class="tag">GLOW STUDIO · PARA SALÃO DE CABELEIREIRA</div>
-  <h1>Seu salão inteiro<br>na palma da mão</h1>
-  <p>Agenda, clientes, antes e depois, retornos de coloração, estoque e Pix. Tudo em um só aplicativo.</p>
-  <div class="hphone"><img src="img/inicio.webp" alt="Tela inicial do app"></div>
-  <div class="cue">ROLE ↓</div>
-</section>
-
-<section id="funcoes">
-  <div class="eyebrow rv">Tudo o que dá para fazer</div>
-  <h2 class="rv">O que o aplicativo faz pelo seu salão</h2>
-  <p class="lead rv">Pensado para cortes, coloração, mechas e tratamentos. Cada função já vem pronta para o dia a dia do salão.</p>
-  <div class="cards" id="cards"></div>
-</section>
-
-<section id="camera">
-  <div class="eyebrow rv">Fotos sempre no padrão</div>
-  <h2 class="rv">Câmera com guia de enquadramento</h2>
-  <p class="lead rv">Na hora da foto, o app desenha na tela as linhas para você posicionar o cabelo da cliente. O antes e o depois saem iguais, e a comparação fica profissional.</p>
-  <div class="cam rv">
-    <div class="cph">
-      <figure><div class="cphone"><img src="img/camera.webp" alt="Câmera com guia de enquadramento do cabelo"><i class="scan"></i><div class="fl"></div></div><figcaption><b>Guia na tela</b>Contorno do cabelo inteiro</figcaption></figure>
-      <figure><div class="cphone"><img src="img/ghost.webp" alt="Câmera com a foto do antes transparente"></div><figcaption><b>Foto do antes</b>Transparente, para repetir a posição</figcaption></figure>
-    </div>
-  <div class="demo rv" id="demo">
-    <div class="eyebrow" style="margin:0">Veja acontecendo</div>
-    <div class="dm">
-      <div class="sg"><span>Antes</span><span class="on">Depois</span></div>
-      <div class="tp"><small>TATIANE · COLORAÇÃO · CABELO</small><b>Foto do depois</b></div>
-      <div class="vf">
-        <img class="live" id="dLive" src="img/d0.jpg" alt="">
-        <img class="gh" id="dGh" src="img/a0.jpg" alt="">
-        <svg class="gd" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M3 9V3H9M91 3H97M97 91V97H91M9 97H3V91" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
-        <div class="gb" id="dGb">Mostrar foto do antes</div>
-        <div class="fg" id="dFg"><i></i></div>
-        <div class="ok" id="dOk">Alinhado ✓</div>
-        <div class="hand" id="dHand"></div>
+<header class="nav">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Pular para o conteúdo</a>
+    <a class="nav__logo" href="#top">Glow Studio</a>
+    <nav class="nav__links" aria-label="Principal">
+      <div class="nav__item">
+        <a class="nav__link" href="#telas">Funções <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Atendimento</p>
+              <a href="#telas">Agenda e ficha<span>Quem vem hoje e o histórico</span></a>
+              <a href="#camera">Câmera com guia<span>Antes e depois no mesmo ângulo</span></a>
+              <a href="#antes">Imagem para o Instagram<span>Antes e depois em 4:5</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Salão</p>
+              <a href="#agendar">Agendamento online<span>A cliente marca pelo link</span></a>
+              <a href="#gestao">Estoque e financeiro<span>Tintas em ml, lucro do mês</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#camera">
+              <div class="panel"><img class="frame__img" src="img/ghost.webp" alt="Câmera do app com a foto do antes transparente sobre a imagem" loading="lazy" data-source="client" data-subject="tela da câmera do app"></div>
+              <span class="t-card">Foto do antes transparente</span>
+              <span class="t-small muted">A cliente volta à mesma posição</span>
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="ct"><div class="r"></div><div class="sh" id="dSh"></div><div class="r"></div></div>
-      <div class="fl2" id="dFl"></div>
-      <div class="res" id="dRes"><div class="pr2"><img src="img/a0.jpg" alt=""><img src="img/d0.jpg" alt=""><em style="left:2.4cqw">ANTES</em><em style="right:2.4cqw">DEPOIS</em></div><p><b>Mesmo enquadramento</b>Antes e depois combinam perfeitamente.</p></div>
+      <div class="nav__item"><a class="nav__link" href="#agendar">Agendamento</a></div>
+      <div class="nav__item"><a class="nav__link" href="#gestao">Gestão</a></div>
+      <div class="nav__item"><a class="nav__link" href="#planos">Planos</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis</a>
     </div>
-    <div class="dprog" id="dProg"><i></i><i></i><i></i><i></i></div>
-    <div class="dstep" id="dStep"><b></b><span></span></div>
-    <button class="btn ghost" id="dRe" style="padding:10px 20px;font-size:13.5px">↻ Ver de novo</button>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
   </div>
-    <div class="tip">
-      <div><i>1</i><span><b>Guia na tela</b>Contorno do cabelo inteiro, com linhas de centro e de altura para alinhar a cliente.</span></div>
-      <div><i>2</i><span><b>Dica em cada foto</b>O app avisa o que enquadrar e pede a mesma distância e o mesmo ângulo nas duas fotos.</span></div>
-      <div><i>3</i><span><b>Muda conforme o serviço</b>Cabelo inteiro para corte, coloração e mechas. Há guias próprias para rosto, olhos, sobrancelhas, mãos e região tratada.</span></div>
-      <div><i>4</i><span><b>Foto do antes transparente</b>Um botão liga a foto do antes por cima da câmera, bem clarinha, para a cliente ficar na mesma posição. Dá para ajustar a transparência.</span></div>
-      <div><i>5</i><span><b>Tudo na mesma tela</b>Alterne entre antes e depois, escolha uma foto da galeria ou vire a câmera.</span></div>
+</header>
+
+<main id="top">
+  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <h1 id="hero-h">App de agenda para salão de cabeleireira</h1>
+        <p class="hero__lead">Agenda, ficha da cliente, fotos de antes e depois com guia na câmera, estoque de tintas e Pix no mesmo app de celular. A partir de R$ 24,90 por mês.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#telas">Ver as telas</a></div>
+        <p class="hero__proof">O teste libera o plano Pro inteiro, sem cartão.</p>
+      </div>
+      <div class="hero__art span-6 start-7" role="img" aria-label="A agenda do dia no app, com um lembrete de retoque de raiz enviado pelo WhatsApp">
+        <div class="ly-piece ly-piece--main phone" aria-hidden="true"><img src="img/agenda.webp" alt="" fetchpriority="high" data-source="client" data-subject="tela da agenda do app"></div>
+        <div class="ly-piece ly-piece--note" aria-hidden="true" data-ly-steps="700">
+          <div class="note__head"><span>Retoque de raiz</span><span class="note__chip" data-step data-step-at="4">Enviado</span></div>
+          <div class="note__line" data-step><i>●</i><span><b>Tatiane</b> pintou há 35 dias</span></div>
+          <div class="note__line" data-step><i>●</i><span>Mensagem pronta com o nome dela</span></div>
+          <div class="note__line" data-step><i>●</i><span>Aberta no seu WhatsApp</span></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section ground-surface" id="telas" aria-labelledby="telas-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="telas-h" class="span-5">O app no celular. <span class="muted">Feito para usar entre um atendimento e outro.</span></h2>
+        <p class="span-6 start-7">A tela inicial mostra o próximo horário. A ficha guarda procedimentos, materiais, anamnese e o termo assinado na tela.</p>
+      </div>
+      <div class="screens" role="img" aria-label="Quatro telas do app: início, clientes, ficha e relatório">
+        <img src="img/inicio.webp" alt="Tela inicial com o próximo horário e os avisos do dia" loading="lazy" data-source="client" data-subject="tela inicial do app">
+        <img src="img/clientes.webp" alt="Lista de clientes com busca" loading="lazy" data-source="client" data-subject="lista de clientes do app">
+        <img src="img/ficha.webp" alt="Ficha da cliente com histórico de procedimentos" loading="lazy" data-source="client" data-subject="ficha da cliente no app">
+        <img src="img/relat.webp" alt="Relatório do atendimento em PDF para enviar à cliente" loading="lazy" data-source="client" data-subject="relatório do atendimento"></div>
+    </div>
+  </section>
+
+  <section class="section" id="camera" aria-labelledby="camera-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5 stack-4">
+          <h2 id="camera-h">Câmera do app com guia de enquadramento</h2>
+          <p>O app desenha o contorno do cabelo na tela e liga a foto do antes, transparente, por cima da câmera. A cliente volta à mesma posição e o depois sai no mesmo ângulo.</p>
+          <p class="muted">Há guias próprias para rosto, olhos, sobrancelhas e mãos.</p>
+        </div>
+        <div class="span-3 start-7 device"><img src="img/camera.webp" alt="Câmera com o contorno do cabelo desenhado na tela" loading="lazy" data-source="client" data-subject="câmera do app com guia"></div>
+        <div class="span-3 device"><img src="img/ghost.webp" alt="Câmera com a foto do antes transparente sobre a imagem" loading="lazy" data-source="client" data-subject="câmera do app com a foto do antes"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="antes" aria-labelledby="antes-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5 stack-4">
+          <h2 id="antes-h">Antes e depois em 4:5 para o Instagram</h2>
+          <p>Um toque junta as duas fotos numa imagem com o nome do seu salão, no tamanho de Reels, Stories e status. Também dá para baixar cada foto ou trazer uma da galeria.</p>
+        </div>
+        <figure class="span-4 start-7" style="margin:0" data-moment="liquid-hover" data-moment-opts='{"strength": 0.6}'>
+          <img src="img/par.jpg" alt="Imagem de antes e depois de uma coloração, lado a lado" width="800" height="1000" loading="lazy" data-source="client" data-subject="antes e depois de coloração">
+        </figure>
+        <div class="span-2 device"><img src="img/compara.webp" alt="Comparação deslizante entre o antes e o depois" loading="lazy" data-source="client" data-subject="tela de comparação do app" style="width:86%"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="agendar" aria-labelledby="agendar-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="agendar-h" class="span-5">Link de agendamento para a cliente</h2>
+        <p class="span-6 start-7">Coloque o link no Instagram e no WhatsApp. Almoço, folgas e horários bloqueados não aparecem para ela. <a class="link" href="../">Ver a página de agendamento</a></p>
+      </div>
+      <div class="grid" style="margin-top: var(--s-7)">
+        <article class="card card--open span-4"><h3>1. Escolhe o serviço</h3><p>Corte, coloração, mechas ou tratamento, com preço e duração.</p><div class="device"><img src="img/pg1.webp" alt="Página de agendamento com a lista de serviços" loading="lazy" data-source="client" data-subject="página de agendamento"></div></article>
+        <article class="card card--open span-4"><h3>2. Vê os horários livres</h3><p>Só aparece o que cabe na sua agenda naquele dia.</p><div class="device"><img src="img/pg2.webp" alt="Página de agendamento com os horários livres do dia" loading="lazy" data-source="client" data-subject="horários livres" style="transform:translate(-50%,-64%)"></div></article>
+        <article class="card card--open span-4"><h3>3. Pede o horário</h3><p>Nome e WhatsApp. O pedido fica pendente até você confirmar no app.</p><div class="device"><img src="img/pg3.webp" alt="Formulário com nome e WhatsApp para pedir o horário" loading="lazy" data-source="client" data-subject="pedido de horário" style="transform:translate(-50%,-42%)"></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section g2" id="gestao" aria-labelledby="gestao-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="gestao-h">Estoque, dinheiro e equipe do salão. <span class="muted">Sem planilha.</span></h2>
+        </div>
+        <div class="grid">
+          <article class="card card--row card--open span-6"><h3>Estoque do salão em ml</h3><p>Cada coloração tira do estoque só os 60 ml usados e avisa antes de acabar o oxidante.</p><div class="device"><img src="img/estoque.webp" alt="Estoque com tintas e oxidante em ml e alerta de mínimo" loading="lazy" data-source="client" data-subject="tela de estoque"></div></article>
+          <article class="card card--row card--open span-6"><h3>Lucro do salão no mês</h3><p>Receita, saídas e o que entrou em Pix, cartão e dinheiro, com os últimos seis meses.</p><div class="device"><img src="img/fin.webp" alt="Financeiro com receita, saídas e lucro do mês" loading="lazy" data-source="client" data-subject="tela do financeiro"></div></article>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-6"><h3>Separa a agenda por profissional</h3><p>Uma coluna para cada cabeleireira, com a comissão calculada no atendimento.</p><div class="device"><img src="img/equipe.webp" alt="Equipe com profissionais e comissões" loading="lazy" data-source="client" data-subject="tela de equipe"></div></article>
+        <article class="card card--row card--open span-6"><h3>Retoque e aniversário na agenda</h3><p>Lista quem passou do prazo do retoque e quem faz aniversário, com a mensagem pronta.</p><div class="device"><img src="img/relac.webp" alt="Relacionamento com clientes para retoque e aniversário" loading="lazy" data-source="client" data-subject="tela de relacionamento"></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="planos" style="--hm: 2" aria-labelledby="planos-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="planos-h" class="span-5">Planos e preços. <span class="muted">No anual, dois meses saem de graça.</span></h2>
+        <p class="span-6 start-7">Os 30 dias de teste usam o plano Pro. Depois, você escolhe um plano ou segue no Grátis.</p>
+      </div>
+      <div class="grid" style="margin-top: var(--s-7)">
+        <article class="card card--plan span-3"><h3>Grátis</h3><p>Para conhecer o app</p><p class="price"><span class="t-stat">R$ 0</span></p><p class="muted">Para sempre</p><a class="btn btn--secondary" href="https://glow-agenda.pages.dev/app/">Abrir o app</a><ul class="checks"><li>Até 30 clientes</li><li>Agenda, ficha e câmera</li></ul></article>
+        <article class="card card--plan span-3"><h3>Essencial</h3><p>Para quem atende sozinha</p><p class="price"><span class="t-stat">R$ 24,90</span><span class="muted">/mês</span></p><p class="muted">ou R$ 249 por ano</p><a class="btn btn--secondary" href="https://glow-agenda.pages.dev/app/">Abrir o app</a><ul class="checks"><li>Clientes sem limite</li><li>Link de agendamento</li><li>Sinal por Pix</li><li>Lembretes e nuvem</li></ul></article>
+        <article class="card card--plan span-3 is-featured"><h3>Pro</h3><p>Estoque, pacotes e 2 aparelhos</p><p class="price"><span class="t-stat">R$ 39,90</span><span class="muted">/mês</span></p><p class="muted">ou R$ 399 por ano</p><a class="btn btn--primary" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis</a><ul class="checks"><li>Até 3 profissionais</li><li>Estoque em ml</li><li>Pacotes e fidelidade</li></ul></article>
+        <article class="card card--plan span-3"><h3>Studio</h3><p>Para salão com equipe</p><p class="price"><span class="t-stat">R$ 69,90</span><span class="muted">/mês</span></p><p class="muted">ou R$ 699 por ano</p><a class="btn btn--secondary" href="https://glow-agenda.pages.dev/app/">Abrir o app</a><ul class="checks"><li>Até 5 profissionais</li><li>5 aparelhos</li><li>Tudo do Pro</li></ul></article>
+        
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">Teste o Glow Studio no seu salão</h2>
+        <p>30 dias com o plano Pro, sem cartão. Funciona no Android e no navegador.</p>
+      </div>
+      <a class="btn btn--primary btn--xl btn--wide" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top">Glow Studio</a>
+          <p class="footer__lede">App de agenda, ficha e fotos para profissionais da beleza.</p>
+        </div>
+        <div class="span-2 start-7 footer__col"><h3>Atendimento</h3><ul><li><a href="#telas">Agenda e ficha</a></li><li><a href="#camera">Câmera</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Clientes</h3><ul><li><a href="#antes">Antes e depois</a></li><li><a href="#agendar">Agendamento</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Salão</h3><ul><li><a href="#gestao">Gestão</a></li><li><a href="#planos">Planos</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Glow Studio &nbsp; <a href="../privacidade.html">Privacidade</a> &nbsp; <a href="../termos.html">Termos</a></span>
+        <div class="socials"></div>
+      </div>
     </div>
   </div>
-</section>
+</footer>
 
-<section id="antes">
-  <div class="eyebrow rv">Transformações</div>
-  <h2 class="rv">Antes e depois que fecha venda</h2>
-  <p class="lead rv">Arraste para comparar. Como as duas fotos saem no mesmo ângulo e distância graças ao guia da câmera, a diferença aparece de verdade.</p>
-  <div class="chips rv" id="chips"></div>
-  <div class="ba rv" id="ba"><img id="baA" alt="Antes"><img class="top" id="baD" alt="Depois"><span class="lab l1">ANTES</span><span class="lab l2">DEPOIS</span><i class="bar"></i><i class="knob">‹ ›</i></div>
-  <div class="bahint" id="bahint"></div>
-  <div style="height:44px"></div>
-  <div class="eyebrow rv">Para o seu Instagram</div>
-  <h3 class="sub rv">Reels e Stories mais fluidos</h3>
-  <p class="lead rv" style="margin-top:8px">Quando todas as fotos seguem o mesmo enquadramento, o antes e o depois se encaixam. A transição entre as duas fica suave, sem a imagem "pulando", e o seu perfil ganha um padrão que passa confiança.</p>
-  <div class="two rv"><img class="par" src="img/par.jpg" alt="Antes e depois lado a lado, gerado pelo app"></div>
-  <div class="tip rv">
-    <div><i>1</i><span><b>Imagem pronta de antes e depois</b>Um toque gera uma imagem 4:5 com as duas fotos lado a lado, com o nome do seu salão, ideal para Reels, Stories e status.</span></div>
-    <div><i>2</i><span><b>Baixar a foto</b>Salve no celular a foto do antes ou do depois, em boa qualidade, para editar no seu aplicativo de vídeo preferido.</span></div>
-    <div><i>3</i><span><b>Enviar da galeria</b>Já tem a foto no celular? Escolha da galeria e ela entra no lugar do antes ou do depois da cliente.</span></div>
-  </div>
-  <div class="two rv" style="margin-top:26px"><div class="cphone"><img src="img/baixar.webp" alt="Botões de baixar e de enviar da galeria"></div></div>
+<nav class="actionbar" aria-label="Ações rápidas">
+  <a class="btn btn--primary" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis</a>
+</nav>
 
-</section>
-
-<section>
-  <div class="eyebrow rv">Agendamento online</div>
-  <h2 class="rv">A cliente marca sozinha</h2>
-  <p class="lead rv">Um link para colocar no Instagram e no WhatsApp. Ela escolhe o serviço e vê só os horários livres. Almoço, folgas e horários bloqueados não aparecem.</p>
-  <div class="flow rv">
-    <div class="step"><div class="fr"><img src="img/pg1.webp" alt=""></div><p><b>1 · Serviço</b>Corte, coloração, mechas ou tratamento.</p></div>
-    <div class="step"><div class="fr"><img src="img/pg2.webp" alt=""></div><p><b>2 · Dia e horário</b>Só os horários realmente livres.</p></div>
-    <div class="step"><div class="fr"><img src="img/pg3.webp" alt=""></div><p><b>3 · Reserva</b>Com sinal por Pix e desconto opcional.</p></div>
-  </div>
-</section>
-
-<section id="gestao">
-  <div class="eyebrow rv">Gestão do salão</div>
-  <h2 class="rv">Além da agenda: o salão inteiro no controle</h2>
-  <p class="lead rv">Estoque, dinheiro, preços, equipe e clientes voltando. Tudo no mesmo aplicativo, com a rotina de coloração, mechas e tratamentos em mente.</p>
-  <div style="height:0px"></div>
-  <div class="eyebrow rv">Estoque</div>
-  <h3 class="sub rv">Tintas e oxidante sob controle</h3>
-  <p class="lead rv">Cadastre as tintas, o oxidante, o pó descolorante, as máscaras e o que mais usa. O app avisa antes de acabar.</p>
-  <div class="two rv"><div class="cphone"><img src="img/estoque.webp" alt="Tintas e oxidante sob controle"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Resumo no topo</b>Quantos produtos você tem, quantos estão no alerta e o valor total parado em estoque.</span></div><div><i>2</i><span><b>Alerta de mínimo</b>Quando o tubo chega no mínimo que você definiu, ele é destacado e aparece um aviso no Início.</span></div><div><i>3</i><span><b>Baixa automática</b>Ao concluir uma coloração, as tintas usadas saem do estoque sozinhas. Se cancelar, voltam.</span></div><div><i>4</i><span><b>Por tubo ou por ml</b>Cadastre a tinta e o oxidante em ml: cada coloração baixa só os 60 ml usados, e o custo sai certinho.</span></div><div><i>5</i><span><b>Entrada de compras</b>Registre a compra com quantidade e custo; ela pode entrar como despesa no financeiro.</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Financeiro</div>
-  <h3 class="sub rv">Quanto o salão realmente ganha</h3>
-  <p class="lead rv">Receita, saídas e lucro do mês, sem planilha.</p>
-  <div class="two rv"><div class="cphone"><img src="img/fin.webp" alt="Quanto o salão realmente ganha"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Receita, saídas e lucro</b>Veja o resumo do mês e o gráfico dos últimos 6 meses.</span></div><div><i>2</i><span><b>Formas de pagamento</b>Quanto entrou em Pix, cartão e dinheiro.</span></div><div><i>3</i><span><b>Procedimentos mais rentáveis</b>Descubra se coloração, mechas ou hidratação traz mais dinheiro.</span></div><div><i>4</i><span><b>Despesas e a receber</b>Lance aluguel, produtos e contas, e veja quem ainda não pagou.</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Procedimentos</div>
-  <h3 class="sub rv">Preço, tempo e margem de cada serviço</h3>
-  <p class="lead rv">Cadastre corte, coloração, mechas, hidratação e o que você oferece.</p>
-  <div class="two rv"><div class="cphone"><img src="img/proc.webp" alt="Preço, tempo e margem de cada serviço"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Preço e duração</b>Cada serviço tem valor e tempo próprios, e a agenda já reserva o horário certo.</span></div><div><i>2</i><span><b>Materiais e margem</b>Informe o que cada serviço gasta e o app mostra o custo e a margem de cada um.</span></div><div><i>3</i><span><b>Retorno sugerido</b>Defina em quantos dias a cliente volta (retoque de raiz, por exemplo).</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Pacotes e fidelidade</div>
-  <h3 class="sub rv">Cliente que volta sempre</h3>
-  <p class="lead rv">Venda pacotes e premie quem é fiel.</p>
-  <div class="two rv"><div class="cphone"><img src="img/pacotes.webp" alt="Cliente que volta sempre"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Pacotes de sessões</b>Ex.: 4 hidratações com preço e validade. O app mostra a economia da cliente.</span></div><div><i>2</i><span><b>Saldo por cliente</b>Acompanhe quantas sessões já foram usadas.</span></div><div><i>3</i><span><b>Pontos e mimos</b>Pontos por real pago, recompensas e mimo de aniversário configuráveis.</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Relacionamento</div>
-  <h3 class="sub rv">Lembre a cliente de voltar</h3>
-  <p class="lead rv">O app avisa quem está na hora de retocar.</p>
-  <div class="two rv"><div class="cphone"><img src="img/relac.webp" alt="Lembre a cliente de voltar"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Lembretes de horário</b>Quem tem horário amanhã, com botão para confirmar pelo WhatsApp.</span></div><div><i>2</i><span><b>Retoque e manutenção</b>Clientes que já passaram do prazo de retorno, como o retoque de raiz em 35 dias.</span></div><div><i>3</i><span><b>Aniversariantes e mensagens editáveis</b>Mensagem pronta para parabenizar. Os textos saem com o nome da cliente e você pode ajustar.</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Equipe</div>
-  <h3 class="sub rv">Cabeleireiras, coloristas e comissões</h3>
-  <p class="lead rv">Cada profissional com sua agenda e suas comissões.</p>
-  <div class="two rv"><div class="cphone"><img src="img/equipe.webp" alt="Cabeleireiras, coloristas e comissões"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Agendas separadas</b>A agenda mostra uma coluna por profissional.</span></div><div><i>2</i><span><b>Comissão automática</b>Defina o percentual de cada uma; o app calcula sobre cada atendimento concluído.</span></div><div><i>3</i><span><b>Produção do mês</b>Veja quantos atendimentos e quanto cada uma produziu.</span></div></div>
-  <div style="height:52px"></div>
-  <div class="eyebrow rv">Relatórios e Pix</div>
-  <h3 class="sub rv">Relatório para a cliente e cobrança sem complicação</h3>
-  <p class="lead rv">Mande o resultado e receba o sinal.</p>
-  <div class="two rv"><div class="cphone"><img src="img/relat.webp" alt="Relatório para a cliente e cobrança sem complicação"></div><div class="cphone"><img src="img/pix.webp" alt="Relatório para a cliente e cobrança sem complicação"></div></div>
-  <div class="tip rv"><div><i>1</i><span><b>Relatório de cada atendimento</b>Com as fotos do antes e do depois, pronto para enviar no WhatsApp.</span></div><div><i>2</i><span><b>Pix na sua conta</b>O dinheiro vai direto para você, sem intermediário.</span></div><div><i>3</i><span><b>Sinal e desconto</b>No agendamento online, cobre um sinal e dê desconto para quem paga antes.</span></div></div>
-</section>
-
-<section id="app">
-  <div class="eyebrow rv">Por dentro do app</div>
-  <h2 class="rv">Veja as telas, no seu ritmo</h2>
-  <p class="lead rv">É o app de verdade, com clientes e valores de exemplo. Use as setas ao lado do telefone para mudar de tela, toque nas abas e no menu do app ou deixe o tour passar sozinho.</p>
-  <div class="stage rv">
-    <div class="pw"><button class="arr" id="prev" aria-label="Tela anterior">‹</button><div class="phone" id="phone"><div class="flash" id="flash"></div></div><button class="arr" id="next" aria-label="Próxima tela">›</button></div>
-    <div class="tl"><i id="tlf"></i></div>
-    <div class="dots" id="dots"></div>
-    <div class="cap" id="cap"><b></b><span></span></div>
-    <div class="tbar"><button class="btn ghost" id="tour">▶ Tour automático</button><button class="btn ghost" id="reset">Recomeçar</button></div>
-  </div>
-</section>
-
-<section id="planos">
-  <div class="eyebrow rv">Planos e valores</div>
-  <h2 class="rv">Escolha o plano do seu salão</h2>
-  <p class="lead rv">Comece com 30 dias de teste, com tudo do plano Pro liberado. Quem não assina continua no plano Grátis e não perde os dados.</p>
-  <div class="seg rv" id="seg"><button class="on" data-v="m">Mensal</button><button data-v="y">Anual · 2 meses grátis</button></div>
-  <div class="plans" id="plans"></div>
-  <div class="note rv">No plano anual você paga 10 meses e usa 12. Valores em reais, por salão.</div>
-</section>
-
-<section class="cta">
-  <h2 class="rv">Pronta para testar?</h2>
-  <p class="rv">Clientes, fotos e valores das telas são de exemplo. Abra o app, use os dados de demonstração e conheça cada tela, por 30 dias com tudo liberado.</p>
-  <a class="btn rv" href="/app/">Abrir o aplicativo</a>
-  <small>Glow Studio · versão para salão de cabeleireira</small>
-</section>
-
-<script>
-(function () {
-  'use strict';
-  /* ---------- telas e pontos de toque (frações da tela: x,y,largura,altura) ---------- */
-  var TABS = { inicio: [.014, .933, .194, .06], agenda: [.208, .933, .194, .06], clientes: [.403, .933, .194, .06], fotos: [.597, .933, .194, .06], fin: [.792, .933, .194, .06], menu: [.028, .013, .107, .049] };
-  var TABGO = { inicio: 'inicio', agenda: 'agenda', clientes: 'clientes', fotos: 'fotos', fin: 'fin', menu: 'mais' };
-  var SCREENS = {
-    inicio: { t: 'Início', d: 'O dia do salão num olhar: atendimentos, retornos a agendar e o que falta receber.', hint: 'agenda', go: {} },
-    agenda: { t: 'Agenda', d: 'Agenda por profissional com cortes, colorações e mechas, bloqueio de horários e pedidos de agendamento online.', hint: 'clientes', go: {} },
-    clientes: { t: 'Clientes', d: 'Histórico de cada visita, serviço e data do próximo retorno. Toque na Tatiane para abrir a ficha.', hint: 'row', go: { row: ['ficha', [.037, .744, .926, .171]] } },
-    ficha: { t: 'Ficha da cliente', d: 'Anamnese, próxima manutenção, pontos de fidelidade e linha do tempo de atendimentos. Agora veja as fotos.', hint: 'fotos', go: {} },
-    fotos: { t: 'Galeria de antes e depois', d: 'Todas as transformações organizadas por cliente. Toque na Tatiane para comparar.', hint: 'c', go: { c: ['compara', [.037, .407, .926, .209]] } },
-    compara: { t: 'Antes e depois', d: 'Arraste o controle para comparar. Toque em Tirar nova foto para abrir a câmera.', hint: 'nova', slider: true, go: { gal: ['fotos', [.037, .157, .42, .05]], nova: ['camera', [.46, .157, .5, .05]] } },
-    camera: { t: 'Câmera com guia de cabelo', d: 'O guia mostra o enquadramento do cabelo inteiro. Toque no botão para tirar a foto.', hint: 'shot', cam: true, go: { back: ['compara', [.149, .047, .254, .047]], shot: ['compara', [.402, .865, .195, .09], 'flash'] } },
-    fin: { t: 'Financeiro', d: 'Receita, despesas, comissões e lucro do salão, com o gráfico dos últimos 6 meses. Toque no menu.', hint: 'menu', go: {} },
-    mais: { t: 'Menu completo', d: 'Pacotes, estoque, serviços, retornos, equipe e relatórios. Toque em Estoque.', hint: 'estoque', menu: true, go: { pacotes: ['pacotes', [.037, .378, .621, .047]], estoque: ['estoque', [.037, .431, .621, .047]], proc: ['proc', [.037, .485, .621, .047]], relac: ['relac', [.037, .539, .621, .047]], equipe: ['equipe', [.037, .592, .621, .047]], relat: ['relat', [.037, .646, .621, .047]], fechar: ['inicio', [.7, 0, .3, 1]] } },
-    pacotes: { t: 'Pacotes', d: 'Venda pacotes de hidratação e tratamentos, com saldo de sessões por cliente.', hint: 'menu', go: {} },
-    estoque: { t: 'Estoque de produtos', d: 'Tintas e oxidante em ml, máscaras e shampoos com alerta de estoque mínimo e baixa automática a cada atendimento.', hint: 'menu', go: {} },
-    proc: { t: 'Serviços do salão', d: 'Corte, coloração, mechas e tratamentos, com preço, duração e produtos usados em cada um.', hint: 'menu', go: {} },
-    relac: { t: 'Retornos e lembretes', d: 'Lembrete de horário, retoque de raiz e aniversários, com mensagem pronta para WhatsApp.', hint: 'menu', go: {} },
-    equipe: { t: 'Equipe', d: 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão.', hint: 'menu', go: {} },
-    relat: { t: 'Relatório do atendimento', d: 'Resumo com fotos e cuidados pós-química para enviar à cliente pelo WhatsApp.', hint: 'menu', go: {} }
-  };
-  var ORDER = ['inicio', 'agenda', 'clientes', 'ficha', 'fotos', 'compara', 'camera', 'fin', 'mais', 'estoque', 'proc', 'relac', 'equipe', 'relat', 'pacotes'];
-  var phone = document.getElementById('phone'), cap = document.getElementById('cap'), dotsEl = document.getElementById('dots'), flash = document.getElementById('flash');
-  var imgs = {}, cur = null, tourT = null;
-  ORDER.forEach(function (k) { var im = new Image(); im.src = 'img/' + k + '.webp'; im.className = 'scr'; im.alt = SCREENS[k].t; imgs[k] = im; phone.insertBefore(im, flash); });
-  ORDER.forEach(function () { dotsEl.appendChild(document.createElement('i')); });
-  var layer = document.createElement('div'); layer.style.cssText = 'position:absolute;inset:0'; phone.insertBefore(layer, flash);
-  var sw = document.createElement('div'); sw.style.cssText = 'position:absolute;display:none;overflow:hidden;border-radius:14px'; sw.innerHTML = '<img id="sA" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><img id="sD" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 0 0 50%)"><i style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;margin-left:-1px;box-shadow:0 0 8px rgba(0,0,0,.4)"></i><i style="position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.35);display:grid;place-items:center;color:#A8625F;font:700 13px system-ui">‹ ›</i>'; layer.appendChild(sw);
-  var sA = sw.querySelector('#sA'), sD = sw.querySelector('#sD'); sA.src = 'img/a0.jpg'; sD.src = 'img/d0.jpg';
-  function setSlider(x) { x = Math.max(0, Math.min(1, x)); sD.style.clipPath = 'inset(0 0 0 ' + (x * 100) + '%)'; sw.children[2].style.left = (x * 100) + '%'; sw.children[3].style.left = (x * 100) + '%'; }
-  var swAnim = null;
-  function sweep() { var t0 = performance.now(); cancelAnimationFrame(swAnim); (function f(t) { var k = (t - t0) / 3200; setSlider(.5 + .42 * Math.sin(k * Math.PI * 2)); if (cur === 'compara' && k < 3) swAnim = requestAnimationFrame(f); })(t0); }
-  function dragSlider(e) { var r = sw.getBoundingClientRect(); setSlider((e.clientX - r.left) / r.width); }
-  sw.addEventListener('pointerdown', function (e) { cancelAnimationFrame(swAnim); sw.setPointerCapture(e.pointerId); dragSlider(e); sw.onpointermove = dragSlider; }); sw.addEventListener('pointerup', function () { sw.onpointermove = null; });
-  function box(r, el) { el.style.left = r[0] * 100 + '%'; el.style.top = r[1] * 100 + '%'; el.style.width = r[2] * 100 + '%'; el.style.height = r[3] * 100 + '%'; }
-  function show(k, fl) {
-    if (!SCREENS[k]) return; var s = SCREENS[k], prev = cur;
-    if (fl) { flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
-    if (prev && imgs[prev]) { imgs[prev].classList.remove('on'); imgs[prev].classList.add('out'); (function (p) { setTimeout(function () { imgs[p].classList.remove('out'); }, 360); })(prev); }
-    imgs[k].classList.add('on'); cur = k; layer.innerHTML = ''; layer.appendChild(sw); sw.style.display = 'none';
-    if (!s.cam && !s.menu) Object.keys(TABS).forEach(function (t) { var b = document.createElement('button'); b.className = 'hot' + (s.hint === t ? ' pulse' : ''); b.setAttribute('aria-label', t); box(TABS[t], b); b.onclick = function () { stopTour(); show(TABGO[t]); }; layer.appendChild(b); });
-    Object.keys(s.go).forEach(function (n) { var g = s.go[n], b = document.createElement('button'); b.className = 'hot' + (s.hint === n ? ' pulse' : ''); b.setAttribute('aria-label', n); box(g[1], b); b.onclick = function () { stopTour(); show(g[0], g[2]); }; layer.appendChild(b); });
-    
-    if (s.slider) { var r = [.086, .388, .828, .286]; sw.style.display = 'block'; sw.style.left = r[0] * 100 + '%'; sw.style.top = r[1] * 100 + '%'; sw.style.width = r[2] * 100 + '%'; sw.style.height = r[3] * 100 + '%'; setSlider(.5); setTimeout(sweep, 450); }
-    cap.innerHTML = '<b>' + s.t + '</b><span>' + s.d + '</span>';
-    var i = ORDER.indexOf(k); [].forEach.call(dotsEl.children, function (d, j) { d.className = j === i ? 'on' : ''; });
-  }
-  /* tour automático */
-  var TOUR = [['inicio', 6500], ['agenda', 6500], ['clientes', 6000], ['ficha', 7000], ['fotos', 6000], ['compara', 8500], ['camera', 7000], ['fin', 6500], ['mais', 5500], ['estoque', 7000], ['proc', 7000], ['relac', 7000], ['equipe', 6000], ['relat', 6500]];
-  var tlf = document.getElementById('tlf'), idx = 0;
-  function bar(ms) { tlf.style.transition = 'none'; tlf.style.width = '0'; void tlf.offsetWidth; if (ms) { tlf.style.transition = 'width ' + ms + 'ms linear'; tlf.style.width = '100%'; } }
-  function stopTour() { clearTimeout(tourT); tourT = null; bar(0); document.getElementById('tour').textContent = '▶ Tour automático'; }
-  function runTour(i) { if (i >= TOUR.length) { stopTour(); return; } idx = i; show(TOUR[i][0], TOUR[i][0] === 'compara' && i > 0 && TOUR[i - 1][0] === 'camera'); bar(TOUR[i][1]); tourT = setTimeout(function () { runTour(i + 1); }, TOUR[i][1]); }
-  function step(d) { stopTour(); var k = TOUR.map(function (t) { return t[0]; }), c = Math.max(0, k.indexOf(cur)), n = (c + d + k.length) % k.length; idx = n; show(k[n]); }
-  document.getElementById('prev').onclick = function () { step(-1); }; document.getElementById('next').onclick = function () { step(1); };
-  document.getElementById('tour').onclick = function () { if (tourT) { stopTour(); return; } this.textContent = '⏸ Pausar tour'; runTour(0); };
-  document.getElementById('reset').onclick = function () { stopTour(); show('inicio'); };
-  show('inicio');
-  /* ---------- antes e depois (seção) ---------- */
-  var PAIRS = [['Tatiane Melo', 'Coloração'], ['Vanessa Lopes', 'Corte e escova'], ['Bruna Teixeira', 'Mechas e luzes']];
-  var ba = document.getElementById('ba'), baA = document.getElementById('baA'), baD = document.getElementById('baD'), chips = document.getElementById('chips'), hint = document.getElementById('bahint'), baAnim = null, baDone = false;
-  function setBa(x) { x = Math.max(.02, Math.min(.98, x)); baD.style.clipPath = 'inset(0 0 0 ' + x * 100 + '%)'; ba.querySelector('.bar').style.left = ba.querySelector('.knob').style.left = x * 100 + '%'; }
-  function pick(i) { baA.src = 'img/a' + i + '.jpg'; baD.src = 'img/d' + i + '.jpg'; [].forEach.call(chips.children, function (c, j) { c.classList.toggle('on', j === i); }); hint.textContent = PAIRS[i][0] + ' · ' + PAIRS[i][1]; setBa(.5); baSweep(); }
-  PAIRS.forEach(function (p, i) { var c = document.createElement('button'); c.className = 'chip'; c.textContent = p[0].split(' ')[0] + ' · ' + p[1]; c.onclick = function () { pick(i); }; chips.appendChild(c); });
-  function baSweep() { cancelAnimationFrame(baAnim); var t0 = performance.now(); (function f(t) { var k = (t - t0) / 3600; setBa(.5 + .4 * Math.sin(k * Math.PI * 2)); if (k < 1) baAnim = requestAnimationFrame(f); else setBa(.5); })(t0); }
-  function baMove(e) { var r = ba.getBoundingClientRect(); setBa((e.clientX - r.left) / r.width); }
-  ba.addEventListener('pointerdown', function (e) { cancelAnimationFrame(baAnim); ba.setPointerCapture(e.pointerId); baMove(e); ba.onpointermove = baMove; }); ba.addEventListener('pointerup', function () { ba.onpointermove = null; });
-  pick(0);
-
-  /* ---------- demo: tirando a foto do depois com a foto do antes transparente ---------- */
-  (function () {
-    var $ = function (id) { return document.getElementById(id); }, live = $('dLive'), gh = $('dGh'), gb = $('dGb'), fg = $('dFg'), ok = $('dOk'), hand = $('dHand'), sh = $('dSh'), fl = $('dFl'), res = $('dRes'), stp = $('dStep'), dots = $('dProg').children, T = [], run = 0;
-    var MIS = 'translate(15%,9%) scale(1.14)';
-    var STEPS = [['1 · Abra a câmera do depois', 'A cliente já está na cadeira e a imagem não combina com o antes.'], ['2 · Toque em "Mostrar foto do antes"', 'A foto do antes aparece transparente por cima da câmera.'], ['3 · Mexa o celular até coincidir', 'Quando o contorno do cabelo e o fundo se sobrepõem, o enquadramento está igual.'], ['4 · Tire a foto', 'Antes e depois ficam no mesmo ângulo e distância, prontos para o Reels.']];
-    function say(i) { stp.innerHTML = '<b>' + STEPS[i][0] + '</b><span>' + STEPS[i][1] + '</span>'; [].forEach.call(dots, function (d, j) { d.className = j === i ? 'on' : ''; }); }
-    function reset() { live.style.transition = 'none'; live.style.transform = MIS; void live.offsetWidth; live.style.transition = ''; gh.style.opacity = 0; gb.className = 'gb'; gb.textContent = 'Mostrar foto do antes'; fg.style.opacity = 0; ok.className = 'ok'; res.className = 'res'; sh.className = 'sh'; }
-    function at(ms, f, id) { T.push(setTimeout(function () { if (id === run) f(); }, ms)); }
-    function play() {
-      T.forEach(clearTimeout); T = []; var id = ++run; reset(); say(0);
-      at(2200, function () { say(1); hand.className = 'hand'; void hand.offsetWidth; hand.className = 'hand tap'; }, id);
-      at(2900, function () { gb.className = 'gb on'; gb.textContent = 'Foto do antes: ligada'; gh.style.opacity = .42; fg.style.opacity = 1; }, id);
-      at(4600, function () { say(2); live.style.transform = 'translate(4%,3%) scale(1.04)'; }, id);
-      at(6200, function () { live.style.transform = 'none'; }, id);
-      at(8000, function () { ok.className = 'ok on'; }, id);
-      at(9000, function () { say(3); sh.className = 'sh pr'; }, id);
-      at(9300, function () { sh.className = 'sh'; fl.className = 'fl2 go'; }, id);
-      at(9800, function () { res.className = 'res on'; fl.className = 'fl2'; }, id);
-      at(14500, play, id);
-    }
-    $('dRe').onclick = play; reset(); say(0);
-    new IntersectionObserver(function (es, o) { if (es[0].isIntersecting) { play(); } else { run++; T.forEach(clearTimeout); } }, { threshold: .45 }).observe($('demo'));
-  })();
-  /* ---------- funções ---------- */
-  var F = [['Agenda do salão', 'Agenda por profissional, visão do dia e da semana, bloqueio de horários, folgas e pedidos de agendamento online.'], ['Clientes e fichas', 'Histórico de cada visita, alergias, observações, termo de consentimento assinado e data do próximo retorno.'], ['Câmera com guia de enquadramento', 'Linhas na tela para enquadrar o cabelo inteiro e um botão que mostra a foto do antes transparente, para repetir o mesmo ângulo e distância no depois.'], ['Antes e depois', 'Galeria por cliente e comparação deslizando, para mostrar a transformação.'], ['Fotos prontas para Reels e Stories', 'Baixe a foto, gere uma imagem única de antes e depois, ou envie fotos da galeria do celular.'], ['Retorno das clientes', 'Lembretes de retoque de raiz, manutenção de mechas e hidratação, com mensagem pronta para WhatsApp.'], ['Link de agendamento', 'Um link para Instagram e WhatsApp em que a cliente reserva sozinha, só nos horários livres.'], ['Pix com desconto', 'Sinal ou pagamento antecipado por Pix, com desconto opcional, para reduzir faltas em serviços longos.'], ['Serviços e preços', 'Corte, coloração, mechas e tratamentos editáveis, com preço, duração e produtos usados.'], ['Estoque de produtos', 'Tintas, oxidantes e tratamentos com receita por serviço, alerta de estoque mínimo e baixa automática.'], ['Equipe e comissões', 'Cabeleireiras, colorista e auxiliares, cada uma com agenda própria e comissão por atendimento.'], ['Fidelidade', 'Pontos e prêmios próprios do cabelo, com saldo por cliente.'], ['Pacotes de sessões', 'Venda pacotes de hidratação e tratamento e acompanhe o saldo de sessões de cada cliente.'], ['Financeiro', 'Receita, despesas, comissões, formas de pagamento e valores a receber.'], ['Relatórios', 'Resumo do atendimento com fotos e cuidados pós-química, em PDF ou para enviar pelo WhatsApp.'], ['Celular e computador', 'App Android e versão web para iPhone e computador, com login Google, nuvem automática e backup.']];
-  var cards = document.getElementById('cards'); F.forEach(function (f, i) { var d = document.createElement('div'); d.className = 'fc rv'; d.style.transitionDelay = (i % 3) * 90 + 'ms'; d.innerHTML = '<div class="n">' + (i + 1) + '</div><div><b>' + f[0] + '</b><span>' + f[1] + '</span></div>'; cards.appendChild(d); });
-
-  /* ---------- planos ---------- */
-  var ROWS = [['Agenda, fichas, termo assinado, fotos e PDF', 0], ['Financeiro e Pix na cobrança do atendimento', 0], ['Serviços e preços editáveis', 0], ['Nuvem automática e login Google', 1], ['Link de agendamento e sinal por Pix', 1], ['Lembretes e relacionamento com clientes', 1], ['Estoque, receita de produtos e itens compartilhados', 2], ['Pacotes e fidelidade', 2], ['Sincronização entre aparelhos', 2]];
-  var PL = [{ n: 'Grátis', r: 0, m: 0, y: 0, f: 'Para conhecer o app', lim: 'Até 30 clientes · 1 profissional · 1 aparelho' }, { n: 'Essencial', r: 1, m: 24.9, y: 249, f: 'Atende sozinha e quer organização e agendamento', lim: 'Clientes ilimitados · 1 profissional · 1 aparelho' }, { n: 'Pro', r: 2, m: 39.9, y: 399, f: 'Quer controlar estoque, pacotes e usar em 2 aparelhos', lim: 'Clientes ilimitados · até 3 profissionais · 2 aparelhos', hl: 1 }, { n: 'Studio', r: 2, m: 69.9, y: 699, f: 'Salão com equipe', lim: 'Clientes ilimitados · até 5 profissionais · 5 aparelhos' }];
-  function brl(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
-  var mode = 'm', plansEl = document.getElementById('plans');
-  function drawPlans() {
-    plansEl.innerHTML = PL.map(function (p, i) {
-      var price = p.m === 0 ? 'R$ 0' : mode === 'm' ? brl(p.m) + ' <small>/mês</small>' : brl(p.y) + ' <small>/ano</small>';
-      var sub = p.m === 0 ? 'Depois dos 30 dias de teste' : mode === 'm' ? 'ou ' + brl(p.y) + ' por ano (2 meses grátis)' : 'equivale a ' + brl(p.y / 12) + ' por mês';
-      var prev = i === 0 ? null : PL[i - 1], inc = ROWS.filter(function (r) { return r[1] <= p.r && (!prev || r[1] > prev.r); });
-      var head = i === 0 ? '' : '<li><i>+</i><span><b>Tudo do ' + prev.n + '</b>' + (inc.length ? ', mais:' : ', com mais equipe e aparelhos') + '</span></li>';
-      var lis = head + inc.map(function (r) { return '<li><i>✓</i><span>' + r[0] + '</span></li>'; }).join('');
-      return '<div class="pl rv in' + (p.hl ? ' hl' : '') + '">' + (p.hl ? '<span class="badge">TUDO LIBERADO NO TESTE</span>' : '') + '<h3>' + p.n + '</h3><div class="for">' + p.f + '</div><div class="pr">' + price + '</div><div class="sub">' + sub + '</div><ul>' + lis + '</ul><div class="lim">' + p.lim + '</div></div>';
-    }).join('');
-  }
-  document.getElementById('seg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; mode = b.dataset.v; [].forEach.call(this.children, function (c) { c.classList.toggle('on', c === b); }); drawPlans(); };
-  drawPlans();
-  /* ---------- revelar ao rolar + progresso ---------- */
-  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); if (e.target.id === 'ba') baSweep(); } }); }, { threshold: .15 });
-  [].forEach.call(document.querySelectorAll('.rv'), function (el) { io.observe(el); });
-  var prog = document.getElementById('prog'); addEventListener('scroll', function () { var h = document.documentElement; prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%'; }, { passive: true });
-})();
-</script>
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
 </body>
 </html>
