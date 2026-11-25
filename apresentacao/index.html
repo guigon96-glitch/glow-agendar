@@ -98,7 +98,13 @@
   #agendar .device { --p-h: 380px; }
   #gestao .device { --p-h: 460px; }
   .device > img { width: min(80%, 300px); }
+  /* celular: cada tela aparece inteira, sem esfumado nem corte */
+  .device, #antes .grid > .device { height: auto !important; padding-block: var(--s-6); }
+  .device > img { position: relative; left: auto; top: auto; transform: none !important; display: block; margin-inline: auto; width: min(68%, 260px) !important; }
+  .device::after, #agendar .device::before { display: none; }
 }
+/* tiras de telas: imagem inteira, sem cortar os lados */
+.screens > img { height: auto; aspect-ratio: 860 / 1864; object-fit: contain; }
 /* comparador de antes e depois (igual ao app): a barra se mexe sozinha até a pessoa arrastar */
 .cmpx { position: relative; margin: 0; aspect-ratio: 4 / 5; border-radius: var(--r-lg); overflow: hidden; background: var(--surface); touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .cmpx img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
@@ -188,8 +194,7 @@
       <div class="hero__text span-5">
         <h1 id="hero-h">App de agenda para salão de cabeleireira</h1>
         <p class="hero__lead">Agenda, ficha da cliente, fotos de antes e depois com guia na câmera, estoque de tintas e Pix no mesmo app de celular. A partir de R$ 24,90 por mês.</p>
-        <div class="btn-row"><a class="btn btn--primary" href="https://glow-agenda.pages.dev/app/">Testar 30 dias grátis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#telas">Ver as telas</a></div>
-        <p class="hero__proof">O teste libera o plano Pro inteiro, sem cartão.</p>
+        <div class="btn-row"><a class="btn btn--secondary" href="#telas">Ver as telas</a></div>
       </div>
       <div class="hero__art span-6 start-7" role="img" aria-label="A agenda do dia no app, com um lembrete de retoque de raiz enviado pelo WhatsApp">
         <div class="ly-piece ly-piece--main phone" aria-hidden="true"><img src="img/agenda.webp" alt="" fetchpriority="high" data-source="client" data-subject="tela da agenda do app"></div>
@@ -255,7 +260,7 @@
     <div class="wrap">
       <div class="grid">
         <h2 id="agendar-h" class="span-5">Link de agendamento para a cliente</h2>
-        <p class="span-6 start-7">Coloque o link no Instagram e no WhatsApp. Almoço, folgas e horários bloqueados não aparecem para ela. <a class="link" href="../">Ver a página de agendamento</a></p>
+        <p class="span-6 start-7">Coloque o link no Instagram e no WhatsApp. Almoço, folgas e horários bloqueados não aparecem para ela. <a class="link" href="simulado.html">Ver a página de agendamento</a></p>
       </div>
       <div class="grid" style="margin-top: var(--s-7)">
         <article class="card card--open span-4"><h3>1. Escolhe o serviço</h3><p>Corte, coloração, mechas ou tratamento, com preço e duração.</p><div class="device"><img src="img/pg1.webp" alt="Página de agendamento com a lista de serviços" loading="lazy" data-source="client" data-subject="página de agendamento"></div></article>

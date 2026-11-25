@@ -92,7 +92,9 @@ function hhmm(m){ return ('0'+Math.floor(m/60)).slice(-2) + ':' + ('0'+(m%60)).s
 function pad(n){ return ('0'+n).slice(-2); }
 function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function brl(v){ return 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:2}); }
-function call(body){ return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();}); }
+// simulação da apresentação: com ?e=demo dentro do simulado.html, nada vai ao servidor
+function demoCall(body){ var c = (function(){ try { return window.parent !== window && window.parent.DEMO_CAT; } catch(e){ return null; } })(); if (!c) return null; return Promise.resolve(body.action === 'public_catalog' ? { ok:true, catalog:c } : body.action === 'book' ? { ok:true, id:'demo-' + Date.now(), proId:'pro0' } : { ok:true }); }
+function call(body){ if (SLUG === 'demo') { var d = demoCall(body); if (d) return d; } return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();}); }
 function svcBy(k){ return cat.services.filter(function(s){return s.k===k;})[0]; }
 function svc(){ return svcBy(st.svc); }
 function waNum(){ var wa = (cat.studio.whats || '').replace(/\D/g, ''); return wa && wa.length <= 11 ? '55' + wa : wa; }

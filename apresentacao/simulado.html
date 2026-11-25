@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulação da página de agendamento · Glow Studio</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+html, body { margin: 0; height: 100%; background: #faf6f2; color: #2b2220; font: 400 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+body { display: flex; flex-direction: column; }
+.top { display: flex; align-items: center; gap: 12px; padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top)); background: #a45f5c; color: #fff; }
+.top a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid rgb(255 255 255 / .55); border-radius: 8px; color: #fff; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.top a:hover { background: #8f504d; }
+.top a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.top p { margin: 0; font-size: 13px; line-height: 1.3; }
+iframe { flex: 1; width: 100%; border: 0; background: #faf6f2; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a id="back" href="./"><svg width="14" height="14" viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2.5 4 6l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar para a apresentação</a>
+  <p>Simulação: é assim que sua cliente agenda. Nada é enviado.</p>
+</header>
+<iframe id="pg" title="Página de agendamento (simulação)"></iframe>
+<script>
+// Catálogo de exemplo por área; a página de agendamento real lê window.parent.DEMO_CAT quando abre com ?e=demo
+var AREAS = {
+  unhas: ['Ateliê Larissa Nails', [['gel', 'Alongamento em gel', 150, 220], ['esmalt', 'Esmaltação em gel', 60, 90], ['blind', 'Blindagem de unhas', 90, 120]]],
+  cabelo: ['Studio Larissa Souza', [['corte', 'Corte e escova', 90, 120], ['color', 'Coloração', 150, 260], ['mechas', 'Mechas e luzes', 240, 480], ['tratam', 'Hidratação e tratamento', 90, 140]]],
+  cilios: ['Larissa Lash Studio', [['cilios', 'Extensão de cílios', 150, 180], ['lifting', 'Lash lifting', 60, 140]]],
+  sobrancelhas: ['Larissa Brows', [['design', 'Design de sobrancelhas', 60, 60], ['henna', 'Henna e brow lamination', 60, 90]]],
+  maquiagem: ['Larissa Make', [['social', 'Maquiagem social', 75, 180], ['noiva', 'Maquiagem de noiva', 120, 450], ['festa', 'Maquiagem para festa', 90, 220]]],
+  estetica: ['Espaço Larissa Estética', [['depil', 'Depilação com cera', 45, 80], ['limpeza', 'Limpeza de pele', 75, 160], ['peeling', 'Peeling facial', 60, 200]]]
+};
+var q = new URLSearchParams(location.search), area = AREAS[q.get('a')] ? q.get('a') : 'cabelo', A = AREAS[area];
+document.getElementById('back').href = q.get('a') && AREAS[q.get('a')] ? area + '.html#agendar' : './#agendar';
+// alguns horários já ocupados para parecer uma agenda de verdade
+var busy = {}, d = new Date();
+for (var i = 1; i <= 30; i++) { var x = new Date(d); x.setDate(d.getDate() + i); var k = x.toISOString().slice(0, 10); busy[k] = { pro0: [[600 + (i % 3) * 60, 690 + (i % 3) * 60], [900, 990]] }; }
+window.DEMO_CAT = { on: true, studio: { name: A[0], owner: 'Larissa', whats: '' }, hours: { open: '09:00', close: '19:00', days: [1, 2, 3, 4, 5, 6], step: 30, lunchFrom: '12:00', lunchTo: '13:00' }, advance: 30, minHours: 0,
+  pros: [{ id: 'pro0', name: 'Larissa' }], services: A[1].map(function (s) { return { k: s[0], name: s[1], dur: s[2], price: s[3] }; }), busy: busy, pix: null, reviews: { list: [
+  { name: 'Camila R.', service: A[1][0][1], stars: 5, text: 'Atendimento impecável e muito pontual. Já marquei a próxima!' },
+  { name: 'Juliana P.', service: A[1][1][1], stars: 5, text: 'Ambiente lindo e o resultado ficou exatamente como eu queria.' }] } };
+document.getElementById('pg').src = '../?e=demo';
+</script>
+</body>
+</html>
