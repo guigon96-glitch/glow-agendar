@@ -1,0 +1,2 @@
+/beta /app/ 301
+/beta/* /app/:splat 301

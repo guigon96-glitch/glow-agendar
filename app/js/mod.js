@@ -3,7 +3,7 @@
 const ACTX = {}, ROUTEX = {}; // ações e rotas extras (usadas por main.js)
 const PAYM = ['Pix', 'Cartão de crédito', 'Cartão de débito', 'Dinheiro', 'Transferência'];
 const EXP_CATS = ['Produtos', 'Aluguel', 'Equipamentos', 'Marketing', 'Impostos e taxas', 'Outros'];
-const PRO_COLORS = ['#A45F5C', '#1F8A8A', '#5A3DB0', '#C2621B', '#3B6FB6', '#6E8A1F'];
+const PRO_COLORS = ['#A45F5C', '#3B2E2E', '#C98A85', '#8F504D', '#756560', '#D9A9A3']; // tons da paleta, fora das cores de estado (sálvia = concluído, dourado = a confirmar)
 const DEFAULT_PRICE = { cilios: 180, lifting: 160, design: 55, henna: 75, gel: 220, esmalt: 70, blind: 110, corte: 120, color: 280, mechas: 650, tratam: 130, social: 150, noiva: 450, festa: 190, depil: 60, limpeza: 160, peeling: 190 };
 const HOURS_DEFAULT = () => ({ open: '09:00', close: '19:00', days: [1, 2, 3, 4, 5, 6], step: 30, lunchFrom: '', lunchTo: '' });
 const AREA_EX = { // exemplos de preenchimento conforme a primeira área escolhida

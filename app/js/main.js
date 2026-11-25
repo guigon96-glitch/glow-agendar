@@ -10,7 +10,7 @@ const setPath = (o, path, v) => { const k = path.split('.'); let t = o; for (let
 const curSession = () => sess(parts()[1]);
 
 async function route(opt) {
-  opt = opt || {}; stopCam();
+  opt = opt || {}; stopCam(); applyTheme();
   const p = parts(); let r; const keep = opt.keep ? view.scrollTop : 0;
   const act = document.activeElement; const focusId = opt.keep && act && act.id && view.contains(act) ? act.id : null; const caret = focusId && act.selectionStart != null ? act.selectionStart : null;
   try {
@@ -40,7 +40,7 @@ window.addEventListener('hashchange', () => route());
 
 /* ---------- modal / confirmação ---------- */
 function saveAreas(a) { S.settings.areas = Object.keys(AREAS).filter((k) => a.includes(k)); S.settings.areasSet = true; if (S.settings.loyalty && !S.settings.loyalty.custom) S.settings.loyalty.rewards = rewardsFor(S.settings.areas); if (!activeServices().includes(UI.ajSvc)) UI.ajSvc = activeServices()[0]; if (UI.filter !== 'todas' && UI.filter !== 'ret' && !S.settings.areas.includes(UI.filter)) UI.filter = 'todas'; save(); }
-function areaCards(a, mode) { return Object.keys(AREAS).map((k) => '<button class="cc" style="padding:16px 18px;gap:4px;align-items:flex-start;text-align:left;' + (a.includes(k) ? 'border:2px solid #A45F5C;background:#F3E1DC' : 'border:2px solid transparent') + '" data-act="area-toggle" data-v="' + k + '" data-mode="' + (mode || '') + '" aria-pressed="' + a.includes(k) + '"><span style="font-weight:500;font-size:17px">' + (a.includes(k) ? '✓ ' : '') + AREAS[k].name + '</span><span class="muted sm">' + AREAS[k].desc + '</span></button>').join(''); }
+function areaCards(a, mode) { return Object.keys(AREAS).map((k) => '<button class="cc" style="padding:16px 18px;gap:4px;align-items:flex-start;text-align:left;' + (a.includes(k) ? 'border:2px solid var(--rose);background:var(--blush)' : 'border:2px solid transparent') + '" data-act="area-toggle" data-v="' + k + '" data-mode="' + (mode || '') + '" aria-pressed="' + a.includes(k) + '"><span style="font-weight:500;font-size:17px">' + (a.includes(k) ? '✓ ' : '') + AREAS[k].name + '</span><span class="muted sm">' + AREAS[k].desc + '</span></button>').join(''); }
 function openAreasSetup(keep) { const a = UI.areasDraft || (keep ? activeAreas() : Object.keys(AREAS)); UI.areasDraft = a; openModal('<h2 class="h2">Bem-vinda ao ' + esc(S.settings.studio) + '</h2><div class="muted">Quais áreas de beleza você atende? Os procedimentos, as fotos e os relatórios vão seguir a sua escolha. Você pode mudar depois em Ajustes.</div><div class="grid2" style="gap:10px">' + areaCards(a, 'modal') + '</div><div class="acts" style="justify-content:flex-end"><button class="btn" data-act="areas-ok">Continuar</button></div>'); }
 function openModal(html) { const m = $('#modal'); m.innerHTML = '<div class="box" role="dialog" aria-modal="true">' + html + '</div>'; m.hidden = false; }
 function closeModal() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; }
@@ -80,7 +80,7 @@ function camLive() { UI.cam.shot = null; $('#cam_p').hidden = true; $('#ctl_live
 function initSig() {
   const cv = $('#sig'); if (!cv) return;
   const r = cv.getBoundingClientRect(); cv.width = Math.max(300, r.width) * 2; cv.height = Math.max(100, r.height) * 2;
-  const g = cv.getContext('2d'); g.scale(2, 2); g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = '#3B2E2E'; sigInk = false; let down = false;
+  const g = cv.getContext('2d'); g.scale(2, 2); g.lineWidth = 2.4; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = 'var(--ink)'; sigInk = false; let down = false;
   const pos = (e) => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
   cv.onpointerdown = (e) => { down = true; cv.setPointerCapture(e.pointerId); const q = pos(e); g.beginPath(); g.moveTo(q[0], q[1]); g.lineTo(q[0] + 0.1, q[1]); g.stroke(); sigInk = true; };
   cv.onpointermove = (e) => { if (!down) return; const q = pos(e); g.lineTo(q[0], q[1]); g.stroke(); };
@@ -204,6 +204,16 @@ const ACT = {
   'aj-svc'(el) { UI.ajSvc = el.dataset.v; route({ keep: true }); },
   'aj-msg-reset'() { S.settings.msg = MSG_DEFAULT; save(); route({ keep: true }); },
   'logo-del'() { S.settings.logo = null; save(); route({ keep: true }); },
+  async 'app-update'() {
+    toast('Verificando...');
+    let r; try { r = await (await fetch('https://api.github.com/repos/guigon96-glitch/glow-agendar/releases/latest')).json(); } catch (e) { toast('Sem conexão'); return; }
+    const v = String(r.tag_name || '').replace(/^v/, ''), apk = (r.assets || []).find((a) => /\.apk$/.test(a.name));
+    const num = (x) => x.split('.').map(Number), cur = num(Native.appVersion()), nv = num(v);
+    let newer = false; for (let i = 0; i < Math.max(cur.length, nv.length); i++) { const d = (nv[i] || 0) - (cur[i] || 0); if (d) { newer = d > 0; break; } }
+    if (!apk || !newer) { toast('Você já tem a versão mais nova'); return; }
+    if (!(await confirmBox('Atualização ' + v + ' disponível', 'O aplicativo será baixado e o Android pedirá para instalar. Seus dados continuam no aparelho.', 'Atualizar'))) return;
+    Native.installUpdate(apk.browser_download_url); toast('Baixando atualização...');
+  },
   async export() { saveFileOut('backup-glow-studio-' + todayISO() + '.json', 'application/json', btoa(unescape(encodeURIComponent(await exportBackup())))); },
   async wipe() {
     if (!(await confirmBox('Apagar todos os dados?', 'Clientes, atendimentos e fotos serão removidos deste aparelho. Esta ação não pode ser desfeita.', 'Apagar tudo'))) return;
