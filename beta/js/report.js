@@ -66,11 +66,10 @@ async function layoutReport(s, opt, k) {
     section('Seu procedimento'); y += 38;
     ctx.fillStyle = '#3B2E2E'; ctx.font = "400 30px 'Jost'"; ctx.fillText(procTitle(s) + (s.status === 'concluido' ? '' : ''), RM, y); y += 30;
     if (opt.tecnica) {
-      const items = techItems(s).filter((i) => !(s.service === 'cilios' && i[0] === 'Técnica')).slice(0, 6), more = items.length > 4;
-      if (!items.length && s.produto) items.push(['Produtos e técnica', s.produto]);
+      const items = s.service === 'cilios' ? [['Curvatura', s.curvatura], ['Espessura', s.espessura ? s.espessura + ' mm' : ''], ['Comprimento', s.comprimento ? s.comprimento + ' mm' : ''], ['Mapeamento', s.mapeamento]].filter((i) => i[1]) : (s.produto ? [['Produtos e técnica', s.produto]] : []);
       if (items.length) {
-        y += 14; const n = more ? 3 : items.length, w = (RW - RM * 2 - 18 * (n - 1)) / n;
-        items.forEach((it, i) => { if (i && i % n === 0) y += 118; const x = RM + (i % n) * (w + 18); ctx.fillStyle = '#FAF3EF'; rr(ctx, x, y, w, 100, 18); ctx.fill(); ctx.fillStyle = '#756560'; ctx.font = "400 21px 'Jost'"; ctx.fillText(it[0], x + 20, y + 36); ctx.fillStyle = '#3B2E2E'; ctx.font = "500 30px 'Jost'"; ctx.fillText(it[1], x + 20, y + 76); });
+        y += 14; const w = (RW - RM * 2 - 18 * (items.length - 1)) / items.length;
+        items.forEach((it, i) => { const x = RM + i * (w + 18); ctx.fillStyle = '#FAF3EF'; rr(ctx, x, y, w, 100, 18); ctx.fill(); ctx.fillStyle = '#756560'; ctx.font = "400 21px 'Jost'"; ctx.fillText(it[0], x + 20, y + 36); ctx.fillStyle = '#3B2E2E'; ctx.font = "500 30px 'Jost'"; ctx.fillText(it[1], x + 20, y + 76); });
         y += 100;
       }
     }
