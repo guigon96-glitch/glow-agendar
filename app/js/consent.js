@@ -112,7 +112,7 @@ Object.assign(ACTX, {
     c.consents = c.consents || {};
     c.consents[area] = { at: todayISO(), ver: 1, answers, obs: $('#an_obs').value.trim(), fotos: $('#t_fotos').checked, divulgacao: $('#t_div').checked, signId, text: termoParas(area) };
     c.termo = Object.assign({ aceite: true, fotos: true, divulgacao: false }, c.termo || {}, { aceite: true, fotos: $('#t_fotos').checked, divulgacao: $('#t_div').checked });
-    c.anam = c.anam || {}; Object.keys(ANAM_SHORT).forEach((k) => { if (k in answers) c.anam[k] = answers[k]; });
+    c.anam = Object.assign(c.anam || {}, answers);
     save(); toast('Anamnese e termo salvos'); const b = UI.consBack; UI.consBack = null; go(b || '#/clientes/' + c.id);
     if (waNumber(c.phone) && await confirmBox('Enviar o termo assinado?', 'O PDF com a anamnese e o termo assinados vai para o WhatsApp de ' + c.name.split(' ')[0] + '.', 'Enviar')) await sendTermo(c, area);
   },

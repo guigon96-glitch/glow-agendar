@@ -1,7 +1,26 @@
 'use strict';
 /* ===== Telas (parte 2) ===== */
 const notFound = (nav) => ({ nav, html: emptyBox('Não encontrado', 'Esse registro não existe mais.', '<a class="btn" href="#/inicio">Ir para o início</a>') });
+const anamLabel = (k) => ANAM_SHORT[k] || (ANAM_COMMON.concat(...Object.values(ANAM_AREA)).find((q) => q[0] === k) || [])[1];
 const ANAM_SHORT = { alergia: 'Alergia a cosméticos', infeccao: 'Infecção ocular', lentes: 'Usa lentes', gestante: 'Gestante ou lactante', derma: 'Tratamento dermatológico', jafez: 'Já fez extensão' };
+
+/* ---------- Cliente rápida (agendamento e atendimento) ---------- */
+UI.qc = { name: '', phone: '' };
+function quickClientField(selId, cur, blank) {
+  const isNew = !S.clients.length || cur === '__new';
+  const opts = S.clients.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map((c) => '<option value="' + c.id + '"' + (c.id === cur ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('');
+  return '<div><label class="lb" for="' + selId + '">Cliente</label><select class="in" id="' + selId + '" data-qc>' + (blank && S.clients.length ? '<option value="">Selecione…</option>' : '') + opts + '<option value="__new"' + (isNew ? ' selected' : '') + '>+ Nova cliente</option></select></div>' +
+    '<div class="grid2 qcf" id="qc_' + selId + '" style="gap:10px' + (isNew ? '' : ';display:none') + '"><div><label class="lb" for="qc_n">Nome da nova cliente</label><input class="in" id="qc_n" data-qcv="name" placeholder="Ex.: Ana Beatriz Lima" value="' + esc(UI.qc.name) + '"></div><div><label class="lb" for="qc_p">WhatsApp (opcional)</label><input class="in" id="qc_p" type="tel" data-qcv="phone" placeholder="(00) 0 0000-0000" value="' + esc(UI.qc.phone) + '"></div></div>';
+}
+// devolve o id da cliente escolhida; se for "+ Nova cliente", cria o cadastro (respeitando o plano)
+function quickClientId(v) {
+  if (v !== '__new') return v || '';
+  const name = UI.qc.name.trim(); if (!name) { toast('Informe o nome da cliente'); const f = $('#qc_n'); if (f) f.focus(); return ''; }
+  if (S.clients.length >= planInfo().clients) { upsell('cloud', 'O plano Grátis permite até ' + PLANS.free.clients + ' clientes.'); return ''; }
+  const c = Object.assign(blankClient(), { name, phone: UI.qc.phone.trim() }); S.clients.push(c); UI.qc = { name: '', phone: '' }; return c.id;
+}
+document.addEventListener('change', (e) => { const t = e.target; if (t.matches && t.matches('[data-qc]')) { const b = $('#qc_' + t.id); if (b) b.style.display = t.value === '__new' ? '' : 'none'; } });
+document.addEventListener('input', (e) => { const t = e.target; if (t.dataset && t.dataset.qcv) UI.qc[t.dataset.qcv] = t.value; });
 
 /* ---------- Ficha ---------- */
 async function vFicha(id) {
@@ -9,10 +28,10 @@ async function vFicha(id) {
   const list = clientSessions(id); await Photo.preload(sessPhotoIds(list));
   if (c.signId) await Photo.preload([c.signId]);
   const lastDone = list.find((s) => s.status === 'concluido');
-  const flags = Object.keys(ANAM_SHORT).filter((k) => c.anam && c.anam[k]);
+  const flags = Object.keys(c.anam || {}).filter((k) => c.anam[k] && anamLabel(k));
   const left = '<div class="card stack" style="width:300px;flex:none"><div class="muted sm">Cliente desde ' + fmtLong(c.created || todayISO()) + '</div>' +
     '<div style="padding-top:2px;display:flex;flex-direction:column;gap:10px;font-size:14px">' + [['WhatsApp', c.phone], ['E-mail', c.email], ['Instagram', c.insta], ['Aniversário', c.birth ? fmtLong(c.birth).replace(/ de \d+$/, '') : ''], ['Cidade', c.city]].filter((r) => r[1]).map((r) => '<div><div class="muted" style="font-size:12px">' + r[0] + '</div>' + esc(r[1]) + '</div>').join('') + '</div>' +
-    '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px"><h3 class="h3">Anamnese</h3><div class="chips">' + (flags.includes('alergia') ? '' : '<span class="pill">Sem alergias</span>') + flags.map((k) => '<span class="pill">' + ANAM_SHORT[k] + '</span>').join('') + '</div>' + (c.notes ? '<div class="muted sm">' + esc(c.notes) + '</div>' : '') + '</div>' +
+    '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px"><h3 class="h3">Anamnese</h3><div class="chips">' + (flags.includes('alergia') ? '' : '<span class="pill">Sem alergias</span>') + flags.map((k) => '<span class="pill">' + esc(anamLabel(k)) + '</span>').join('') + '</div>' + (c.notes ? '<div class="muted sm">' + esc(c.notes) + '</div>' : '') + '</div>' +
     (lastDone ? '<div style="border-top:1px solid var(--line2);padding-top:14px"><div class="muted sm">Próxima manutenção</div><div style="font:800 21px/1.2 var(--sans);color:var(--rose-d)">' + fmtLong(nextDate(lastDone)).replace(/ de \d+$/, '') + '</div></div>' : '') + clientExtra(c) + '</div>';
   const tab = UI.fichaTab; let content = '';
   if (tab === 'hist') {
@@ -32,8 +51,7 @@ async function vFicha(id) {
 function anglesOf(s) { return s.angles && s.angles.length ? s.angles : (SERVICES[s.service].angles || ['rosto']).slice(); }
 async function vAtendimento(id) {
   if (id === 'novo') {
-    const opts = S.clients.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map((c) => '<option value="' + c.id + '"' + (UI.sel.client === c.id ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('');
-    return { nav: 'agenda', html: head('Atendimento', 'Novo atendimento', back('#/inicio', 'Início')) + (S.clients.length ? '<div class="card stack" style="max-width:560px"><div><label class="lb" for="n_c">Cliente</label><select class="in" id="n_c"><option value="">Selecione…</option>' + opts + '</select></div><div class="lb" style="margin:0">Procedimento</div><div class="chips">' + activeServices().map((k) => '<button class="chip ' + ((UI.sel.svc || 'cilios') === k ? 'on' : '') + '" data-act="pick-svc" data-v="' + k + '">' + SERVICES[k].name + '</button>').join('') + '</div><button class="btn" data-act="start-session">Iniciar atendimento</button></div>' : emptyBox('Cadastre uma cliente primeiro', '', '<a class="btn" href="#/clientes/novo">+ Nova cliente</a>')) };
+    return { nav: 'agenda', html: head('Atendimento', 'Novo atendimento', back('#/inicio', 'Início')) + '<div class="card stack" style="max-width:560px">' + quickClientField('n_c', UI.sel.client, true) + '<div class="lb" style="margin:0">Procedimento</div><div class="chips">' + activeServices().map((k) => '<button class="chip ' + ((UI.sel.svc || 'cilios') === k ? 'on' : '') + '" data-act="pick-svc" data-v="' + k + '">' + SERVICES[k].name + '</button>').join('') + '</div><button class="btn" data-act="start-session">Iniciar atendimento</button></div>' };
   }
   const s = sess(id); if (!s) return notFound('agenda');
   const c = client(s.clientId) || { name: '?' }; await Photo.preload(sessPhotoIds([s]));

@@ -128,6 +128,7 @@ const ACT = {
     const s = sess(el.dataset.id); if (!s) return;
     if (s.status === 'concluido') go('#/clientes/' + s.clientId); else { if (s.date === todayISO() && s.status === 'agendado') { s.status = 'andamento'; save(); } go('#/atendimento/' + s.id); }
   },
+  'open-menu'() { const h = $('#drawerHandle'); if (h) h.click(); },
   'agenda-day'(el) { UI.agendaDate = el.dataset.v; route(); },
   'agenda-shift'(el) { UI.agendaDate = addDays(UI.agendaDate, +el.dataset.v); route(); },
   'new-appt'() {
@@ -156,7 +157,7 @@ const ACT = {
   'new-session-for'(el) { const s = newSession(el.dataset.id, { status: 'andamento', time: hhmm(Math.round((new Date().getHours() * 60 + new Date().getMinutes()) / 15) * 15 % 1440) }); S.sessions.push(s); save(); go('#/atendimento/' + s.id); },
   'pick-svc'(el) { const c = $('#n_c'); UI.sel.client = c ? c.value : ''; UI.sel.svc = el.dataset.v; route({ keep: true }); },
   'start-session'() {
-    const cid = $('#n_c').value; if (!cid) { toast('Selecione a cliente'); return; }
+    if (!$('#n_c').value) { toast('Selecione a cliente'); return; } const cid = quickClientId($('#n_c').value); if (!cid) return;
     const s = newSession(cid, { service: UI.sel.svc || activeServices()[0], status: 'andamento' }); S.sessions.push(s); save(); UI.sel = {}; go('#/atendimento/' + s.id);
   },
   svc(el) {

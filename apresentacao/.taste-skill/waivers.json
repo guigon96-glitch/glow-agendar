@@ -1,0 +1,17 @@
+[
+ {
+  "check": "no-visual",
+  "target": "section#planos",
+  "reason": "Price list: sections.md section 1 allows a price list with no picture; the four plans are the content."
+ },
+ {
+  "check": "copy-headings",
+  "target": "div.group > div.grid > article.card.card--row:nth-of-type(1) > h3 \"Estoque do ateliê em ml",
+  "reason": "Card headings name the app feature (estoque, lucro, pacotes) of the nail studio; index.html passes the same headings only because its category holds salão."
+ },
+ {
+  "check": "section-gaps",
+  "target": "section#planos / footer#contact",
+  "reason": "Planos and footer are the same markup as index.html, which passes; on cilios.html only the median of the other gaps moves, not this gap."
+ }
+]

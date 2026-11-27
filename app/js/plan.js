@@ -1,6 +1,6 @@
 'use strict';
 /* ===== Planos: Grátis, Essencial, Pro e Studio (teste de 30 dias com tudo do Pro) ===== */
-const TRIAL_DAYS = 30, APP_VERSION = '1.3 (v14)';
+const TRIAL_DAYS = 30, APP_VERSION = '1.5 (v30)';
 const SALES_WHATS = ''; // WhatsApp de vendas (preencher quando a assinatura for aberta)
 const TIERS = ['free', 'ess', 'pro', 'studio'];
 const PLANS = {

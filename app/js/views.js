@@ -22,7 +22,8 @@ function shellHtml(active) {
   const first = (S.settings.owner || 'LS');
   return {
     side: '<div class="logo"><b>' + esc(S.settings.studio.replace(/\s+Studios?$/i, '')) + '</b><i>STUDIO</i><u></u></div>' + items + '<div class="me">' + av(first, 40) + '<div><div style="font-weight:500;font-size:14px">' + esc(first) + '</div><div class="muted" style="font-size:12px">Beleza e bem-estar</div></div></div>',
-    tab: NAV.filter((n) => TABKEYS.includes(n[0])).map(([k, i, l]) => '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '">' + ic(i) + l + '</a>').join('')
+    tab: NAV.filter((n) => TABKEYS.includes(n[0])).map(([k, i, l]) => '<a class="nav ' + (active === k ? 'on' : '') + '" href="#/' + k + '">' + ic(i) + l + '</a>').join('') +
+      '<button type="button" class="nav' + (TABKEYS.includes(active) ? '' : ' on') + '" data-act="open-menu" aria-label="Abrir o menu completo" aria-controls="side">' + ic('more') + 'Mais</button>'
   };
 }
 // Onde avisos extras entram no Início: depois do cartão do próximo horário, senão depois do cabeçalho.
@@ -109,7 +110,8 @@ async function vClientes() {
 function listOnly() { /* usado pela busca: re-renderiza só a lista */ return vClientes(); }
 
 /* ---------- Cadastro / edição ---------- */
-const ANAM = [['alergia', 'Alergia a adesivos, esmaltes ou cosméticos'], ['infeccao', 'Conjuntivite, blefarite ou infecção ocular'], ['lentes', 'Usa lentes de contato'], ['gestante', 'Gestante ou lactante'], ['derma', 'Tratamento dermatológico na região dos olhos'], ['jafez', 'Já fez extensão de cílios antes']];
+// anamnese do cadastro: perguntas gerais + as das áreas ativas; respostas já marcadas de outras áreas continuam aparecendo
+const anamFor = (saved) => ANAM_COMMON.concat(...activeAreas().map((a) => ANAM_AREA[a] || []), Object.values(ANAM_AREA).flat().filter(([k]) => saved && saved[k])).filter(([k], i, l) => l.findIndex((q) => q[0] === k) === i);
 function blankClient() { return { id: uid(), name: '', birth: '', phone: '', email: '', insta: '', city: '', origin: 'Indicação de cliente', notes: '', anam: {}, termo: { aceite: false, fotos: true, divulgacao: false }, sign: null, created: todayISO() }; }
 async function vClienteForm(id) {
   const isNew = !id;
@@ -122,7 +124,7 @@ async function vClienteForm(id) {
     '<section class="cols"><div class="card grow stack"><h2 class="h2">Dados pessoais</h2>' + inp('name', 'Nome completo', 'Ex.: Ana Beatriz Lima') + '<div class="grid2">' + inp('birth', 'Data de nascimento', '', 'date') + inp('phone', 'WhatsApp', '(00) 0 0000-0000', 'tel') + inp('email', 'E-mail', 'nome@email.com', 'email') + inp('insta', 'Instagram', '@usuario') + inp('city', 'Cidade', 'Cidade') +
     '<div><label class="lb" for="f_origin">Como conheceu o estúdio</label><select class="in" id="f_origin" data-o="d" data-f="origin">' + ['Indicação de cliente', 'Instagram', 'Google', 'Outro'].map((o) => '<option' + (d.origin === o ? ' selected' : '') + '>' + o + '</option>').join('') + '</select></div></div>' +
     '<div><label class="lb" for="f_notes">Observações</label><textarea class="in" id="f_notes" data-o="d" data-f="notes" placeholder="Preferências de estilo, rotina, sensibilidades…">' + esc(d.notes) + '</textarea></div></div>' +
-    '<div class="stack" style="width:420px;flex:none"><div class="card" style="padding:22px 24px 10px"><h2 class="h2" style="margin-bottom:12px">Anamnese</h2>' + ANAM.map(([k, l]) => ck('anam.' + k, l, d.anam && d.anam[k])).join('') + '</div>' +
+    '<div class="stack" style="width:420px;flex:none"><div class="card" style="padding:22px 24px 10px"><h2 class="h2" style="margin-bottom:12px">Anamnese</h2>' + anamFor(d.anam).map(([k, l]) => ck('anam.' + k, l, d.anam && d.anam[k])).join('') + '</div>' +
     '<div class="card" style="padding:22px 24px 20px"><h2 class="h2" style="margin-bottom:12px">Termo de consentimento</h2>' + ck('termo.aceite', 'Li e aceito o termo do procedimento', d.termo.aceite) + ck('termo.fotos', 'Autorizo fotos de antes e depois para acompanhamento', d.termo.fotos) + ck('termo.divulgacao', 'Autorizo usar minhas fotos em divulgação (opcional)', d.termo.divulgacao) +
     '<div style="margin-top:12px"><div class="lb">Assinatura da cliente</div>' + (d.signId && PC.get(d.signId) && !UI.reSign ? '<div class="paper" style="padding:8px"><img src="' + PC.get(d.signId) + '" alt="Assinatura" style="max-height:120px;width:auto;margin:auto"></div><button class="btn ghost sm" style="margin-top:8px" data-act="resign">Refazer assinatura</button>' : '<canvas class="sig" id="sig" aria-label="Área de assinatura"></canvas><button class="btn ghost sm" style="margin-top:8px" data-act="sig-clear">Limpar</button>') + '</div></div></div></section>' };
 }

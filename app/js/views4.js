@@ -24,7 +24,7 @@ async function vAgenda() {
     const bl = placed.map(({ s, st, en, ci }) => { const c = client(s.clientId) || { name: '?' }; const top = (st - h0 * 60) / 60 * RH + 2, ht = Math.max(40, (en - st) / 60 * RH - 4);
       return '<button class="bk ' + (s.status === 'concluido' ? 'done' : s.status === 'andamento' ? 'now' : 'next' + (s.confirmed ? '' : ' pend')) + '" style="top:' + top + 'px;height:' + ht + 'px;left:calc(100% / ' + nc + ' * ' + ci + ');width:calc(100% / ' + nc + ');right:auto" data-act="open-session" data-id="' + s.id + '" aria-label="' + esc(c.name) + ', ' + (s.status === 'agendado' ? (s.confirmed ? 'confirmado' : 'a confirmar') : s.status) + '"><span class="t"><b>' + esc(N > 1 ? c.name.split(' ')[0] : c.name) + '</b><small>' + hhmm(st) + ' – ' + hhmm(en) + ' · ' + esc(SERVICES[s.service].name) + '</small></span></button>'; }).join('');
     const bk = blocks.filter((b) => !p || !b.proId || b.proId === p.id).map((b) => '<button class="bk blk" style="top:' + (mins(b.from) - h0 * 60) / 60 * RH + 'px;height:' + Math.max(32, (mins(b.to) - mins(b.from)) / 60 * RH) + 'px;left:0;right:0" data-act="blk-del" data-id="' + b.id + '" aria-label="Remover bloqueio"><span class="t"><small>' + esc(b.note || 'Bloqueado') + ' · ' + b.from + '–' + b.to + '</small></span></button>').join('');
-    return '<div style="position:absolute;top:0;bottom:0;left:calc(64px + (100% - 64px) / ' + N + ' * ' + i + ');width:calc((100% - 64px) / ' + N + ');padding:0 3px">' + '<div style="position:relative;height:100%">' + bl + bk + '</div></div>';
+    return '<div' + (p ? ' data-pro="' + p.id + '"' : '') + ' style="position:absolute;top:0;bottom:0;left:calc(64px + (100% - 64px) / ' + N + ' * ' + i + ');width:calc((100% - 64px) / ' + N + ');padding:0 3px">' + '<div style="position:relative;height:100%">' + bl + bk + '</div></div>';
   }).join('');
   const strip = wk.map((x) => { const dd = parseISO(x); const has = S.sessions.some((s) => s.date === x && !isOff(s)); return '<button class="day ' + (x === day ? 'on' : '') + '" data-act="agenda-day" data-v="' + x + '" aria-pressed="' + (x === day) + '"><span>' + DIAS[dd.getDay()] + '</span><b>' + dd.getDate() + '</b>' + (has ? '<i></i>' : '') + '</button>'; }).join('');
   const proChips = multi ? '<div class="chips scroll">' + ['todas'].concat(activePros().map((p) => p.id)).map((k) => '<button class="chip ' + (UI.agPro === k || (!pro(UI.agPro) && k === 'todas') ? 'on' : '') + '" data-act="ag-pro" data-v="' + k + '">' + (k === 'todas' ? 'Todas as profissionais' : '<span style="width:10px;height:10px;border-radius:50%;background:' + pro(k).color + ';margin-right:8px"></span>' + esc(pro(k).name.split(' ')[0])) + '</button>').join('') + '</div>' : '';
@@ -32,19 +32,18 @@ async function vAgenda() {
   const bkReq = typeof bookingCards === 'function' ? bookingCards() : '';
   const offHtml = offs.length ? '<div class="card stack" style="gap:6px"><h2 class="h3">Cancelados e faltas</h2>' + offs.map((s) => { const c = client(s.clientId) || { name: '?' }; return '<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)"><div style="flex:1"><b style="font-weight:500">' + esc(c.name) + '</b><div class="muted sm">' + s.time + ' · ' + esc(SERVICES[s.service].name) + '</div></div>' + stTag(s) + '<button class="btn ghost sm" data-act="ap-redo" data-id="' + s.id + '">Reagendar</button></div>'; }).join('') + '</div>' : '';
   return { nav: 'agenda', html: head(MESL[d.getMonth()].replace(/^./, (c) => c.toUpperCase()) + ' de ' + d.getFullYear(), 'Agenda', '<button class="btn ghost sm" data-act="agenda-shift" data-v="-7" aria-label="Semana anterior">' + ic('back') + '</button><button class="btn ghost sm" data-act="agenda-day" data-v="' + todayISO() + '">Hoje</button><button class="btn ghost sm" data-act="agenda-shift" data-v="7" aria-label="Próxima semana">' + ic('next') + '</button><button class="btn ghost sm" data-act="blk-new">Bloquear</button><button class="btn cta" data-act="new-appt">+ Novo agendamento</button>') +
-    proChips + '<div class="week">' + strip + '</div><div class="card" style="padding:20px 20px 16px 16px"><div class="muted sm" style="margin:0 0 12px 8px">' + DIAL[d.getDay()] + ', ' + fmtLong(day) + ' · ' + all.length + (all.length === 1 ? ' atendimento' : ' atendimentos') + (dayOpen(day) ? '' : ' · <b>estúdio fechado neste dia</b>') + '</div>' + laneHead + '<div class="tl" style="height:' + H + 'px">' + lines + lunch + laneHtml + '</div></div>' + bkReq + offHtml };
+    proChips + '<div class="week">' + strip + '</div><div class="card" style="padding:20px 20px 16px 16px"><div class="muted sm" style="margin:0 0 12px 8px">' + DIAL[d.getDay()] + ', ' + fmtLong(day) + ' · ' + all.length + (all.length === 1 ? ' atendimento' : ' atendimentos') + (dayOpen(day) ? '' : ' · <b>estúdio fechado neste dia</b>') + '</div>' + laneHead + '<div class="tl" data-act="ag-tap" data-h0="' + h0 + '" data-rh="' + RH + '" title="Toque num horário livre para agendar" style="height:' + H + 'px;cursor:pointer">' + lines + lunch + laneHtml + '</div></div>' + bkReq + offHtml };
 }
 
 /* ---------- formulário de agendamento ---------- */
 const defaultProId = () => (activePros()[0] || pros()[0]).id;
 function apptForm(id, pre) {
   const s = id ? sess(id) : null;
-  if (!S.clients.length) { toast('Cadastre uma cliente primeiro'); go('#/clientes/novo'); return; }
   const svc0 = (pre && pre.service) || (s && s.service) || activeServices()[0];
   const v = Object.assign({ clientId: '', service: svc0, date: UI.agendaDate, time: '09:00', dur: SERVICES[svc0].dur, proId: UI.agPro !== 'todas' && pro(UI.agPro) ? UI.agPro : defaultProId() }, s ? { clientId: s.clientId, service: s.service, date: s.date, time: s.time, dur: s.dur, proId: proOf(s).id } : {}, pre || {});
   UI.apId = id || null;
   const svcs = activeServices(); if (!svcs.includes(v.service)) svcs.push(v.service);
-  openModal('<h2 class="h2">' + (id ? 'Editar agendamento' : 'Novo agendamento') + '</h2><div><label class="lb" for="ap_c">Cliente</label><select class="in" id="ap_c" data-ap>' + S.clients.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map((c) => '<option value="' + c.id + '"' + (c.id === v.clientId ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('') + '</select></div>' +
+  openModal('<h2 class="h2">' + (id ? 'Editar agendamento' : 'Novo agendamento') + '</h2>' + (id ? '<div><label class="lb" for="ap_c">Cliente</label><select class="in" id="ap_c">' + S.clients.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map((c) => '<option value="' + c.id + '"' + (c.id === v.clientId ? ' selected' : '') + '>' + esc(c.name) + '</option>').join('') + '</select></div>' : quickClientField('ap_c', v.clientId)) +
     '<div><label class="lb" for="ap_s">Procedimento</label><select class="in" id="ap_s" data-ap>' + svcs.map((k) => '<option value="' + k + '"' + (k === v.service ? ' selected' : '') + '>' + SERVICES[k].name + ' · ' + fmtBRL0(priceOf(k)) + '</option>').join('') + '</select></div>' +
     (multiPro() ? '<div><label class="lb" for="ap_p">Profissional</label><select class="in" id="ap_p" data-ap>' + activePros().map((p) => '<option value="' + p.id + '"' + (p.id === v.proId ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') + '</select></div>' : '<input type="hidden" id="ap_p" value="' + v.proId + '">') +
     '<div class="grid3 keep" style="gap:10px"><div><label class="lb" for="ap_d">Data</label><input class="in" id="ap_d" type="date" value="' + v.date + '" data-ap></div><div><label class="lb" for="ap_t">Hora</label><input class="in" id="ap_t" type="time" value="' + v.time + '" data-ap></div><div><label class="lb" for="ap_u">Duração (min)</label><input class="in" id="ap_u" type="number" min="15" step="15" value="' + v.dur + '" data-ap></div></div>' +
@@ -79,6 +78,10 @@ Object.assign(ACTX, {
     if (s.status === 'concluido') go('#/clientes/' + s.clientId); else if (s.status === 'agendado' && s.date >= addDays(todayISO(), -30)) apptModal(s.id); else if (isOff(s)) apptModal(s.id); else go('#/atendimento/' + s.id);
   },
   'new-appt'() { apptForm(null); },
+  'ag-tap'(el, e) { // toque na grade: abre o agendamento no horário (meia hora) e na coluna tocados
+    const y = e.clientY - el.getBoundingClientRect().top, m = +el.dataset.h0 * 60 + Math.floor(y / +el.dataset.rh * 2) * 30, ln = e.target.closest('[data-pro]');
+    apptForm(null, Object.assign({ time: hhmm(m) }, ln ? { proId: ln.dataset.pro } : {}));
+  },
   'ap-slot'(el) { $('#ap_t').value = el.dataset.v; refreshSlots(); },
   'ap-redo'(el) { const s = sess(el.dataset.id); apptForm(null, { clientId: s.clientId, service: s.service, dur: s.dur, proId: proOf(s).id }); },
   'ap-edit'(el) { closeModal(); apptForm(el.dataset.id); },
@@ -92,10 +95,11 @@ Object.assign(ACTX, {
     s.status = el.dataset.v; if (el.dataset.v === 'cancelado' && typeof bookingCanceled === 'function') bookingCanceled(s); save(); closeModal(); route({ keep: true }); toast(el.dataset.v === 'faltou' ? 'Falta registrada' : 'Agendamento cancelado');
   },
   async 'ap-save'() {
-    const v = apVals(); let list = []; const rep = Number(($('#ap_r') || {}).value) || 0, n = rep ? Math.min(12, Math.max(2, Number($('#ap_n').value) || 2)) : 1;
+    const v = apVals(); if (!UI.apId && v.clientId === '__new' && !UI.qc.name.trim()) { toast('Informe o nome da cliente'); return; } let list = []; const rep = Number(($('#ap_r') || {}).value) || 0, n = rep ? Math.min(12, Math.max(2, Number($('#ap_n').value) || 2)) : 1;
     for (let i = 0; i < n; i++) list.push(addDays(v.date, rep * i));
     const bad = list.filter((d) => hasConflict(d, v.time, v.dur, v.proId, UI.apId));
     if (bad.length && !(await confirmBox('Conflito de horário', bad.length === 1 ? fmtDate(bad[0]) + ' às ' + v.time + ' já está ocupado (atendimento ou bloqueio). Agendar mesmo assim?' : bad.length + ' das datas têm conflito. Agendar mesmo assim?', 'Agendar mesmo assim'))) return;
+    if (!UI.apId) { v.clientId = quickClientId(v.clientId); if (!v.clientId) return; }
     if (UI.apId) { const s = sess(UI.apId); const chg = s.service !== v.service; Object.assign(s, { clientId: v.clientId, service: v.service, proId: v.proId, date: v.date, time: v.time, dur: v.dur }); if (chg) { s.cuidados = null; s.angles = null; } if (s.status !== 'agendado' && isOff(s)) s.status = 'agendado'; toast('Agendamento atualizado'); }
     else { list.forEach((d) => S.sessions.push(newSession(v.clientId, { service: v.service, proId: v.proId, date: d, time: v.time, dur: v.dur }))); toast(n > 1 ? n + ' agendamentos criados' : 'Agendamento criado'); }
     UI.agendaDate = v.date; save(); closeModal(); route();
